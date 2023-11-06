@@ -1,4 +1,15 @@
-DROP TABLE `tbl_bookmark`;
+/* 
+	DROP DATABASE REPLANET;
+ */
+
+
+CREATE DATABASE REPLANET;
+
+/* 스키마 접속 */
+USE REPLANET;
+
+/* DDL */
+
 
 CREATE TABLE `tbl_bookmark`
 (
@@ -10,23 +21,23 @@ CREATE TABLE `tbl_bookmark`
 ) COMMENT = '북마크';
 
 
-DROP TABLE `tbl_campaign_desc_file`;
+
 
 CREATE TABLE `tbl_campaign_desc_file`
 (
     `campaign_file_code`    INTEGER NOT NULL AUTO_INCREMENT
  COMMENT '캠페인첨부파일코드',
-    `file_origin_name`    VARCHAR NOT NULL COMMENT '원본파일명',
-    `file_save_name`    VARCHAR NOT NULL COMMENT '저장파일명',
-    `file_extension`    VARCHAR NOT NULL COMMENT '파일확장자',
-    `file_origin_path`    VARCHAR NOT NULL COMMENT '원본경로',
-    `file_save_path`    VARCHAR NOT NULL COMMENT '저장경로',
+    `file_origin_name`    VARCHAR(255) NOT NULL COMMENT '원본파일명',
+    `file_save_name`    VARCHAR(255) NOT NULL COMMENT '저장파일명',
+    `file_extension`    VARCHAR(255) NOT NULL COMMENT '파일확장자',
+    `file_origin_path`    VARCHAR(255) NOT NULL COMMENT '원본경로',
+    `file_save_path`    VARCHAR(255) NOT NULL COMMENT '저장경로',
     `campaign_code`    INTEGER NOT NULL COMMENT '캠페인코드',
  PRIMARY KEY ( `campaign_file_code` )
 ) COMMENT = '캠페인첨부파일';
 
 
-DROP TABLE `tbl_campaign_description`;
+
 
 CREATE TABLE `tbl_campaign_description`
 (
@@ -36,33 +47,32 @@ CREATE TABLE `tbl_campaign_description`
     `campaign_content`    VARCHAR(1000) NOT NULL COMMENT '캠페인내용',
     `start_date`    DATETIME NOT NULL COMMENT '캠페인시작일자',
     `end_date`    DATETIME NOT NULL COMMENT '캠페인마감일자',
-    `campaign_category`    VARCHAR NOT NULL COMMENT '캠페인카테고리',
+    `campaign_category`    VARCHAR(255) NOT NULL COMMENT '캠페인카테고리',
     `current_budget`    INTEGER NOT NULL COMMENT '캠페인현재모금액',
     `goal_budget`    INTEGER NOT NULL COMMENT '캠페인목표액',
-    `org_name`    VARCHAR NOT NULL COMMENT '단체명',
-    `org_description`    VARCHAR NOT NULL COMMENT '단체소개',
-    `org_tel`    VARCHAR NOT NULL COMMENT '단체연락처',
+    `org_name`    VARCHAR(255) NOT NULL COMMENT '단체명',
+    `org_description`    VARCHAR(1000) NOT NULL COMMENT '단체소개',
+    `org_tel`    VARCHAR(255) NOT NULL COMMENT '단체연락처',
  PRIMARY KEY ( `campaign_code` )
 ) COMMENT = '캠페인상세내용';
 
 
-DROP TABLE `tbl_campaign_rev_file`;
 
 CREATE TABLE `tbl_campaign_rev_file`
 (
     `rev_file_code`    INTEGER NOT NULL AUTO_INCREMENT
  COMMENT '후기첨부파일코드',
-    `file_origin_name`    VARCHAR NOT NULL COMMENT '원본파일명',
-    `file_origin_path`    VARCHAR NOT NULL COMMENT '원본경로',
-    `file_save_name`    VARCHAR NOT NULL COMMENT '저장파일명',
-    `file_save_path`    VARCHAR NOT NULL COMMENT '저장경로',
-    `file_extension`    VARCHAR NOT NULL COMMENT '파일확장자',
+    `file_origin_name`    VARCHAR(255) NOT NULL COMMENT '원본파일명',
+    `file_origin_path`    VARCHAR(255) NOT NULL COMMENT '원본경로',
+    `file_save_name`    VARCHAR(255) NOT NULL COMMENT '저장파일명',
+    `file_save_path`    VARCHAR(255) NOT NULL COMMENT '저장경로',
+    `file_extension`    VARCHAR(255) NOT NULL COMMENT '파일확장자',
     `campaign_rev_code`    INTEGER NOT NULL COMMENT '후기코드',
  PRIMARY KEY ( `rev_file_code` )
 ) COMMENT = '후기첨부파일';
 
 
-DROP TABLE `tbl_campaign_review`;
+
 
 CREATE TABLE `tbl_campaign_review`
 (
@@ -75,7 +85,7 @@ CREATE TABLE `tbl_campaign_review`
 ) COMMENT = '후기게시글';
 
 
-DROP TABLE `tbl_chat_bot`;
+
 
 CREATE TABLE `tbl_chat_bot`
 (
@@ -87,7 +97,7 @@ CREATE TABLE `tbl_chat_bot`
 ) COMMENT = '챗봇';
 
 
-DROP TABLE `tbl_donations`;
+
 
 CREATE TABLE `tbl_donations`
 (
@@ -101,25 +111,24 @@ CREATE TABLE `tbl_donations`
 ) COMMENT = '기부내역';
 
 
-DROP TABLE `tbl_member`;
 
 CREATE TABLE `tbl_member`
 (
     `member_code`    INTEGER NOT NULL AUTO_INCREMENT
  COMMENT '회원코드',
-    `member_id`    VARCHAR NOT NULL COMMENT '아이디',
-    `password`    VARCHAR NOT NULL COMMENT '비밀번호',
-    `phone`    VARCHAR NOT NULL COMMENT '휴대폰번호',
-    `join_date`    DATETIME DEFAULT curdate() NOT NULL COMMENT '가입일자',
-    `member_role`    VARCHAR DEFAULT 'role_user' NOT NULL COMMENT '유저권한',
-    `withdraw`    BOOLEAN DEFAULT 'N' NOT NULL COMMENT '탈퇴여부',
+    `member_id`    VARCHAR(255) NOT NULL COMMENT '아이디',
+    `member_name`    VARCHAR(255) NOT NULL COMMENT '이름',
+    `password`    VARCHAR(255) NOT NULL COMMENT '비밀번호',
+    `phone`    VARCHAR(255) NOT NULL COMMENT '휴대폰번호',
+    `join_date`    DATETIME NOT NULL COMMENT '가입일자',
+    `member_role`    VARCHAR(255) DEFAULT 'role_user' NOT NULL COMMENT '유저권한',
+    `withdraw`    CHAR DEFAULT 'N' NOT NULL COMMENT '탈퇴여부',
     `withdraw_date`    DATETIME DEFAULT null COMMENT '탈퇴일자',
     `current_point`    INTEGER DEFAULT 0 NOT NULL COMMENT '보유포인트',
  PRIMARY KEY ( `member_code` )
 ) COMMENT = '회원정보';
 
 
-DROP TABLE `tbl_pay`;
 
 CREATE TABLE `tbl_pay`
 (
@@ -131,60 +140,50 @@ CREATE TABLE `tbl_pay`
 ) COMMENT = '결제내역';
 
 
-DROP TABLE `tbl_point_exchange`;
 
 CREATE TABLE `tbl_point_exchange`
 (
     `exchange_code`    INTEGER NOT NULL AUTO_INCREMENT
  COMMENT '신청코드',
     `exchange_date`    DATETIME NOT NULL COMMENT '신청일자',
-    `title`    VARCHAR NOT NULL COMMENT '신청제목',
-    `status`    VARCHAR DEFAULT '대기' NOT NULL COMMENT '상태',
-    `return_detail`    VARCHAR COMMENT '반려사유',
+    `title`    VARCHAR(255) NOT NULL COMMENT '신청제목',
+    `status`    VARCHAR(255) DEFAULT '대기' NOT NULL COMMENT '상태',
+    `return_detail`    VARCHAR(255) COMMENT '반려사유',
     `points`    INTEGER COMMENT '승인포인트',
     `member_code`    INTEGER NOT NULL COMMENT '회원코드',
  PRIMARY KEY ( `exchange_code` )
 ) COMMENT = '포인트신청';
 
 
-DROP TABLE `tbl_point_file`;
 
 CREATE TABLE `tbl_point_file`
 (
     `file_code`    INTEGER NOT NULL AUTO_INCREMENT
  COMMENT '확인서파일코드',
-    `file_origin_name`    VARCHAR NOT NULL COMMENT '원본파일명',
-    `file_path`    VARCHAR NOT NULL COMMENT '저장경로',
-    `file_extension`    VARCHAR NOT NULL COMMENT '파일확장자',
-    `file_save_name`    VARCHAR NOT NULL COMMENT '저장파일명',
+    `file_origin_name`    VARCHAR(255) NOT NULL COMMENT '원본파일명',
+    `file_path`    VARCHAR(255) NOT NULL COMMENT '저장경로',
+    `file_extension`    VARCHAR(255) NOT NULL COMMENT '파일확장자',
+    `file_save_name`    VARCHAR(255) NOT NULL COMMENT '저장파일명',
     `application_code`    INTEGER NOT NULL COMMENT '신청코드',
  PRIMARY KEY ( `file_code` )
 ) COMMENT = '확인서첨부파일';
 
 
-DROP TABLE `tbl_review_comment`;
+
 
 CREATE TABLE `tbl_review_comment`
 (
     `rev_comment_code`    INTEGER ZEROFILL NOT NULL COMMENT '댓글코드',
     `rev_comment_description`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
-    `rev_comment_writer`    VARCHAR NOT NULL COMMENT '작성자',
+    `rev_comment_writer`    VARCHAR(255) NOT NULL COMMENT '작성자',
     `rev_comment_date`    DATETIME NOT NULL COMMENT '댓글작성일자',
     `campaign_rev_code`    INTEGER NOT NULL COMMENT '후기코드',
  PRIMARY KEY ( `rev_comment_code` )
 ) COMMENT = '후기댓글';
 
-ALTER TABLE `tbl_review_comment`
- ADD CONSTRAINT `tbl_review_comment_PK` PRIMARY KEY ( `rev_comment_code` );
 
 
-DROP TABLE `회원권한(enum)`;
 
-CREATE TABLE `회원권한(enum)`
-(
-    `role_admin` COMMENT 'role_admin',
-    `role_user` COMMENT 'role_user'
-) COMMENT = '회원권한(enum)';
 
 DROP TABLE `tbl_refresh_token`;
 
@@ -194,3 +193,4 @@ CREATE TABLE `tbl_refresh_token`
     `rt_value`    VARCHAR(255) NOT NULL COMMENT '리프레시 토큰 값',
  PRIMARY KEY ( `rt_key` )
 ) COMMENT = '리프레시토큰';
+

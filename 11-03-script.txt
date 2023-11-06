@@ -184,3 +184,13 @@ CREATE TABLE `tbl_review_comment`
 
 
 
+
+DROP TABLE `tbl_refresh_token`;
+
+CREATE TABLE `tbl_refresh_token`
+(
+    `rt_key`    VARCHAR(255) NOT NULL COMMENT '리프레시 토큰 키',
+    `rt_value`    VARCHAR(255) NOT NULL COMMENT '리프레시 토큰 값',
+ PRIMARY KEY ( `rt_key` )
+) COMMENT = '리프레시토큰';
+

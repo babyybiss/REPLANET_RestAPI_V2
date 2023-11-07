@@ -45,7 +45,7 @@ public class ExchangeDTO {
         return title;
     }
 
-    public void setTitle(String Title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -83,7 +83,7 @@ public class ExchangeDTO {
 
     @Override
     public String toString() {
-        return "PointExchange{" +
+        return "ExchangeDTO{" +
                 "exchangeCode=" + exchangeCode +
                 ", exchangeDate=" + exchangeDate +
                 ", title='" + title + '\'' +

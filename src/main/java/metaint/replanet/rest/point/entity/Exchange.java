@@ -1,8 +1,11 @@
 package metaint.replanet.rest.point.entity;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@DynamicInsert
 @Entity
 @Table(name = "tbl_point_exchange")
 public class Exchange {
@@ -31,6 +34,10 @@ public class Exchange {
     private int memberCode;
 
     public Exchange(){}
+
+    public int getExchangeCode() {
+        return exchangeCode;
+    }
 
     @Override
     public String toString() {

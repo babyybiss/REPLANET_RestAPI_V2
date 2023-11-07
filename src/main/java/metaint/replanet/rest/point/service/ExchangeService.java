@@ -26,11 +26,13 @@ public class ExchangeService {
         this.modelMapper = modelMapper;
     }
 
-    public void exchangePoint(ExchangeDTO newExchange) {
-        exchangeRepository.save(modelMapper.map(newExchange, Exchange.class));
+    public int exchangePoint(ExchangeDTO newExchange) {
+        Exchange savedExchange = exchangeRepository.save(modelMapper.map(newExchange, Exchange.class));
+        int exchangeCode = savedExchange.getExchangeCode();
+        return exchangeCode;
     }
 
-    public void savePoinfFile(PointFileDTO newFile) {
+    public void savePointFile(PointFileDTO newFile) {
         pointFileRepository.save(modelMapper.map(newFile, PointFile.class));
     }
 }

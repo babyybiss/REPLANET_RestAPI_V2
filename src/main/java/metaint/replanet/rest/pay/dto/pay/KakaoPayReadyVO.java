@@ -1,9 +1,9 @@
-package metaint.replanet.rest.pay.dto;
+package metaint.replanet.rest.pay.dto.pay;
 
 import java.util.Date;
-//import lombok.Data;
+import lombok.Data;
 
-//@Data
+@Data
 public class KakaoPayReadyVO {
 
     //response

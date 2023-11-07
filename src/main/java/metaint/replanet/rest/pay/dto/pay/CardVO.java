@@ -1,8 +1,8 @@
-package metaint.replanet.rest.pay.dto;
+package metaint.replanet.rest.pay.dto.pay;
 
-//import lombok.Data;
+import lombok.Data;
 
-//@Data
+@Data
 public class CardVO {
     private String purchase_corp, purchase_corp_code;
     private String issuer_corp, issuer_corp_code;

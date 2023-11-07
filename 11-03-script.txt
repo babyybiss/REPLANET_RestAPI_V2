@@ -99,7 +99,7 @@ CREATE TABLE `tbl_chat_bot`
 
 
 
-CREATE TABLE `tbl_donations`
+CREATE TABLE `tbl_donation`
 (
     `donation_code`    INTEGER NOT NULL AUTO_INCREMENT
  COMMENT '기부코드',

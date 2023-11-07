@@ -2,6 +2,7 @@ package metaint.replanet.rest.point.controller;
 
 import metaint.replanet.rest.point.dto.ExchangeDTO;
 import metaint.replanet.rest.point.dto.PointFileDTO;
+import metaint.replanet.rest.point.entity.Exchange;
 import metaint.replanet.rest.point.service.ExchangeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,17 +29,28 @@ public class ExchangeController {
 
     @Transactional
     @PostMapping("")
-    public ResponseEntity<?> exchangePoint (@RequestParam("title") String title, HttpServletRequest request,
-                                            @RequestParam(value = "file", required = false)MultipartFile pointFile){
+    public ResponseEntity<?> exchangePoint (@RequestPart(value="title") String title,
+                                            @RequestPart(value = "memberCode") String memberCodeStr,
+                                            @RequestPart(value="file")MultipartFile pointFile){
 
-        ExchangeDTO newExchange = new ExchangeDTO();
-        newExchange.setExchangeDate(new Date());
-        newExchange.setTitle(title);
-        newExchange.setMemberCode(1);
+        int memberCode = Integer.parseInt(memberCodeStr);
 
-        exchangeService.exchangePoint(newExchange);
+        System.out.println("제목 넘어왔니?" + title);
+        System.out.println("코드 넘어왔니?" + memberCode);
 
-        if(pointFile != null && !pointFile.isEmpty()) {
+        if(title != null && pointFile != null) {
+            ExchangeDTO newExchange = new ExchangeDTO();
+            newExchange.setExchangeDate(new Date());
+            newExchange.setTitle(title);
+            newExchange.setMemberCode(memberCode);
+
+            System.out.println(newExchange);
+
+            int savedExchangeCode = exchangeService.exchangePoint(newExchange);
+
+            System.out.println(savedExchangeCode);
+
+
             String fileOriginName = pointFile.getOriginalFilename();
             String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
             String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
@@ -49,16 +61,18 @@ public class ExchangeController {
             newFile.setFileSaveName(fileSaveName);
             newFile.setFilePath(filePath);
             newFile.setFileExtension(fileExtension);
-            newFile.setApplicationCode(001);
+            newFile.setApplicationCode(savedExchangeCode);
 
             try{
-                File pf = new File(filePath + fileSaveName);
+                File pf = new File(filePath + "/" + fileSaveName);
                 pointFile.transferTo(pf);
-                exchangeService.savePoinfFile(newFile);
+                exchangeService.savePointFile(newFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+
         return ResponseEntity
                 .created(URI.create("/exchanges"))
                 .build();

@@ -1,11 +1,8 @@
 package metaint.replanet.rest.reviews.model.service;
 
-import metaint.replanet.rest.reviews.dto.CampaignDTO;
-import metaint.replanet.rest.reviews.dto.CombineReviewDTO;
 import metaint.replanet.rest.reviews.dto.ReviewDTO;
-import metaint.replanet.rest.reviews.entity.Campaign;
 import metaint.replanet.rest.reviews.entity.Review;
-import metaint.replanet.rest.reviews.repository.CampaignRepository;
+import metaint.replanet.rest.reviews.repository.CampaignReviewRepository;
 import metaint.replanet.rest.reviews.repository.ReviewRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -16,12 +13,12 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewService {
 
-    private final CampaignRepository campaignRepository;
+    private final CampaignReviewRepository campaignReviewRepository;
     private final ReviewRepository reviewRepository;
     private final ModelMapper modelMapper;
 
-    public ReviewService(CampaignRepository campaignRepository, ReviewRepository reviewRepository, ModelMapper modelMapper) {
-        this.campaignRepository = campaignRepository;
+    public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ModelMapper modelMapper) {
+        this.campaignReviewRepository = campaignReviewRepository;
         this.reviewRepository = reviewRepository;
         this.modelMapper = modelMapper;
     }

@@ -1,6 +1,5 @@
 package metaint.replanet.rest.chart.repository;
 
-import metaint.replanet.rest.chart.entity.CampaignDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

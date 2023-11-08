@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ChartRepository extends JpaRepository<CampaignDescription, Integer> {
 
-    interface CampaignDescriptionDTO {
+   /* interface CampaignDescriptionDTO {
         int getCampaignCode();
         String getCampaignTitle();
         String getCampaignContent();
@@ -20,7 +20,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
         String getCampaignCategory();
 
     }
-
+*/
     @Query(value = "SELECT DISTINCT campaign_category FROM tbl_campaign_description"
             , nativeQuery = true)
     public List<Object[]> findAllCampaingCategory();

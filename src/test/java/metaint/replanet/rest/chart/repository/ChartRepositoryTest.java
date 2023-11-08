@@ -21,7 +21,6 @@ public class ChartRepositoryTest {
     public void testCount() {
         //given
         int expectCount = 3;
-
         //when
         Long countResult = chartRepository.count();
         //then
@@ -30,9 +29,7 @@ public class ChartRepositoryTest {
 
     @DisplayName("카테고리 리스트 조회 테스트")
     @Test
-    public void testSelectCategoryOfCampaignUsingDistinct() {
-        //given
-
+    public void testSelectCategoryOfCampaign() {
         //when
         List<Object[]> foundCategory = chartRepository.findAllCampaingCategory();
         //then
@@ -45,12 +42,11 @@ public class ChartRepositoryTest {
         });
     }
 
-    @DisplayName("카테고리별 캠페인 수 카운트 조회 테스트")
+    @DisplayName("카테고리별 캠페인 통계 조회 테스트")
     @Test
-    public void testCountCampaignByCampaignCategory() {
-        //given
+    public void testSelectCampaignByCampaignCategory() {
         //when
-        List<Object[]> countByCategory = chartRepository.countCampaignDescriptionByCampaignCategory();
+        List<Object[]> countByCategory = chartRepository.findCampaignByCampaignCategory();
         //then
         Assertions.assertNotNull(countByCategory);
 
@@ -62,46 +58,11 @@ public class ChartRepositoryTest {
         });
     }
 
-    @DisplayName("카테고리별 캠페인의 현재 모금액 합계 조회 테스트")
+    @DisplayName("당해 월별 캠페인 통계 조회 테스트")
     @Test
-    public void testSumCurrentBudgetByCampaignCategory() {
-        //given
+    public void testSelectCampaignByCurrentyear() {
         //when
-        List<Object[]> sumCurrentByCategory = chartRepository.sumCurrentBudgetByCampaignCategory();
-        //then
-        Assertions.assertNotNull(sumCurrentByCategory);
-
-        sumCurrentByCategory.forEach(row -> {
-            for(Object col : row) {
-                System.out.print(col + ":::");
-            }
-            System.out.println();
-        });
-    }
-
-    @DisplayName("카테고리별 캠페인의 목표 모금액 합계 조회 테스트")
-    @Test
-    public void testSumGoalBudgetByCampaignCategory() {
-        //given
-        //when
-        List<Object[]> sumGoalByCategory = chartRepository.sumGoalBudgetByCampaignCategory();
-        //then
-        Assertions.assertNotNull(sumGoalByCategory);
-
-        sumGoalByCategory.forEach( row -> {
-            for(Object col : row) {
-                System.out.print(col + ":::");
-            }
-            System.out.println();
-        });
-    }
-
-    @DisplayName("당해 등록된 캠페인 수 카운트 조회 테스트")
-    @Test
-    public void testCountCampaignByCurrentyear() {
-        //given
-        //when
-        List<Object[]> countByCurrentyear = chartRepository.countCampaignByCurrentyear();
+        List<Object[]> countByCurrentyear = chartRepository.findCampaignByCurrentyear();
         //then
         Assertions.assertNotNull(countByCurrentyear);
 
@@ -113,12 +74,11 @@ public class ChartRepositoryTest {
         });
     }
 
-    @DisplayName("전해 등록된 캠페인 수 카운트 조회 테스트")
+    @DisplayName("전해 월별 캠페인 통계 조회 테스트")
     @Test
-    public void testCountCampaignByPreviousyear() {
-        //given
+    public void testSelectCampaignByPreviousyear() {
         //when
-        List<Object[]> countByPreviousyear = chartRepository.countCampaignByPreviousyear();
+        List<Object[]> countByPreviousyear = chartRepository.findCampaignByPreviousyear();
         //then
         Assertions.assertNotNull(countByPreviousyear);
 
@@ -130,6 +90,8 @@ public class ChartRepositoryTest {
             System.out.println();
         });
     }
+
+
 
 
 

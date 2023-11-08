@@ -12,6 +12,7 @@ import java.util.Date;
 public class MemberDTO {
     private int memberCode;
     private String memberId;
+    private String memberName;
     private String password;
     private String phone;
     private Date joinDate;

@@ -21,6 +21,8 @@ public class Member {
     @Column(name = "member_id")
     private String memberId;
     @Column(name = "member_name")
+    private String memberName;
+    @Column(name = "password")
     private String password;
     @Column(name = "phone")
     private String phone;

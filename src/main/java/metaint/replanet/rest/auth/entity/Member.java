@@ -77,4 +77,8 @@ public class Member {
         this.withdrawDate = withdrawDate;
         this.currentPoint = currentPoint;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -10,7 +10,6 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.pay.dto.CampaignDescriptionDTO;
-import metaint.replanet.rest.pay.dto.DonationDTO;
 import metaint.replanet.rest.pay.dto.MemberDTO;
 import metaint.replanet.rest.pay.dto.pay.DonationAmountDTO;
 import metaint.replanet.rest.pay.dto.pay.KakaoPayApprovalVO;
@@ -36,13 +35,13 @@ import javax.persistence.EntityNotFoundException;
 
 @Service
 @Slf4j
-public class KakaoPay {
+public class KakaoPayService {
 
     private final DonationRepository donationRepository;
     private final PayRepository payRepository;
     private final ModelMapper modelMapper;
 
-    public KakaoPay(DonationRepository donationRepository, PayRepository payRepository, ModelMapper modelMapper) {
+    public KakaoPayService(DonationRepository donationRepository, PayRepository payRepository, ModelMapper modelMapper) {
         this.donationRepository = donationRepository;
         this.payRepository = payRepository;
         this.modelMapper = modelMapper;
@@ -127,7 +126,7 @@ public class KakaoPay {
         CampaignDescriptionDTO campaign = new CampaignDescriptionDTO();
         campaign.setCampaignCode(1);
         campaign.setCampaignTitle("테스트테스트");
-        // 회원정보랑 캠페인정보 자리잡히면 이거 바꿔야함! 까먹으면 안됨!
+        // 회원정보랑 캠페인정보 자리잡히면 이거 바꿔야함! 까먹으면 안됨!!!!
 
         // 서버로 요청할 Body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
@@ -172,9 +171,11 @@ public class KakaoPay {
                                 .refDonation(newDonation)
                                 .build();
 
-                // Donation 엔티티 저장
+                // Donation 엔티티 저장 -> DB에 값넣는거임
                 donationRepository.save(newDonation);
                 payRepository.save(newPay);
+                kakaoPayApprovalVO.setPayCode(newPay.getPayCode());
+                log.info("[kakaoPayInfo() kakaoPayApprovalVO.payCode] : " + kakaoPayApprovalVO.getPayCode());
             }
 
             return kakaoPayApprovalVO;
@@ -192,6 +193,7 @@ public class KakaoPay {
 
     public List<Donation> getDonation() {
         log.info("[getDonation()] -----------------------------------");
+        // 마이페이지 완성되면 넣기!
 
         List<Donation> donationList = donationRepository.findAll();
 
@@ -200,16 +202,30 @@ public class KakaoPay {
         return donationList;
     }
 
-    public Pay getPayByTid(String payTid) {
-        log.info("[getPayByTid(String payTid)] -----------------------------------");
+    public Pay getPayByPayCode(String payCode) {
+        log.info("[getPayByPayCode(String payCode)] -----------------------------------");
+        // 결제 직후 기부상세내용 보여주는 놈
 
-        Pay pay = payRepository.findByPayTid(payTid);
+        Pay pay = payRepository.findByPayCode(Integer.parseInt(payCode));
 
         if (pay != null) {
             return pay;
         } else {
-            log.error("payTid에 해당하는 Pay를 찾을수없으요 payTid : " + payTid);
-            throw new EntityNotFoundException("payTid에 해당하는 Pay를 찾을수없으요 payTid : " + payTid);
+            log.error("payCode에 해당하는 Pay를 찾을수없으요 payCode : " + payCode);
+            throw new EntityNotFoundException("payCode에 해당하는 Pay를 찾을수없으요 payCode : " + payCode);
+        }
+    }
+
+    public Member getPointByMember(String memberCode) {
+        log.info("[getPointByMember(String memberCode)] -----------------------------------");
+        
+        Member member = donationRepository.findByRefMember(memberCode);
+        
+        if (member != null) {
+            return member;
+        } else {
+            log.error("memberCode에 해당하는 Member를 찾을수없으요 memberCode : " + memberCode);
+            throw new EntityNotFoundException("memberCode에 해당하는 Member를 찾을수없으요 payTid : " + memberCode);
         }
     }
 }

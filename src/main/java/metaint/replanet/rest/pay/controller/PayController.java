@@ -4,8 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.pay.dto.pay.DonationAmountDTO;
 import metaint.replanet.rest.pay.dto.pay.KakaoPayApprovalVO;
 import metaint.replanet.rest.pay.entity.Donation;
+import metaint.replanet.rest.pay.entity.Member;
 import metaint.replanet.rest.pay.entity.Pay;
-import metaint.replanet.rest.pay.service.KakaoPay;
+import metaint.replanet.rest.pay.service.KakaoPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,16 +20,14 @@ import java.util.List;
 @Slf4j
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-public class SampleController {
+public class PayController {
 
     @Setter(onMethod_ = @Autowired)
-    private KakaoPay kakaopay;
+    private KakaoPayService kakaopay;
 
 
     @GetMapping("/kakaoPay")
-    public void kakaoPayGet() {
-        System.out.println("GetMapping /kakaoPay ㅎㅇㅎㅇ");
-    }
+    public void kakaoPayGet() {}
 
     @PostMapping("/kakaoPay")
     public String kakaoPay(@RequestBody DonationAmountDTO amount) {
@@ -48,35 +47,24 @@ public class SampleController {
                                         @RequestParam("pointAmount") String pointAmount,
                                         ModelAndView mv) {
         log.info("[GET /kakaoPaySuccess]-------------------------------------");
-        log.info("[/kakaoPaySuccess pg_token] : " + pg_token);
-        log.info("[/kakaoPaySuccess pointAmount] : " + pointAmount);
-
-        // 얘는 카카오페이API에서 결제완료를 누르면 요청이 되는페이지임
-
         KakaoPayApprovalVO info = kakaopay.kakaoPayInfo(pg_token, pointAmount);
 
-        log.info("[/kakaoPaySuccess info.getTid()] : " + info.getTid());
-        mv.setViewName("redirect:http://localhost:3000/donations/success?payTid=" + info.getTid());
+        log.info("[GET /kakaoPaySuccess] info.getPayCode() : " + info.getPayCode());
+        mv.setViewName("redirect:http://localhost:3000/donations/success?number=" + info.getPayCode());
 
         return mv;
     }
 
     @GetMapping("/kakaoPayCancle")
-    public ModelAndView kakaoPayCancel() {
+    public String kakaoPayCancel() {
         log.info("[GET /kakaoPayCancle]-------------------------------------");
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("redirect:http://localhost:3000/donations/cancel");
-        // 취소할때 걍 메인으로 보내버릴지 생각해보기
-        return mv;
+        return "redirect:http://localhost:3000/donations/cancel";
     }
 
     @GetMapping("/kakaoPaySuccessFail")
-    public ModelAndView kakaoPaySuccessFail() {
+    public String kakaoPaySuccessFail() {
         log.info("[GET /kakaoPaySuccessFail]-------------------------------------");
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("redirect:http://localhost:3000/donations/fail");
-        // 결제 실패시 이동할 화면 정하기!
-        return mv;
+        return "redirect:http://localhost:3000/donations/fail";
     }
 
     @GetMapping("/donations")
@@ -92,9 +80,10 @@ public class SampleController {
         return ResponseEntity.ok(donationList);
     }
 
-    @GetMapping("/donations/{payTid}")
-    public ResponseEntity<Pay> getDonationByTid(@PathVariable String payTid) {
-        Pay pay = kakaopay.getPayByTid(payTid);
+    @GetMapping("/donations/payCode={payCode}")
+    public ResponseEntity<Pay> getDonationByTid(@PathVariable String payCode) {
+        Pay pay = kakaopay.getPayByPayCode(payCode);
+        log.info("GET /donations/{payTid} pay : " + pay);
 
         if (pay != null) {
             Donation donation = pay.getRefDonation();
@@ -107,5 +96,16 @@ public class SampleController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    
+    @GetMapping("/users/point/{memberCode}/donations")
+    public ResponseEntity<Member> getPointByMember(@PathVariable String memberCode) {
+        Member member = kakaopay.getPointByMember(memberCode);
+        log.info("GET /users/point/{memberCode}/donations member : " + member);
 
+        if (member != null) {
+            return new ResponseEntity<>(member, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

@@ -4,7 +4,7 @@ package metaint.replanet.rest.auth.controller;
 import metaint.replanet.rest.auth.dto.MemberRequestDto;
 import metaint.replanet.rest.auth.dto.MemberResponseDto;
 import metaint.replanet.rest.auth.dto.TokenDto;
-import metaint.replanet.rest.auth.dto.TokenRequestDto;
+
 import metaint.replanet.rest.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +20,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto memberRequestDto) {
-        return ResponseEntity.ok(authService.signup(memberRequestDto));
+    public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberRequestDto requestDto) {
+        return ResponseEntity.ok(authService.signup(requestDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto memberRequestDto) {
-        return ResponseEntity.ok(authService.login(memberRequestDto));
-    }
-
-    @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-        return ResponseEntity.ok(authService.reissue(tokenRequestDto));
+    public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto requestDto) {
+        return ResponseEntity.ok(authService.login(requestDto));
     }
 }

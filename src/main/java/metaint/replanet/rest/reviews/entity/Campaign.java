@@ -1,5 +1,7 @@
 package metaint.replanet.rest.reviews.entity;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.HashSet;
@@ -10,6 +12,7 @@ import java.util.Set;
 public class Campaign {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "campaign_code")
     private Long campaignCode;
 
@@ -43,12 +46,17 @@ public class Campaign {
     @Column(name = "org_tel")
     private String orgTel;
 
+    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "campaign_code", insertable = false, updatable = false)
+    private Review review;
 
-    // Constructors
-    public Campaign() {
+
+
+    protected Campaign() {
     }
 
-    public Campaign(String campaignTitle, String campaignContent, java.sql.Date startDate, java.sql.Date endDate, String campaignCategory, Integer currentBudget, Integer goalBudget, String orgName, String orgDescription, String orgTel) {
+    public Campaign(Long campaignCode, String campaignTitle, String campaignContent, Date startDate, Date endDate, String campaignCategory, Integer currentBudget, Integer goalBudget, String orgName, String orgDescription, String orgTel, Review review) {
+        this.campaignCode = campaignCode;
         this.campaignTitle = campaignTitle;
         this.campaignContent = campaignContent;
         this.startDate = startDate;
@@ -59,98 +67,57 @@ public class Campaign {
         this.orgName = orgName;
         this.orgDescription = orgDescription;
         this.orgTel = orgTel;
+        this.review = review;
     }
 
-    // Getters and Setters
     public Long getCampaignCode() {
         return campaignCode;
-    }
-
-    public void setCampaignCode(Long campaignCode) {
-        this.campaignCode = campaignCode;
     }
 
     public String getCampaignTitle() {
         return campaignTitle;
     }
 
-    public void setCampaignTitle(String campaignTitle) {
-        this.campaignTitle = campaignTitle;
-    }
-
     public String getCampaignContent() {
         return campaignContent;
     }
 
-    public void setCampaignContent(String campaignContent) {
-        this.campaignContent = campaignContent;
-    }
-
-    public java.sql.Date getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(java.sql.Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public java.sql.Date getEndDate() {
+    public Date getEndDate() {
         return endDate;
-    }
-
-    public void setEndDate(java.sql.Date endDate) {
-        this.endDate = endDate;
     }
 
     public String getCampaignCategory() {
         return campaignCategory;
     }
 
-    public void setCampaignCategory(String campaignCategory) {
-        this.campaignCategory = campaignCategory;
-    }
-
     public Integer getCurrentBudget() {
         return currentBudget;
-    }
-
-    public void setCurrentBudget(Integer currentBudget) {
-        this.currentBudget = currentBudget;
     }
 
     public Integer getGoalBudget() {
         return goalBudget;
     }
 
-    public void setGoalBudget(Integer goalBudget) {
-        this.goalBudget = goalBudget;
-    }
-
     public String getOrgName() {
         return orgName;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
     }
 
     public String getOrgDescription() {
         return orgDescription;
     }
 
-    public void setOrgDescription(String orgDescription) {
-        this.orgDescription = orgDescription;
-    }
-
     public String getOrgTel() {
         return orgTel;
     }
 
-    public void setOrgTel(String orgTel) {
-        this.orgTel = orgTel;
+    public Review getReview() {
+        return review;
     }
 
-    // toString method
     @Override
     public String toString() {
         return "Campaign{" +
@@ -165,6 +132,7 @@ public class Campaign {
                 ", orgName='" + orgName + '\'' +
                 ", orgDescription='" + orgDescription + '\'' +
                 ", orgTel='" + orgTel + '\'' +
+                ", review=" + review +
                 '}';
     }
 }

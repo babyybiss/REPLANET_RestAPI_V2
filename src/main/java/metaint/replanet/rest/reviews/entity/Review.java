@@ -19,61 +19,43 @@ public class Review {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "campaign_code")
-    private Campaign campaign;
+    @Column(name = "campaign_code")
+    private Long campaignCode;
 
     // Constructors
     protected Review() {
     }
 
-    public Review(String reviewTitle, String description, Campaign campaign) {
+    public Review(Long campaignRevCode, String reviewTitle, String description, Long campaignCode) {
+        this.campaignRevCode = campaignRevCode;
         this.reviewTitle = reviewTitle;
         this.description = description;
-        this.campaign = campaign;
+        this.campaignCode = campaignCode;
     }
 
-    // Getters and Setters
     public Long getCampaignRevCode() {
         return campaignRevCode;
-    }
-
-    public void setCampaignRevCode(Long campaignRevCode) {
-        this.campaignRevCode = campaignRevCode;
     }
 
     public String getReviewTitle() {
         return reviewTitle;
     }
 
-    public void setReviewTitle(String reviewTitle) {
-        this.reviewTitle = reviewTitle;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public Long getCampaignCode() {
+        return campaignCode;
     }
 
-    public Campaign getCampaign() {
-        return campaign;
-    }
-
-    public void setCampaign(Campaign campaign) {
-        this.campaign = campaign;
-    }
-
-    // toString method
     @Override
     public String toString() {
         return "Review{" +
                 "campaignRevCode=" + campaignRevCode +
                 ", reviewTitle='" + reviewTitle + '\'' +
                 ", description='" + description + '\'' +
-                ", campaign=" + campaign +
+                ", campaignCode=" + campaignCode +
                 '}';
     }
 }

@@ -16,6 +16,8 @@ public class CampaignDTO {
     private String orgDescription;
     private String orgTel;
 
+
+
     public CampaignDTO() {
     }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -110,7 +111,24 @@ public class ChartRepositoryTest {
             }
             System.out.println();
         });
+    }
 
+    @DisplayName("전해 등록된 캠페인 수 카운트 조회 테스트")
+    @Test
+    public void testCountCampaignByPreviousyear() {
+        //given
+        //when
+        List<Object[]> countByPreviousyear = chartRepository.countCampaignByPreviousyear();
+        //then
+        Assertions.assertNotNull(countByPreviousyear);
+
+
+        countByPreviousyear.forEach(row -> {
+            for(Object col : row) {
+                System.out.print(col + ":::");
+            }
+            System.out.println();
+        });
     }
 
 

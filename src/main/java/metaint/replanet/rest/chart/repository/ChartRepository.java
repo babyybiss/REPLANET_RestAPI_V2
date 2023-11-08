@@ -50,4 +50,11 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
                    "GROUP BY monthly"
                    , nativeQuery = true)
     public List<Object[]> countCampaignByCurrentyear();
+
+    @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns " +
+                   "FROM tbl_campaign_description " +
+                   "WHERE DATE_FORMAT(start_date, '%Y-%m') BETWEEN '2022-01' AND '2022-12' " +
+                   "GROUP BY monthly"
+                   , nativeQuery = true)
+    public List<Object[]> countCampaignByPreviousyear();
 }

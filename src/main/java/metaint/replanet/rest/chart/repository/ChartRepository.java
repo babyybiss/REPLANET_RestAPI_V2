@@ -5,19 +5,32 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface ChartRepository extends JpaRepository<CampaignDescription, Integer> {
 
-    @Query(value = "SELECT COUNT(campaign_code) FROM tbl_campaign_description"
+    interface CampaignDescriptionDTO {
+        int getCampaignCode();
+        String getCampaignTitle();
+        String getCampaignContent();
+        LocalDate getStartDate();
+        LocalDate getEndDate();
+        String getCampaignCategory();
+
+    }
+
+    @Query(value = "SELECT DISTINCT campaign_category FROM tbl_campaign_description"
             , nativeQuery = true)
-    public int countAllCampaign();
+    public List<Object[]> findAllCampaingCategory();
 
 
-    @Query(value = "SELECT DISTINCT (campaign_category) FROM tbl_campaign_description"
-            , nativeQuery = true)
-    public List<String> findAllCampaingCategory();
+    @Query(value = "SELECT c.campaign_category, COUNT(*) AS campaign_count " +
+                    "FROM tbl_campaign_description c " +
+                    "GROUP BY c.campaign_category"
+                    , nativeQuery = true)
+    public List<Object[]> countCampaignDescriptionByCampaignCategory();
 
 
 }

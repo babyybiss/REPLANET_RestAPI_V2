@@ -1,5 +1,6 @@
 package metaint.replanet.rest.chart.repository;
 
+import metaint.replanet.rest.chart.entity.CampaignDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,31 +15,51 @@ public class ChartRepositoryTest {
     @Autowired
     private ChartRepository chartRepository;
 
-    @DisplayName("캠페인 수 카운트 조회 테스트")
+
+    @DisplayName("JpaRepository 인터페이스 제공 메서드 사용 테스트")
     @Test
-    public void testCountCampaign() {
+    public void testCount() {
         //given
         int expectCount = 3;
 
         //when
-        int result = chartRepository.countAllCampaign();
-
+        Long countResult = chartRepository.count();
         //then
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(expectCount, result);
-        System.out.println(result);
+        Assertions.assertEquals(expectCount, countResult);
     }
 
-    @DisplayName("카테고리 리스트 조회")
+    @DisplayName("카테고리 리스트 조회 테스트")
     @Test
     public void testSelectCategoryOfCampaignUsingDistinct() {
         //given
 
         //when
-        List<String> foundCategory = chartRepository.findAllCampaingCategory();
+        List<Object[]> foundCategory = chartRepository.findAllCampaingCategory();
         //then
         Assertions.assertNotNull(foundCategory);
-        foundCategory.forEach(System.out::println);
+        foundCategory.forEach(row -> {
+            for(Object col : row) {
+                System.out.print(col);
+            }
+            System.out.println();
+        });
+    }
+
+    @DisplayName("카테고리별 캠페인 수 카운트 조회 테스트")
+    @Test
+    public void testCountCampaignByCampaignCategory() {
+        //given
+        //when
+        List<Object[]> countByCategory = chartRepository.countCampaignDescriptionByCampaignCategory();
+        //then
+        Assertions.assertNotNull(countByCategory);
+
+        countByCategory.forEach(row -> {
+            for(Object col : row) {
+                System.out.print(col + ":::");
+            }
+            System.out.println();
+        });
     }
 
 

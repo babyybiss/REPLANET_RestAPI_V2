@@ -1,5 +1,7 @@
+/*
 package metaint.replanet.rest.reviews;
 
+import metaint.replanet.rest.reviews.dto.CombineReviewDTO;
 import metaint.replanet.rest.reviews.dto.ReviewDTO;
 import metaint.replanet.rest.reviews.entity.Review;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
@@ -33,9 +35,9 @@ public class ReviewTestApplication {
         // Given
 
         // When
-        List<ReviewDTO> details = reviewService.findAllReviews();
+        List<CombineReviewDTO> details = reviewService.findAllReviews();
 
-        List<Review> reviewList = reviewRepository.findAll();
+        List<Review> reviewList = campaignReviewRepository.findAll();
 
         System.out.println("findAllReviews: " + reviewList);
 
@@ -89,3 +91,4 @@ public class ReviewTestApplication {
         System.out.println("Result : " + singleReview);
     }
 }
+*/

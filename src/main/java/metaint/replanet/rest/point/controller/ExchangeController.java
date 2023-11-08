@@ -4,6 +4,7 @@ import metaint.replanet.rest.point.dto.ExchangeDTO;
 import metaint.replanet.rest.point.dto.PointFileDTO;
 import metaint.replanet.rest.point.entity.Exchange;
 import metaint.replanet.rest.point.service.ExchangeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,35 +47,41 @@ public class ExchangeController {
 
             System.out.println(newExchange);
 
-            int savedExchangeCode = exchangeService.exchangePoint(newExchange);
+            try {
+                int savedExchangeCode = exchangeService.exchangePoint(newExchange);
 
-            System.out.println(savedExchangeCode);
+                System.out.println(savedExchangeCode);
 
+                String fileOriginName = pointFile.getOriginalFilename();
+                String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
+                String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
+                String filePath = "C:\\filetest";
 
-            String fileOriginName = pointFile.getOriginalFilename();
-            String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
-            String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
-            String filePath = "C:\\filetest";
+                PointFileDTO newFile = new PointFileDTO();
+                newFile.setFileOriginName(fileOriginName);
+                newFile.setFileSaveName(fileSaveName);
+                newFile.setFilePath(filePath);
+                newFile.setFileExtension(fileExtension);
+                newFile.setApplicationCode(savedExchangeCode);
 
-            PointFileDTO newFile = new PointFileDTO();
-            newFile.setFileOriginName(fileOriginName);
-            newFile.setFileSaveName(fileSaveName);
-            newFile.setFilePath(filePath);
-            newFile.setFileExtension(fileExtension);
-            newFile.setApplicationCode(savedExchangeCode);
-
-            try{
-                File pf = new File(filePath + "/" + fileSaveName);
-                pointFile.transferTo(pf);
-                exchangeService.savePointFile(newFile);
-            } catch (IOException e) {
+                try{
+                    File directory = new File(filePath);
+                    if(!directory.exists()){
+                        directory.mkdirs();
+                        System.out.println("저장경로가 존재하지 않아 새로 생성되었습니다.");
+                    }
+                    File pf = new File(filePath + "/" + fileSaveName);
+                    pointFile.transferTo(pf);
+                    exchangeService.savePointFile(newFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return ResponseEntity.status(HttpStatus.OK).body("신청 성공");
+            } catch (Exception e){
                 e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("신청 오류");
             }
         }
-
-
-        return ResponseEntity
-                .created(URI.create("/exchanges"))
-                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청 오류");
     }
 }

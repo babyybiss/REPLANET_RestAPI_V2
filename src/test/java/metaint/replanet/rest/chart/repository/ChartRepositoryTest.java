@@ -61,6 +61,58 @@ public class ChartRepositoryTest {
         });
     }
 
+    @DisplayName("카테고리별 캠페인의 현재 모금액 합계 조회 테스트")
+    @Test
+    public void testSumCurrentBudgetByCampaignCategory() {
+        //given
+        //when
+        List<Object[]> sumCurrentByCategory = chartRepository.sumCurrentBudgetByCampaignCategory();
+        //then
+        Assertions.assertNotNull(sumCurrentByCategory);
+
+        sumCurrentByCategory.forEach(row -> {
+            for(Object col : row) {
+                System.out.print(col + ":::");
+            }
+            System.out.println();
+        });
+    }
+
+    @DisplayName("카테고리별 캠페인의 목표 모금액 합계 조회 테스트")
+    @Test
+    public void testSumGoalBudgetByCampaignCategory() {
+        //given
+        //when
+        List<Object[]> sumGoalByCategory = chartRepository.sumGoalBudgetByCampaignCategory();
+        //then
+        Assertions.assertNotNull(sumGoalByCategory);
+
+        sumGoalByCategory.forEach( row -> {
+            for(Object col : row) {
+                System.out.print(col + ":::");
+            }
+            System.out.println();
+        });
+    }
+
+    @DisplayName("당해 등록된 캠페인 수 카운트 조회 테스트")
+    @Test
+    public void testCountCampaignByCurrentyear() {
+        //given
+        //when
+        List<Object[]> countByCurrentyear = chartRepository.countCampaignByCurrentyear();
+        //then
+        Assertions.assertNotNull(countByCurrentyear);
+
+        countByCurrentyear.forEach( row -> {
+            for(Object col : row) {
+                System.out.print(col + ":::");
+            }
+            System.out.println();
+        });
+
+    }
+
 
 
 

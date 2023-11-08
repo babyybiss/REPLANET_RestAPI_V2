@@ -23,22 +23,21 @@ public class CampaignServiceTest {
     @Test
     void campaignRegistTest() {
         //given
-        CampaignDescription charity = new CampaignDescription(
-                9,
-                "끝난놈2",
+        CampaignDescription campaign = new CampaignDescription(
+                "진행중",
                 "도와주세요~섬바리헤업미",
                 LocalDateTime.now(),
-                LocalDateTime.of(2024,12,5,16,25),
+                LocalDateTime.of(2025,12,5,16,25),
                 "지구촌",
                 200000,
-                10000,
+                10000111,
                 "하이미디어",
                 "안녕 매체",
                 "02-121-5678"
         );
 
         //when
-        campaignService.registCampaign(charity);
+        campaignService.registCampaign(campaign);
 
         //then
         List<CampaignDescription> foundCampaign = campaignService.findCampaignList();

@@ -11,7 +11,7 @@ public class CampaignDescription {
 
     @Id
     @Column(name = "campaign_code")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int campaignCode; // 모금 코드
     //    @OneToMany(mappedBy = "charityDescription")
 //    private List<CharityDescfile> charityDescfileList; // 파일 정보
@@ -45,8 +45,7 @@ public class CampaignDescription {
 
     protected CampaignDescription() {}
 
-    public CampaignDescription(int campaignCode, String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {
-        this.campaignCode = campaignCode;
+    public CampaignDescription( String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {
         this.campaignTitle = campaignTitle;
         this.campaignContent = campaignContent;
         this.startDate = startDate;

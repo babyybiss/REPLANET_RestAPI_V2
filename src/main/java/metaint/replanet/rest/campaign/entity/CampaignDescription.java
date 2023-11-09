@@ -11,7 +11,7 @@ public class CampaignDescription {
 
     @Id
     @Column(name = "campaign_code")
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int campaignCode; // 모금 코드
     //    @OneToMany(mappedBy = "charityDescription")
 //    private List<CharityDescfile> charityDescfileList; // 파일 정보
@@ -45,7 +45,8 @@ public class CampaignDescription {
 
     protected CampaignDescription() {}
 
-    public CampaignDescription( String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {
+    public CampaignDescription(int campaignCode, String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {
+        this.campaignCode = campaignCode;
         this.campaignTitle = campaignTitle;
         this.campaignContent = campaignContent;
         this.startDate = startDate;
@@ -100,6 +101,50 @@ public class CampaignDescription {
 
     public String getOrgTel() {
         return orgTel;
+    }
+
+    public void setCampaignCode(int campaignCode) {
+        this.campaignCode = campaignCode;
+    }
+
+    public void setCampaignTitle(String campaignTitle) {
+        this.campaignTitle = campaignTitle;
+    }
+
+    public void setCampaignContent(String campaignContent) {
+        this.campaignContent = campaignContent;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setCampaignCategory(String campaignCategory) {
+        this.campaignCategory = campaignCategory;
+    }
+
+    public void setCurrentBudget(int currentBudget) {
+        this.currentBudget = currentBudget;
+    }
+
+    public void setGoalBudget(int goalBudget) {
+        this.goalBudget = goalBudget;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public void setOrgDescription(String orgDescription) {
+        this.orgDescription = orgDescription;
+    }
+
+    public void setOrgTel(String orgTel) {
+        this.orgTel = orgTel;
     }
 
     @Override

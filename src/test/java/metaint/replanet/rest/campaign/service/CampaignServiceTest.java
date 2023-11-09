@@ -1,5 +1,6 @@
 package metaint.replanet.rest.campaign.service;
 
+import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -23,11 +24,12 @@ public class CampaignServiceTest {
     @Test
     void campaignRegistTest() {
         //given
-        CampaignDescription campaign = new CampaignDescription(
-                "진행중",
+        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
+                0,
+                "끝남",
                 "도와주세요~섬바리헤업미",
                 LocalDateTime.now(),
-                LocalDateTime.of(2025,12,5,16,25),
+                LocalDateTime.of(2021,12,5,16,25),
                 "지구촌",
                 200000,
                 10000111,

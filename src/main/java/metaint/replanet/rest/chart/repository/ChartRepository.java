@@ -1,5 +1,6 @@
 package metaint.replanet.rest.chart.repository;
 
+import metaint.replanet.rest.chart.dto.CountByCategoryDTO;
 import metaint.replanet.rest.chart.entity.CampaignDescription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,20 +12,14 @@ import java.util.List;
 @Repository
 public interface ChartRepository extends JpaRepository<CampaignDescription, Integer> {
 
-   /* interface CampaignDescriptionDTO {
-        int getCampaignCode();
-        String getCampaignTitle();
-        String getCampaignContent();
-        LocalDate getStartDate();
-        LocalDate getEndDate();
-        String getCampaignCategory();
+    /* ------------ RepositoryTest ------------- */
 
-    }
-*/
+    @Query("SELECT DISTINCT campaignCategory FROM CampaignDescription")
+    List<Object[]> findDistinctByCampaignCategory();
+
     @Query(value = "SELECT DISTINCT campaign_category FROM tbl_campaign_description"
             , nativeQuery = true)
-    public List<Object[]> findAllCampaingCategory();
-
+    List<Object[]> findAllCampaingCategory();
 
     @Query(value = "SELECT c.campaign_category, COUNT(*) AS campaigns, " +
                    "SUM(current_budget) AS sum_current_budget, " +
@@ -32,7 +27,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
                     "FROM tbl_campaign_description c " +
                     "GROUP BY c.campaign_category"
                     , nativeQuery = true)
-    public List<Object[]> findCampaignByCampaignCategory();
+    List<Object[]> findCampaignByCampaignCategory();
 
     @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns, " +
                    "SUM(current_budget) AS sum_current_budget, " +
@@ -41,7 +36,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
                    "WHERE DATE_FORMAT(start_date, '%Y-%m') BETWEEN '2023-01' AND '2023-12' " +
                    "GROUP BY monthly"
                    , nativeQuery = true)
-    public List<Object[]> findCampaignByCurrentyear();
+    List<Object[]> findCampaignByCurrentyear();
 
     @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns, " +
                    "SUM(current_budget) AS sum_current_budget, " +
@@ -50,7 +45,21 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
                    "WHERE DATE_FORMAT(start_date, '%Y-%m') BETWEEN '2022-01' AND '2022-12' " +
                    "GROUP BY monthly"
                    , nativeQuery = true)
-    public List<Object[]> findCampaignByPreviousyear();
+    List<Object[]> findCampaignByPreviousyear();
+
+    /* ------------ RepositoryTest END ------------- */
+
+    @Query(value = "SELECT campaign_category, COUNT(*) AS campaigns " +
+            "FROM tbl_campaign_description " +
+            "GROUP BY campaign_category"
+            , nativeQuery = true)
+    List<Object[]> countByCategory();
+
+    @Query(value = "SELECT campaign_category, SUM(current_budget) AS sum_current_budget " +
+            "FROM tbl_campaign_description " +
+            "GROUP BY campaign_category"
+            , nativeQuery = true)
+    List<Object[]> sumCurrentBudgetByCategory();
 
 
 }

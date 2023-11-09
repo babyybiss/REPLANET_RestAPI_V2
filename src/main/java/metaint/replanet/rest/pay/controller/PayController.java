@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.Setter;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Slf4j
@@ -56,9 +57,10 @@ public class PayController {
     }
 
     @GetMapping("/kakaoPayCancle")
-    public String kakaoPayCancel() {
+    public void kakaoPayCancel(HttpServletResponse response) {
         log.info("[GET /kakaoPayCancle]-------------------------------------");
-        return "redirect:http://localhost:3000/donations/cancel";
+        response.setStatus(HttpServletResponse.SC_FOUND);
+        response.setHeader("Location", "http://localhost:3000/donations/cancel");
     }
 
     @GetMapping("/kakaoPaySuccessFail")
@@ -67,17 +69,26 @@ public class PayController {
         return "redirect:http://localhost:3000/donations/fail";
     }
 
-    @GetMapping("/donations")
-    public ResponseEntity<List<Donation>> getAllDonations(ModelAndView mv) {
+    @GetMapping("/pays")
+    public ResponseEntity<List<Pay>> getPays(@RequestParam(required = false) String startDate,
+                                             @RequestParam(required = false) String endDate) {
 
-        log.info("[GET /donations] ----------------------------------------------");
+        log.info("[GET /pays] ----------------------------------------------");
+        log.info("[GET /pays startDate] : " + startDate);
+        log.info("[GET /pays endDate] : " + endDate);
 
-        List<Donation> donationList = kakaopay.getDonation();
-        log.info("[/donations donationList] : " + donationList);
+        List<Pay> payList;
 
-        mv.addObject("donationList", donationList);
+        if (startDate != null && endDate != null) {
+            payList = kakaopay.getPaysByDateRange(startDate, endDate);
+        } else {
+            payList = kakaopay.getPays();
+        }
 
-        return ResponseEntity.ok(donationList);
+        log.info("[/pays payList] : " + payList);
+        log.info("[/pays payList.size()] : " + payList.size());
+
+        return ResponseEntity.ok(payList);
     }
 
     @GetMapping("/donations/payCode={payCode}")

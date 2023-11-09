@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -23,6 +22,21 @@ public class ChartRepositoryTest {
         Long countResult = chartRepository.count();
         //then
         Assertions.assertEquals(expectCount, countResult);
+    }
+
+    @DisplayName("Distinct 쿼리 DSL 테스트")
+    @Test
+    public void testDistinct() {
+        //when
+        List<Object[]> foundCategoryList = chartRepository.findDistinctByCampaignCategory();
+        //then
+        Assertions.assertNotNull(foundCategoryList);
+        foundCategoryList.forEach(row -> {
+            for(Object col : row) {
+                System.out.print(col);
+            }
+            System.out.println();
+        });
     }
 
     @DisplayName("카테고리 리스트 조회 네이티브 쿼리 테스트")
@@ -79,7 +93,6 @@ public class ChartRepositoryTest {
         List<Object[]> countByPreviousyear = chartRepository.findCampaignByPreviousyear();
         //then
         Assertions.assertNotNull(countByPreviousyear);
-
 
         countByPreviousyear.forEach(row -> {
             for(Object col : row) {

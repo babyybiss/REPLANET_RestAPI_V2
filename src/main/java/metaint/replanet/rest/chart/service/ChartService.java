@@ -3,6 +3,7 @@ package metaint.replanet.rest.chart.service;
 
 import metaint.replanet.rest.chart.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.chart.dto.CountByCategoryDTO;
+import metaint.replanet.rest.chart.dto.CurrentBudgetByCategoryDTO;
 import metaint.replanet.rest.chart.entity.CampaignDescription;
 import metaint.replanet.rest.chart.repository.ChartRepository;
 import org.modelmapper.ModelMapper;
@@ -13,8 +14,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChartService {
-    private final ModelMapper modelMapper;
-    private final ChartRepository chartRepository;
+    private ModelMapper modelMapper;
+    private ChartRepository chartRepository;
+
 
     @Autowired
     public ChartService(ModelMapper modelMapper, ChartRepository chartRepository) {
@@ -23,7 +25,7 @@ public class ChartService {
     }
 
     // 캠페인 수 카운트 조회
-    public int CountCampaign() {
+    public int countCampaign() {
 
         int countResult = (int) chartRepository.count();
 
@@ -41,16 +43,18 @@ public class ChartService {
     }
 
     // 카테고리별 캠페인 수 카운트 조회
-    public List<CountByCategoryDTO> CountCampaignByCampaignCategory() {
+    public List<CountByCategoryDTO> countCampaignByCampaignCategory() {
 
         List<Object[]> resultList = chartRepository.countByCategory();
 
+        /*
         resultList.forEach( row -> {
             for(Object item : row) {
                 System.out.print(item);
             }
             System.out.println();
         });
+        */
 
         return resultList.stream()
                 .map( row -> {
@@ -66,10 +70,24 @@ public class ChartService {
                 .collect(Collectors.toList());
     }
 
+    // 카테고리별 현재 모금액 합계 조회
+    public List<CurrentBudgetByCategoryDTO> sumCurrentBudgetByCampaignCategory() {
 
+        List<Object[]> resultList = chartRepository.sumCurrentBudgetByCategory();
 
+        return resultList.stream()
+                .map(row -> {
+                    String campaignCategory = (String) row[0];
+                    int currentBudget = ((Number) row[1]).intValue();
 
+                    CurrentBudgetByCategoryDTO dto = new CurrentBudgetByCategoryDTO();
+                    dto.setCampaignCategory(campaignCategory);
+                    dto.setCurrentBudget(currentBudget);
 
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
 
 }

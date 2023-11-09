@@ -14,10 +14,12 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
 
     /* ------------ RepositoryTest ------------- */
 
+    @Query("SELECT DISTINCT campaignCategory FROM CampaignDescription")
+    List<Object[]> findDistinctByCampaignCategory();
+
     @Query(value = "SELECT DISTINCT campaign_category FROM tbl_campaign_description"
             , nativeQuery = true)
     List<Object[]> findAllCampaingCategory();
-
 
     @Query(value = "SELECT c.campaign_category, COUNT(*) AS campaigns, " +
                    "SUM(current_budget) AS sum_current_budget, " +
@@ -47,11 +49,17 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
 
     /* ------------ RepositoryTest END ------------- */
 
-
     @Query(value = "SELECT campaign_category, COUNT(*) AS campaigns " +
             "FROM tbl_campaign_description " +
             "GROUP BY campaign_category"
             , nativeQuery = true)
     List<Object[]> countByCategory();
+
+    @Query(value = "SELECT campaign_category, SUM(current_budget) AS sum_current_budget " +
+            "FROM tbl_campaign_description " +
+            "GROUP BY campaign_category"
+            , nativeQuery = true)
+    List<Object[]> sumCurrentBudgetByCategory();
+
 
 }

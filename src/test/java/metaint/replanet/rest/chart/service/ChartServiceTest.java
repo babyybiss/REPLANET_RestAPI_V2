@@ -2,6 +2,7 @@ package metaint.replanet.rest.chart.service;
 
 import metaint.replanet.rest.chart.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.chart.dto.CountByCategoryDTO;
+import metaint.replanet.rest.chart.dto.CurrentBudgetByCategoryDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class ChartServiceTest {
         //given
         int expectResult = 3;
         //when
-        int countResult = chartService.CountCampaign();
+        int countResult = chartService.countCampaign();
         //then
         Assertions.assertEquals(expectResult, countResult);
     }
@@ -41,7 +42,17 @@ public class ChartServiceTest {
     @Test
     public void testCountCampaignByCampaignCategory() {
         //when
-        List<CountByCategoryDTO> resultList = chartService.CountCampaignByCampaignCategory();
+        List<CountByCategoryDTO> resultList = chartService.countCampaignByCampaignCategory();
+        //then
+        Assertions.assertNotNull(resultList);
+        resultList.forEach(System.out::println);
+    }
+
+    @DisplayName("카테고리별 현재 모금액 합계 조회 테스트")
+    @Test
+    public void testSumCurrentBudgetByCampaignCategory() {
+        //when
+        List<CurrentBudgetByCategoryDTO> resultList = chartService.sumCurrentBudgetByCampaignCategory();
         //then
         Assertions.assertNotNull(resultList);
         resultList.forEach(System.out::println);

@@ -64,8 +64,18 @@ public class Member {
     @Column(name = "current_point")
     private int currentPoint;
 
+    @NotNull
+    @ColumnDefault("replanet")
+    @Column(name = "provider")
+    private String provider;
+
+    @ColumnDefault("null")
+    @Column(name = "provider_id")
+    private String providerId;
+
     @Builder
-    public Member(Long id, String email, String memberName, String password, String phone, Date joinDate, MemberRole memberRole, String withdraw, Date withdrawDate, int currentPoint) {
+    public Member(Long id, String email, String memberName, String password, String phone, Date joinDate, MemberRole memberRole, String withdraw, Date withdrawDate, int currentPoint,
+                  String provider, String providerId) {
         this.id = id;
         this.email = email;
         this.memberName = memberName;
@@ -76,6 +86,8 @@ public class Member {
         this.withdraw = withdraw;
         this.withdrawDate = withdrawDate;
         this.currentPoint = currentPoint;
+        this.provider = provider;
+        this.providerId = providerId;
     }
 
     public void setPassword(String password) {

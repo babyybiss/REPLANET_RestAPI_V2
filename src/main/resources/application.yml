@@ -27,10 +27,10 @@ spring:
         registration:
           kakao:
             client-id: 5a90ac83e3e59ba52ef0c472bc65e3e0
-            client-secret: HXYR6KiYAs57x5hgpyaocwMGxACGG91h
+            client-secret: TcYhrxzWSY1frhLvSUpKcYAwDd5pUw6hJ9nTofayKEFBluK64yQnrsJlffIKPXVaAAABi7KTyJAicpf3YNJZ6g
             scope:
               - account_email
-              - profile_nickname
+#              - profile_nickname
             authorization-grant-type: authorization_code
             redirect-uri: http://localhost:8001/login/oauth2/code/kakao
             client-name: Kakao

@@ -9,8 +9,8 @@ public class ReviewDTO{
     private Long campaignRevCode;
     private String reviewTitle;
     private String description;
-
     private Long campaignCode;
+
    /* private String campaignTitle;
     private String campaignContent;
     private Date startDate;

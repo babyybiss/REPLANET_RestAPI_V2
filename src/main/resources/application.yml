@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 8002
 
 spring:
   jpa:
@@ -11,9 +11,9 @@ spring:
         show_sql: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql.coffit.today:3306/replanet
-    username: HIkdt6
-    password: HIkdt6
+    url: jdbc:mysql://localhost:3306/replanet
+    username: root
+    password: 74320305
 
   logging:
     level:

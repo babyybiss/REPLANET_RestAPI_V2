@@ -1,18 +1,22 @@
 package metaint.replanet.rest.reviews.model.controller;
 
-import metaint.replanet.rest.reviews.dto.CampaignDTO;
+import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.reviews.dto.CombineReviewDTO;
 import metaint.replanet.rest.reviews.dto.ReviewDTO;
-import metaint.replanet.rest.reviews.entity.Review;
+import metaint.replanet.rest.reviews.dto.ReviewFileCombineDTO;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/reviews")
 @CrossOrigin(origins = "http://localhost:3000")
+@Slf4j
 public class ReviewController {
     private static final Logger logger = Logger.getLogger(ReviewController.class.getName());
     private final ReviewService reviewService;
@@ -25,44 +29,61 @@ public class ReviewController {
     @GetMapping("/")
     public ResponseEntity<List<CombineReviewDTO>> getReviewList() {
 
-        System.out.println("(ReviewController) 들어옴");
+        log.info("(ReviewController) 들어옴");
 
         List<CombineReviewDTO> details = reviewService.findAllReviews();
 
-        System.out.println("(review controller): 가져온 총 결과 : " +details);
+        log.info("(review controller): 가져온 총 결과 : " +details);
         return  ResponseEntity.ok(details);
 
     }
 
     @GetMapping("/{campaignCode}")
     public ResponseEntity<CombineReviewDTO> getSpecificReview(@PathVariable Long campaignCode) {
-        System.out.println("(ReviewController) getSpecificReview code : " + campaignCode);
+        log.info("(ReviewController) getSpecificReview code : " + campaignCode);
 
         CombineReviewDTO details = reviewService.findCampaignByCampaignCode(campaignCode);
 
-        System.out.println("(review controller): 가져온 총 결과 : " +details);
+        log.info("(review controller): 가져온 총 결과 : " +details);
         return ResponseEntity.ok(details);
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> registReview(@RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<?> registReview(@ModelAttribute ReviewDTO reviewDTO,
+                                          MultipartFile imageFile) throws IOException {
 
-        System.out.println("(Review Controller) RegistReview : " + reviewDTO);
-        reviewService.registNewReview(reviewDTO);
+        log.info("(Review Controller) RegistReview : " + reviewDTO);
+        log.info("(Review Controller) RegistReview Image : " + imageFile);
+
+        reviewService.registNewReview(reviewDTO, imageFile);
 
         return ResponseEntity.ok("신규 리뷰 등록 성공!");
-
     }
 
-    @GetMapping("?sort={searchFilter}")
-    public ResponseEntity<List<CombineReviewDTO>> getReviewsBySearchFilter(@PathVariable String searchFilter) {
+    /*@PostMapping("/uploadImage")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("multipartFiles") MultipartFile file) {
 
-        System.out.println("(ReviewController) getReviewsBySearchFilter : " + searchFilter);
-        logger.info("(ReviewController) getReviewsBySearchFilter : " + searchFilter);
+        log.info("(Review Controller) handleFileUpload : " + file.getOriginalFilename());
+
+        String imageUrl = reviewService.uploadFiles(file);
+
+
+        return ResponseEntity.ok(imageUrl);
+
+    }*/
+
+
+
+    @GetMapping("")
+    public ResponseEntity<List<CombineReviewDTO>> getReviewsBySearchFilter(@RequestParam(name = "sort") String searchFilter) {
+        log.info("(ReviewController) getReviewsBySearchFilter : " + searchFilter);
+        log.info("(ReviewController) getReviewsBySearchFilter : " + searchFilter);
+
         List<CombineReviewDTO> details = reviewService.findReviewsBySearchFilter(searchFilter);
 
         return ResponseEntity.ok(details);
     }
+
 
 
 }

@@ -1,12 +1,20 @@
 package metaint.replanet.rest.point.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@ToString
 @DynamicInsert
-@Entity
+@Entity(name = "point_exchange_entity")
 @Table(name = "tbl_point_exchange")
 public class Exchange {
 
@@ -32,23 +40,4 @@ public class Exchange {
 
     @Column(name = "member_code")
     private int memberCode;
-
-    public Exchange(){}
-
-    public int getExchangeCode() {
-        return exchangeCode;
-    }
-
-    @Override
-    public String toString() {
-        return "Exchange{" +
-                "exchangeCode=" + exchangeCode +
-                ", exchangeDate=" + exchangeDate +
-                ", title='" + title + '\'' +
-                ", status='" + status + '\'' +
-                ", returnDetail='" + returnDetail + '\'' +
-                ", points=" + points +
-                ", memberCode=" + memberCode +
-                '}';
-    }
 }

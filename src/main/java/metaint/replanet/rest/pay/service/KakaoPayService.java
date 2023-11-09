@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -84,7 +85,7 @@ public class KakaoPayService {
         params.add("cancel_url", "http://localhost:8001/kakaoPayCancle");
         params.add("fail_url", "http://localhost:8001/kakaoPaySuccessFail");
         params.add("pointAmount", String.valueOf(amount.getPointAmount()));
-        // 성공, 취소, 실패 페이지 만들어야함!
+        // 취소, 실패 페이지 만들어야함!
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
@@ -191,20 +192,40 @@ public class KakaoPayService {
         return null;
     }
 
-    public List<Donation> getDonation() {
-        log.info("[getDonation()] -----------------------------------");
+    public List<Pay> getPays() {
+        log.info("[getPays()] -----------------------------------");
         // 마이페이지 완성되면 넣기!
+        // 기부내역 끌여오는거임 근데 내가 필요한건 로그인한 사용자의 기부내역!
 
-        List<Donation> donationList = donationRepository.findAll();
+        List<Pay> payList = payRepository.findAll();
 
-        log.info("[getDonation() donationList] : " + donationList);
+        log.info("[getDonation() payList] : " + payList);
 
-        return donationList;
+        return payList;
+    }
+
+    public List<Pay> getPaysByDateRange(String startDate, String endDate) {
+        log.info("[getPaysByDateRange()] -----------------------------------");
+
+        LocalDateTime stardDateTime = LocalDateTime.parse(startDate + "T00:00:00");
+        LocalDateTime endDateTime = LocalDateTime.parse(endDate + "T23:59:59");
+
+        List<Donation> donations = donationRepository.findAllByDonationDateTimeBetween(stardDateTime, endDateTime);
+
+        List<Pay> pays = new ArrayList<>();
+        for (Donation donation : donations) {
+            Pay pay = payRepository.findByRefDonation_DonationCode(donation.getDonationCode());
+            pays.add(pay);
+        }
+        log.info("[getPaysByDateRange() pays] : " + pays);
+
+        log.info("[getPaysByDateRange()] -----------------------------------");
+        return pays;
     }
 
     public Pay getPayByPayCode(String payCode) {
         log.info("[getPayByPayCode(String payCode)] -----------------------------------");
-        // 결제 직후 기부상세내용 보여주는 놈
+        // 결제 직후 기부상세내용 보여주는 놈 -> payCode 통해서 해당 Pay 조회
 
         Pay pay = payRepository.findByPayCode(Integer.parseInt(payCode));
 
@@ -218,6 +239,7 @@ public class KakaoPayService {
 
     public Member getPointByMember(String memberCode) {
         log.info("[getPointByMember(String memberCode)] -----------------------------------");
+        // 결제페이지에서 가용 포인트를 보여주기위한 메소드
         
         Member member = donationRepository.findByRefMember(memberCode);
         

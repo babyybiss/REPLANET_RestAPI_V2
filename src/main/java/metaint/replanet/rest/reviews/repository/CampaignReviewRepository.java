@@ -12,8 +12,5 @@ import java.util.List;
 
 public interface CampaignReviewRepository extends JpaRepository<Campaign, Long> {
 
-    @Query(value = "select * from tbl_campaign_description " +
-                    "where campaign_title like %:searchFilter%", nativeQuery = true)
-    List<Campaign> findFilteredReviews(@Param("searchFilter") String searchFilter);
 
 }

@@ -1,21 +1,28 @@
 package metaint.replanet.rest.pay;
 
 import metaint.replanet.rest.pay.entity.Pay;
+import metaint.replanet.rest.pay.repository.DonationRepository;
 import metaint.replanet.rest.pay.repository.PayRepository;
 import metaint.replanet.rest.pay.service.KakaoPayService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@AutoConfigureWebClient
 public class KakaoPayServiceTest {
 
     @Autowired
@@ -23,6 +30,9 @@ public class KakaoPayServiceTest {
 
     @MockBean
     private PayRepository payRepository;
+
+    @MockBean
+    private DonationRepository donationRepository;
 
     @DisplayName("임의의 payCode를 통해서 Pay를 조회하는 메소드 테스트")
     @Test

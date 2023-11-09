@@ -30,7 +30,7 @@ public class ExchangeController {
 
     @Transactional
     @PostMapping("")
-    public ResponseEntity<?> exchangePoint (@RequestPart(value="title") String title,
+    public ResponseEntity<?> insertExchange (@RequestPart(value="title") String title,
                                             @RequestPart(value = "memberCode") String memberCodeStr,
                                             @RequestPart(value="file")MultipartFile pointFile){
 
@@ -48,7 +48,7 @@ public class ExchangeController {
             System.out.println(newExchange);
 
             try {
-                int savedExchangeCode = exchangeService.exchangePoint(newExchange);
+                int savedExchangeCode = exchangeService.insertExchange(newExchange);
 
                 System.out.println(savedExchangeCode);
 
@@ -72,7 +72,7 @@ public class ExchangeController {
                     }
                     File pf = new File(filePath + "/" + fileSaveName);
                     pointFile.transferTo(pf);
-                    exchangeService.savePointFile(newFile);
+                    exchangeService.insertPointFile(newFile);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

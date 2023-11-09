@@ -1,13 +1,9 @@
 package metaint.replanet.rest.pay;
 
-import metaint.replanet.rest.pay.entity.CampaignDescription;
-import metaint.replanet.rest.pay.entity.Donation;
-import metaint.replanet.rest.pay.entity.Member;
 import metaint.replanet.rest.pay.entity.Pay;
 import metaint.replanet.rest.pay.repository.DonationRepository;
 import metaint.replanet.rest.pay.repository.PayRepository;
 import metaint.replanet.rest.pay.service.KakaoPayService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

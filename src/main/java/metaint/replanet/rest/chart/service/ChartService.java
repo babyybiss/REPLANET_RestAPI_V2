@@ -2,6 +2,7 @@ package metaint.replanet.rest.chart.service;
 
 
 import metaint.replanet.rest.chart.dto.CampaignDescriptionDTO;
+import metaint.replanet.rest.chart.dto.CountByCategoryDTO;
 import metaint.replanet.rest.chart.entity.CampaignDescription;
 import metaint.replanet.rest.chart.repository.ChartRepository;
 import org.modelmapper.ModelMapper;
@@ -21,7 +22,7 @@ public class ChartService {
         this.chartRepository = chartRepository;
     }
 
-    // 캠페인 카운트 조회
+    // 캠페인 수 카운트 조회
     public int CountCampaign() {
 
         int countResult = (int) chartRepository.count();
@@ -38,6 +39,34 @@ public class ChartService {
                 .map(campaign -> modelMapper.map(campaign, CampaignDescriptionDTO.class))
                 .collect(Collectors.toList());
     }
+
+    // 카테고리별 캠페인 수 카운트 조회
+    public List<CountByCategoryDTO> CountCampaignByCampaignCategory() {
+
+        List<Object[]> resultList = chartRepository.countByCategory();
+
+        resultList.forEach( row -> {
+            for(Object item : row) {
+                System.out.print(item);
+            }
+            System.out.println();
+        });
+
+        return resultList.stream()
+                .map( row -> {
+                    String campaignCategory = (String) row[0];
+                    int campaigns = ((Number) row[1]).intValue();
+
+                    CountByCategoryDTO dto = new CountByCategoryDTO();
+                    dto.setCampaignCategory(campaignCategory);
+                    dto.setCampaigns(campaigns);
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 
 
 

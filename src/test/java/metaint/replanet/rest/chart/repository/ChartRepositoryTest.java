@@ -12,9 +12,7 @@ import java.util.List;
 @SpringBootTest
 public class ChartRepositoryTest {
 
-
     private ChartRepository chartRepository;
-
 
     @DisplayName("JpaRepository 인터페이스 제공 메서드 사용 테스트")
     @Test

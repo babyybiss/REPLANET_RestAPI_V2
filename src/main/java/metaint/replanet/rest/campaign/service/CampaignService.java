@@ -1,5 +1,6 @@
 package metaint.replanet.rest.campaign.service;
 
+import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import metaint.replanet.rest.campaign.repository.CampaignRepository;
 import org.modelmapper.ModelMapper;
@@ -26,8 +27,9 @@ public class CampaignService {
 
     //등록 성공
     @Transactional
-    public void registCampaign(CampaignDescription campaign){
-        campaignRepository.save(campaign);
+    public void registCampaign(CampaignDescriptionDTO campaign){
+        campaignRepository.save(modelMapper.map(campaign, CampaignDescription.class));
+        System.out.println(campaign);
     }
     // 전체 진행중 조회 성공
     public List<CampaignDescription> findCampaignList() {

@@ -12,7 +12,7 @@ import java.util.List;
 @SpringBootTest
 public class ChartRepositoryTest {
 
-    @Autowired
+
     private ChartRepository chartRepository;
 
 
@@ -27,7 +27,7 @@ public class ChartRepositoryTest {
         Assertions.assertEquals(expectCount, countResult);
     }
 
-    @DisplayName("카테고리 리스트 조회 테스트")
+    @DisplayName("카테고리 리스트 조회 네이티브 쿼리 테스트")
     @Test
     public void testSelectCategoryOfCampaign() {
         //when
@@ -42,7 +42,7 @@ public class ChartRepositoryTest {
         });
     }
 
-    @DisplayName("카테고리별 캠페인 통계 조회 테스트")
+    @DisplayName("카테고리별 캠페인 통계 조회 네이티브 쿼리 테스트")
     @Test
     public void testSelectCampaignByCampaignCategory() {
         //when
@@ -58,7 +58,7 @@ public class ChartRepositoryTest {
         });
     }
 
-    @DisplayName("당해 월별 캠페인 통계 조회 테스트")
+    @DisplayName("당해 월별 캠페인 통계 조회 네이티브 쿼리 테스트")
     @Test
     public void testSelectCampaignByCurrentyear() {
         //when
@@ -74,7 +74,7 @@ public class ChartRepositoryTest {
         });
     }
 
-    @DisplayName("전해 월별 캠페인 통계 조회 테스트")
+    @DisplayName("전해 월별 캠페인 통계 조회 네이티브 쿼리 테스트")
     @Test
     public void testSelectCampaignByPreviousyear() {
         //when
@@ -90,13 +90,5 @@ public class ChartRepositoryTest {
             System.out.println();
         });
     }
-
-
-
-
-
-
-
-
 
 }

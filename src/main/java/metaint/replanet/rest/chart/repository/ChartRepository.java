@@ -11,16 +11,8 @@ import java.util.List;
 @Repository
 public interface ChartRepository extends JpaRepository<CampaignDescription, Integer> {
 
-   /* interface CampaignDescriptionDTO {
-        int getCampaignCode();
-        String getCampaignTitle();
-        String getCampaignContent();
-        LocalDate getStartDate();
-        LocalDate getEndDate();
-        String getCampaignCategory();
+    /* ------------ RepositoryTest ------------- */
 
-    }
-*/
     @Query(value = "SELECT DISTINCT campaign_category FROM tbl_campaign_description"
             , nativeQuery = true)
     public List<Object[]> findAllCampaingCategory();
@@ -51,6 +43,12 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
                    "GROUP BY monthly"
                    , nativeQuery = true)
     public List<Object[]> findCampaignByPreviousyear();
+
+    /* ------------ RepositoryTest END ------------- */
+
+
+
+
 
 
 }

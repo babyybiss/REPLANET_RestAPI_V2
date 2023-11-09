@@ -33,57 +33,6 @@ public class CampaignDescription {
     @Column(name = "org_tel")
     private String orgTel;
 
-    /* builder Pattern */
-    public CampaignDescription campaignCode(int val) {
-        campaignCode = val;
-        return this;
-    }
-    public CampaignDescription campaignTitle(String val) {
-        campaignTitle = val;
-        return this;
-    }
-    public CampaignDescription campaignContent(String val) {
-        campaignContent = val;
-        return this;
-    }
-    public CampaignDescription startDate(LocalDate val) {
-        startDate = val;
-        return this;
-    }
-    public CampaignDescription endDate(LocalDate val) {
-        endDate = val;
-        return this;
-    }
-    public CampaignDescription campaignCategory(String val) {
-        campaignCategory = val;
-        return this;
-    }
-    public CampaignDescription currentBudget(int val) {
-        currentBudget = val;
-        return this;
-    }
-    public CampaignDescription goalBudget(int val) {
-        goalBudget = val;
-        return this;
-    }
-    public CampaignDescription orgName(String val) {
-        orgName = val;
-        return this;
-    }
-    public CampaignDescription orgDescription(String val) {
-        orgDescription = val;
-        return this;
-    }
-    public CampaignDescription orgTel(String val) {
-        orgTel = val;
-        return this;
-    }
-
-    public CampaignDescription builder() {
-        return new CampaignDescription(campaignCode, campaignTitle, campaignContent, startDate, endDate, campaignCategory, currentBudget, goalBudget, orgName, orgDescription, orgTel);
-    }
-    /* -------------builder Pattern end---------------- */
-
     protected CampaignDescription() {}
 
     public CampaignDescription(int campaignCode, String campaignTitle, String campaignContent, LocalDate startDate, LocalDate endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {

@@ -10,6 +10,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
+
 @Service
 public class ExchangeService {
 
@@ -26,13 +30,30 @@ public class ExchangeService {
         this.modelMapper = modelMapper;
     }
 
-    public int exchangePoint(ExchangeDTO newExchange) {
+    public int insertExchange(ExchangeDTO newExchange) {
         Exchange savedExchange = exchangeRepository.save(modelMapper.map(newExchange, Exchange.class));
         int exchangeCode = savedExchange.getExchangeCode();
+
         return exchangeCode;
     }
 
-    public void savePointFile(PointFileDTO newFile) {
-        pointFileRepository.save(modelMapper.map(newFile, PointFile.class));
+    public int insertPointFile(PointFileDTO newFile) {
+        PointFile savedFile = pointFileRepository.save(modelMapper.map(newFile, PointFile.class));
+        int applicationCode = savedFile.getApplicationCode();
+
+        //실제로 쓰이지는 않지만 테스트코드를 위해 반환
+        return applicationCode;
+    }
+
+    public List<Exchange> selectAllExchanges() {
+        List<Exchange> allExchanges = exchangeRepository.findAll();
+
+        return allExchanges;
+    }
+
+    public List<Exchange> selectMemberAllExchange(int memberCode) {
+        List<Exchange> memberAllExchange = exchangeRepository.findByMemberCode(memberCode);
+
+        return memberAllExchange;
     }
 }

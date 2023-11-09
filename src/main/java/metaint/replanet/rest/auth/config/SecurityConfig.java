@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));
 
+
         return http.build();
     }
 }

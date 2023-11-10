@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @CrossOrigin("http://localhost:3000")
@@ -43,8 +45,25 @@ public class CampaignController {
     // 캠페인 등록
     @PostMapping("campaigns")
     public ResponseEntity<?> campaignRegist(@RequestBody CampaignDescriptionDTO campaign){
+        // 목표금액 , 제거
+        String goalBudger =  campaign.getGoalBudget().replaceAll(",","");
+        campaign.setGoalBudget(goalBudger);
+
+        // 현재 날짜
+        LocalDateTime getStartDate = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String startDate = getStartDate.format(formatter);
+        campaign.setStartDate(startDate);
+
+
+
+        System.out.println( startDate.getClass().getName() +" : 스타트데이트");
+        System.out.println( campaign.getEndDate().getClass().getName() +" : 스타트데이트");
+
+
 
         System.out.println(campaign + "여기는?!!");
+
 
         campaignService.registCampaign(campaign);
         return ResponseEntity.status(HttpStatus.OK).body("등록 성공");

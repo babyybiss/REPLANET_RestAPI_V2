@@ -1,8 +1,7 @@
 package metaint.replanet.rest.chart.service;
 
-import metaint.replanet.rest.chart.dto.CampaignDescriptionDTO;
-import metaint.replanet.rest.chart.dto.CountByCategoryDTO;
-import metaint.replanet.rest.chart.dto.CurrentBudgetByCategoryDTO;
+import metaint.replanet.rest.chart.dto.CountAndSumByCategoryDTO;
+import metaint.replanet.rest.chart.dto.CountAndSumByMonthlyDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,34 +27,32 @@ public class ChartServiceTest {
         Assertions.assertEquals(expectResult, countResult);
     }
 
-    @DisplayName("캠페인 전체 조회 테스트")
+    @DisplayName("카테고리별 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회 테스트")
     @Test
-    public void testSelectCategory() {
+    public void testCountAndSumByCampaignCategory() {
         //when
-        List<CampaignDescriptionDTO> campaignList = chartService.findCampaignList();
-        //then
-        Assertions.assertNotNull(campaignList);
-        campaignList.forEach(System.out::println);
-    }
-
-    @DisplayName("카테고리별 캠페인 수 카운트 조회 테스트")
-    @Test
-    public void testCountCampaignByCampaignCategory() {
-        //when
-        List<CountByCategoryDTO> resultList = chartService.countCampaignByCampaignCategory();
+        List<CountAndSumByCategoryDTO> resultList = chartService.countAndSumByCampaignCategory();
         //then
         Assertions.assertNotNull(resultList);
-        resultList.forEach(System.out::println);
+        // resultList.forEach(System.out::println);
     }
-
-    @DisplayName("카테고리별 현재 모금액 합계 조회 테스트")
+    @DisplayName("당해 등록된 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회 테스트")
     @Test
-    public void testSumCurrentBudgetByCampaignCategory() {
+    public void testCountAndSumByCurrentyear() {
         //when
-        List<CurrentBudgetByCategoryDTO> resultList = chartService.sumCurrentBudgetByCampaignCategory();
+        List<CountAndSumByMonthlyDTO> resultList = chartService.countAndSumByCurrentyear();
         //then
         Assertions.assertNotNull(resultList);
-        resultList.forEach(System.out::println);
+        // resultList.forEach(System.out::println);
     }
-
+    @DisplayName("전해 등록된 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회 테스트 ")
+    @Test
+    public void testCountAndSumByPreviousyear() {
+        //when
+        List<CountAndSumByMonthlyDTO> resultList = chartService.countAndSumByPreviousyear();
+        //then
+        Assertions.assertNotNull(resultList);
+        Assertions.assertTrue(resultList.isEmpty());
+        // resultList.forEach(System.out::println);
+    }
 }

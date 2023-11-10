@@ -126,7 +126,7 @@ CREATE TABLE `tbl_pay`
 (
     `pay_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '결제코드',
     `pay_amount`    INTEGER NOT NULL COMMENT '결제금액',
-    `pay_tid`    VARCHAR(255) NOT NULL COMMENT '결제고유번호',
+    `pay_tid`    VARCHAR(255) COMMENT '결제고유번호',
     `donation_code`    INTEGER COMMENT '기부코드',
  PRIMARY KEY ( `pay_code` )
 ) COMMENT = '결제내역';

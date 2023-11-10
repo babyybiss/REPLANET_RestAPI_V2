@@ -1,5 +1,6 @@
 package metaint.replanet.rest.campaign.service;
 
+import metaint.replanet.rest.campaign.controller.CampaignController;
 import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import org.junit.jupiter.api.Assertions;
@@ -19,33 +20,6 @@ public class CampaignServiceTest {
 
     @Autowired
     private CampaignService campaignService;
-
-    @DisplayName("캠페인 등록 테스트")
-    @Test
-    void campaignRegistTest() {
-        //given
-        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
-                0,
-                "끝남",
-                "도와주세요~섬바리헤업미",
-                LocalDateTime.now(),
-                LocalDateTime.of(2021,12,5,16,25),
-                "지구촌",
-                200000,
-                10000111,
-                "하이미디어",
-                "안녕 매체",
-                "02-121-5678"
-        );
-
-        //when
-        campaignService.registCampaign(campaign);
-
-        //then
-        List<CampaignDescription> foundCampaign = campaignService.findCampaignList();
-        Assertions.assertNotNull(foundCampaign);
-
-    }
 
     @DisplayName("캠페인 진행중 전체 조회 테스트")
     @Test

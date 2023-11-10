@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 
 public class CampaignDescriptionDTO {
 
-    private int campaignCode; // 모금 코드
+    private String campaignCode; // 모금 코드
     private String campaignTitle; // 모금 제목
     private String campaignContent; // 모금 내용
-    private LocalDateTime startDate; // 모금 시작 일자
-    private LocalDateTime endDate; // 모금 마감 일자
+    private String startDate; // 모금 시작 일자
+    private String endDate; // 모금 마감 일자
     private String campaignCategory; // 모금 카테고리
-    private int currentBudget; // 현재 모금액
-    private int goalBudget; // 목표 모금액
+    private String currentBudget; // 현재 모금액
+    private String goalBudget; // 목표 모금액
     private String orgName; // 단체명
     private String orgDescription; //단체 소개
     private String orgTel; // 단체 연락처
@@ -39,7 +39,7 @@ public class CampaignDescriptionDTO {
                 '}';
     }
 
-    public CampaignDescriptionDTO(int campaignCode, String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {
+    public CampaignDescriptionDTO(String campaignTitle, String campaignContent, String endDate, String campaignCategory, String goalBudget, String orgName, String orgDescription, String orgTel) {
         this.campaignCode = campaignCode;
         this.campaignTitle = campaignTitle;
         this.campaignContent = campaignContent;
@@ -53,11 +53,11 @@ public class CampaignDescriptionDTO {
         this.orgTel = orgTel;
     }
 
-    public int getCampaignCode() {
+    public String getCampaignCode() {
         return campaignCode;
     }
 
-    public void setCampaignCode(int campaignCode) {
+    public void setCampaignCode(String campaignCode) {
         this.campaignCode = campaignCode;
     }
 
@@ -77,19 +77,19 @@ public class CampaignDescriptionDTO {
         this.campaignContent = campaignContent;
     }
 
-    public LocalDateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
@@ -101,19 +101,19 @@ public class CampaignDescriptionDTO {
         this.campaignCategory = campaignCategory;
     }
 
-    public int getCurrentBudget() {
+    public String getCurrentBudget() {
         return currentBudget;
     }
 
-    public void setCurrentBudget(int currentBudget) {
+    public void setCurrentBudget(String currentBudget) {
         this.currentBudget = currentBudget;
     }
 
-    public int getGoalBudget() {
+    public String getGoalBudget() {
         return goalBudget;
     }
 
-    public void setGoalBudget(int goalBudget) {
+    public void setGoalBudget(String goalBudget) {
         this.goalBudget = goalBudget;
     }
 

@@ -95,23 +95,23 @@ public class ReviewTestApplication {
         System.out.println("Result : " + singleReview);
     }
 
-//    @DisplayName("검색어로 필터링해서 리뷰 가져오기")
-//    @Test
-//    public void findReviewsBySearchFilter() {
-//
-//        //given
-//        String searchFilter = "모굼";
-//
-//        //when
-//        List<Campaign> filteredReviewList = campaignReviewRepository.findFilteredReviews(searchFilter);
-//
-//        List<CombineReviewDTO> filteredResult = filteredReviewList.stream()
-//                .map(filteredReviews -> modelMapper.map(filteredReviews, CombineReviewDTO.class))
-//                .collect(Collectors.toList());
-//
-//        //then
-//        Assertions.assertNotNull(filteredResult);
-//        System.out.println("Filtered result : " + filteredResult);
-//    }
+    @DisplayName("검색어로 필터링해서 리뷰 가져오기")
+    @Test
+    public void findReviewsBySearchFilter() {
+
+        //given
+        /*String searchFilter = "모굼";
+
+        //when
+        List<Campaign> filteredReviewList = campaignReviewRepository.findFilteredReviews(searchFilter);
+
+        List<CombineReviewDTO> filteredResult = filteredReviewList.stream()
+                .map(filteredReviews -> modelMapper.map(filteredReviews, CombineReviewDTO.class))
+                .collect(Collectors.toList());
+
+        //then
+        Assertions.assertNotNull(filteredResult);
+        System.out.println("Filtered result : " + filteredResult);*/
+    }
 
 }

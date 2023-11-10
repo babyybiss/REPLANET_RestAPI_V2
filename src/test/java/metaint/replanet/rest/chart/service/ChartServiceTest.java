@@ -34,7 +34,7 @@ public class ChartServiceTest {
         List<CountAndSumByCategoryDTO> resultList = chartService.countAndSumByCampaignCategory();
         //then
         Assertions.assertNotNull(resultList);
-        // resultList.forEach(System.out::println);
+        resultList.forEach(System.out::println);
     }
     @DisplayName("당해 등록된 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회 테스트")
     @Test

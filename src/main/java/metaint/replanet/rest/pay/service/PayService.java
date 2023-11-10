@@ -36,13 +36,13 @@ import javax.persistence.EntityNotFoundException;
 
 @Service
 @Slf4j
-public class KakaoPayService {
+public class PayService {
 
     private final DonationRepository donationRepository;
     private final PayRepository payRepository;
     private final ModelMapper modelMapper;
 
-    public KakaoPayService(DonationRepository donationRepository, PayRepository payRepository, ModelMapper modelMapper) {
+    public PayService(DonationRepository donationRepository, PayRepository payRepository, ModelMapper modelMapper) {
         this.donationRepository = donationRepository;
         this.payRepository = payRepository;
         this.modelMapper = modelMapper;
@@ -249,5 +249,34 @@ public class KakaoPayService {
             log.error("memberCode에 해당하는 Member를 찾을수없으요 memberCode : " + memberCode);
             throw new EntityNotFoundException("memberCode에 해당하는 Member를 찾을수없으요 payTid : " + memberCode);
         }
+    }
+
+    public int postPointDonation(DonationAmountDTO amount) {
+        log.info("[postPointDonation(DonationAmountDTO amount)] -----------------------------------");
+
+        Member refMember = Member.builder()
+                .memberCode(1).build();
+        CampaignDescription refCampaign = CampaignDescription.builder()
+                .campaignCode(1).build();
+
+        Donation newDonation = Donation.builder()
+                .donationDateTime(LocalDateTime.now())
+                .donationPoint(amount.getPointAmount())
+                .refMember(refMember)  // Member 엔티티 객체
+                .refCampaign(refCampaign)  // CampaignDescription 엔티티 객체
+                .build();
+
+        // builder() 통해서 값 넣기
+        Pay newPay = Pay.builder()
+                .payAmount(amount.getCashAmount()) // 0일거임
+                .payTid(null) // 카카오페이API를 통해 결제한게 아니라 Tid가 없음
+                .refDonation(newDonation)
+                .build();
+
+        // Donation 엔티티 저장 -> DB에 값넣는거임
+        donationRepository.save(newDonation);
+        payRepository.save(newPay);
+
+        return newPay.getPayCode();
     }
 }

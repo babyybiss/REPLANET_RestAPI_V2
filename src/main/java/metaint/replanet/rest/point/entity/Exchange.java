@@ -40,4 +40,23 @@ public class Exchange {
 
     @Column(name = "member_code")
     private int memberCode;
+
+    public Exchange status(String val){
+        this.status = val;
+        return this;
+    }
+
+    public Exchange returnDetail(String val){
+        this.returnDetail = val;
+        return this;
+    }
+
+    public Exchange points(int val){
+        this.points = val;
+        return this;
+    }
+
+    public Exchange builder(){
+        return new Exchange(exchangeCode, exchangeDate, title, status, returnDetail, points, memberCode);
+    }
 }

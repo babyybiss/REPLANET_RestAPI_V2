@@ -49,4 +49,13 @@ public class Member {
 
     @Column(name = "current_point")
     private int currentPoint;
+
+    public Member currentPoint(int val){
+        this.currentPoint = val;
+        return this;
+    }
+
+    public Member builder(){
+        return new Member(memberCode, memberId, memberName, password, phone, joinDate, memberRole, withdraw, withdrawDate, currentPoint);
+    }
 }

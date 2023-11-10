@@ -31,12 +31,12 @@ public class ChartRepositoryTest {
         List<Object[]> foundCategoryList = chartRepository.findDistinctByCampaignCategory();
         //then
         Assertions.assertNotNull(foundCategoryList);
-        foundCategoryList.forEach(row -> {
+        /* foundCategoryList.forEach(row -> {
             for(Object col : row) {
                 System.out.print(col);
             }
             System.out.println();
-        });
+        }); */
     }
 
     @DisplayName("카테고리 리스트 조회 네이티브 쿼리 테스트")
@@ -46,60 +46,57 @@ public class ChartRepositoryTest {
         List<Object[]> foundCategory = chartRepository.findAllCampaingCategory();
         //then
         Assertions.assertNotNull(foundCategory);
-        foundCategory.forEach(row -> {
+        /* foundCategory.forEach(row -> {
             for(Object col : row) {
                 System.out.print(col);
             }
             System.out.println();
-        });
+        }); */
     }
 
     @DisplayName("카테고리별 캠페인 통계 조회 네이티브 쿼리 테스트")
     @Test
     public void testSelectCampaignByCampaignCategory() {
         //when
-        List<Object[]> countByCategory = chartRepository.findCampaignByCampaignCategory();
+        List<Object[]> countByCategory = chartRepository.countAndSumByCategory();
         //then
         Assertions.assertNotNull(countByCategory);
-
-        countByCategory.forEach(row -> {
+        /* countByCategory.forEach(row -> {
             for(Object col : row) {
                 System.out.print(col + ":::");
             }
             System.out.println();
-        });
+        }); */
     }
 
     @DisplayName("당해 월별 캠페인 통계 조회 네이티브 쿼리 테스트")
     @Test
     public void testSelectCampaignByCurrentyear() {
         //when
-        List<Object[]> countByCurrentyear = chartRepository.findCampaignByCurrentyear();
+        List<Object[]> countByCurrentyear = chartRepository.countAndSumByCurrentyear();
         //then
         Assertions.assertNotNull(countByCurrentyear);
-
-        countByCurrentyear.forEach( row -> {
+        /* countByCurrentyear.forEach( row -> {
             for(Object col : row) {
                 System.out.print(col + ":::");
             }
             System.out.println();
-        });
+        }); */
     }
 
     @DisplayName("전해 월별 캠페인 통계 조회 네이티브 쿼리 테스트")
     @Test
     public void testSelectCampaignByPreviousyear() {
         //when
-        List<Object[]> countByPreviousyear = chartRepository.findCampaignByPreviousyear();
+        List<Object[]> countByPreviousyear = chartRepository.countAndSumByPreviousyear();
         //then
         Assertions.assertNotNull(countByPreviousyear);
-
-        countByPreviousyear.forEach(row -> {
+        /* countByPreviousyear.forEach(row -> {
             for(Object col : row) {
                 System.out.print(col + ":::");
             }
             System.out.println();
-        });
+        }); */
     }
 
 }

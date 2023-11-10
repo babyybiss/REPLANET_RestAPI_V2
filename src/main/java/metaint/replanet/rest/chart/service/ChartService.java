@@ -1,28 +1,27 @@
 package metaint.replanet.rest.chart.service;
 
 
-import metaint.replanet.rest.chart.dto.CampaignDescriptionDTO;
-import metaint.replanet.rest.chart.dto.CountByCategoryDTO;
-import metaint.replanet.rest.chart.dto.CurrentBudgetByCategoryDTO;
-import metaint.replanet.rest.chart.entity.CampaignDescription;
+
+import metaint.replanet.rest.chart.dto.CountAndSumByCategoryDTO;
+import metaint.replanet.rest.chart.dto.CountAndSumByMonthlyDTO;
 import metaint.replanet.rest.chart.repository.ChartRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ChartService {
-    private ModelMapper modelMapper;
     private ChartRepository chartRepository;
 
 
     @Autowired
-    public ChartService(ModelMapper modelMapper, ChartRepository chartRepository) {
-        this.modelMapper = modelMapper;
+    public ChartService(ChartRepository chartRepository) {
         this.chartRepository = chartRepository;
     }
+
+    /* ------------ ServiceTest start ------------- */
 
     // 캠페인 수 카운트 조회
     public int countCampaign() {
@@ -32,20 +31,10 @@ public class ChartService {
         return countResult;
     }
 
-    // 캠페인 전체 조회
-    public List<CampaignDescriptionDTO> findCampaignList() {
+    // 카테고리별 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    public List<CountAndSumByCategoryDTO> countAndSumByCampaignCategory() {
 
-        List<CampaignDescription> campaignList = chartRepository.findAll();
-
-        return campaignList.stream()
-                .map(campaign -> modelMapper.map(campaign, CampaignDescriptionDTO.class))
-                .collect(Collectors.toList());
-    }
-
-    // 카테고리별 캠페인 수 카운트 조회
-    public List<CountByCategoryDTO> countCampaignByCampaignCategory() {
-
-        List<Object[]> resultList = chartRepository.countByCategory();
+        List<Object[]> resultList = chartRepository.countAndSumByCategory();
 
         /*
         resultList.forEach( row -> {
@@ -57,37 +46,65 @@ public class ChartService {
         */
 
         return resultList.stream()
-                .map( row -> {
+                .map(row -> {
                     String campaignCategory = (String) row[0];
                     int campaigns = ((Number) row[1]).intValue();
+                    int sumCurrentBudget = ((Number) row[2]).intValue();
+                    int sumGoalBudget = ((Number) row[3]).intValue();
 
-                    CountByCategoryDTO dto = new CountByCategoryDTO();
+                    CountAndSumByCategoryDTO dto = new CountAndSumByCategoryDTO();
                     dto.setCampaignCategory(campaignCategory);
                     dto.setCampaigns(campaigns);
+                    dto.setSumCurrentBudget(sumCurrentBudget);
+                    dto.setSumGoalBudget(sumGoalBudget);
 
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
 
-    // 카테고리별 현재 모금액 합계 조회
-    public List<CurrentBudgetByCategoryDTO> sumCurrentBudgetByCampaignCategory() {
-
-        List<Object[]> resultList = chartRepository.sumCurrentBudgetByCategory();
+    // 당해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    public List<CountAndSumByMonthlyDTO> countAndSumByCurrentyear() {
+        List<Object[]> resultList = chartRepository.countAndSumByCurrentyear();
 
         return resultList.stream()
                 .map(row -> {
-                    String campaignCategory = (String) row[0];
-                    int currentBudget = ((Number) row[1]).intValue();
+                    String monthly = (String) row[0];
+                    int campaigns = ((Number) row[1]).intValue();
+                    int sumCurrentBudget = ((Number) row[2]).intValue();
+                    int sumGoalBudget = ((Number) row[3]).intValue();
 
-                    CurrentBudgetByCategoryDTO dto = new CurrentBudgetByCategoryDTO();
-                    dto.setCampaignCategory(campaignCategory);
-                    dto.setCurrentBudget(currentBudget);
-
+                    CountAndSumByMonthlyDTO dto = new CountAndSumByMonthlyDTO();
+                    dto.setMonthly(monthly);
+                    dto.setCampaigns(campaigns);
+                    dto.setSumCurrentBudget(sumCurrentBudget);
+                    dto.setSumGoalBudget(sumGoalBudget);
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
 
+    // 전해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    public List<CountAndSumByMonthlyDTO> countAndSumByPreviousyear() {
+        List<Object[]> resultList = chartRepository.countAndSumByPreviousyear();
+
+        return resultList.stream()
+                .map(row -> {
+                    String monthly = (String) row[0];
+                    int campaigns = ((Number) row[1]).intValue();
+                    int sumCurrentBudget = ((Number) row[2]).intValue();
+                    int sumGoalBudget = ((Number) row[3]).intValue();
+
+                    CountAndSumByMonthlyDTO dto = new CountAndSumByMonthlyDTO();
+                    dto.setMonthly(monthly);
+                    dto.setCampaigns(campaigns);
+                    dto.setSumCurrentBudget(sumCurrentBudget);
+                    dto.setSumGoalBudget(sumGoalBudget);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /* ------------ ServiceTest END ------------- */
 
 }

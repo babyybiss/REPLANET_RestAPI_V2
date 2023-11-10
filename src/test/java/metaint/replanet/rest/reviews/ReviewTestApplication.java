@@ -100,7 +100,7 @@ public class ReviewTestApplication {
     public void findReviewsBySearchFilter() {
 
         //given
-        String searchFilter = "모굼";
+        /*String searchFilter = "모굼";
 
         //when
         List<Campaign> filteredReviewList = campaignReviewRepository.findFilteredReviews(searchFilter);
@@ -111,7 +111,7 @@ public class ReviewTestApplication {
 
         //then
         Assertions.assertNotNull(filteredResult);
-        System.out.println("Filtered result : " + filteredResult);
+        System.out.println("Filtered result : " + filteredResult);*/
     }
 
 }

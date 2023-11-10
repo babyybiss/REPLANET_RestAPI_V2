@@ -1,6 +1,5 @@
 package metaint.replanet.rest.campaign.service;
 
-import metaint.replanet.rest.campaign.controller.CampaignController;
 import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -68,6 +66,31 @@ public class CampaignServiceTest {
         Assertions.assertNotNull(findCampaignSort);
 
         findCampaignSort.forEach(System.out::println);
+
+    }
+
+    @DisplayName("캠페인 등록 테스트")
+    @Test
+    void campaignRegistTest() {
+        //given
+        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
+                "진행중",
+                "도와주세요~섬바리헤업미",
+                "2025-12-05",
+                "지구촌",
+                "0",
+                "200,000",
+                "하이미디어",
+                "안녕 매체",
+                "02-121-5678"
+        );
+
+        //when
+        campaignService.registCampaign(campaign);
+
+        //then
+        List<CampaignDescription> foundCampaign = campaignService.findCampaignList();
+        Assertions.assertNotNull(foundCampaign);
 
     }
 }

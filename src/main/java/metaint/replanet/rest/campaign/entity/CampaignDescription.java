@@ -1,10 +1,16 @@
 package metaint.replanet.rest.campaign.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@ToString
+@AllArgsConstructor
+@Getter
 @Entity(name = "CampaignDescription")
 @Table(name = "tbl_campaign_description")
 public class CampaignDescription {
@@ -41,126 +47,15 @@ public class CampaignDescription {
     @Column(name = "org_tel")
     private String orgTel; // 단체 연락처
 
-
-
     protected CampaignDescription() {}
-
-    public CampaignDescription(int campaignCode, String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {
-        this.campaignCode = campaignCode;
-        this.campaignTitle = campaignTitle;
-        this.campaignContent = campaignContent;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.campaignCategory = campaignCategory;
-        this.currentBudget = currentBudget;
-        this.goalBudget = goalBudget;
-        this.orgName = orgName;
-        this.orgDescription = orgDescription;
-        this.orgTel = orgTel;
+    public CampaignDescription endDate(LocalDateTime val){
+        this.endDate = val;
+        return this;
     }
-
-    public int getCampaignCode() {
-        return campaignCode;
-    }
-
-    public String getCampaignTitle() {
-        return campaignTitle;
-    }
-
-    public String getCampaignContent() {
-        return campaignContent;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public String getCampaignCategory() {
-        return campaignCategory;
-    }
-
-    public int getCurrentBudget() {
-        return currentBudget;
-    }
-
-    public int getGoalBudget() {
-        return goalBudget;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
-    public String getOrgDescription() {
-        return orgDescription;
-    }
-
-    public String getOrgTel() {
-        return orgTel;
-    }
-
-    public void setCampaignCode(int campaignCode) {
-        this.campaignCode = campaignCode;
-    }
-
-    public void setCampaignTitle(String campaignTitle) {
-        this.campaignTitle = campaignTitle;
-    }
-
-    public void setCampaignContent(String campaignContent) {
-        this.campaignContent = campaignContent;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setCampaignCategory(String campaignCategory) {
-        this.campaignCategory = campaignCategory;
-    }
-
-    public void setCurrentBudget(int currentBudget) {
-        this.currentBudget = currentBudget;
-    }
-
-    public void setGoalBudget(int goalBudget) {
-        this.goalBudget = goalBudget;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
-
-    public void setOrgDescription(String orgDescription) {
-        this.orgDescription = orgDescription;
-    }
-
-    public void setOrgTel(String orgTel) {
-        this.orgTel = orgTel;
-    }
-
-    @Override
-    public String toString() {
-        return "CampaignDescription{" +
-                "campaignCode=" + campaignCode +
-                ", campaignTitle='" + campaignTitle + '\'' +
-                ", campaignContent='" + campaignContent + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", campaignCategory='" + campaignCategory + '\'' +
-                ", currentBudget=" + currentBudget +
-                ", goalBudget=" + goalBudget +
-                ", orgName='" + orgName + '\'' +
-                ", orgDescription='" + orgDescription + '\'' +
-                ", orgTel='" + orgTel + '\'' +
-                '}';
+    public CampaignDescription builder(){
+        return new CampaignDescription(
+                campaignCode,campaignTitle,campaignContent,
+                startDate,endDate,campaignCategory,currentBudget,
+                goalBudget,orgName,orgDescription,orgTel);
     }
 }

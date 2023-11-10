@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -28,8 +29,29 @@ public class CampaignService {
     //등록 성공
     @Transactional
     public void registCampaign(CampaignDescriptionDTO campaign){
-        campaignRepository.save(modelMapper.map(campaign, CampaignDescription.class));
-        System.out.println(campaign);
+        // 목표금액 , 제거
+        String goalBudger =  campaign.getGoalBudget().replaceAll(",","");
+        campaign.setGoalBudget(goalBudger);
+        // 현재 날짜
+        LocalDateTime startDate = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        campaign.setStartDate(startDate);
+
+
+        System.out.println(campaign + "여기는?!!");
+
+        // 마감일 형변환 String =>  LocalDateTime
+        String getEndDate = campaign.getEndDate();
+        LocalDateTime endDate = LocalDateTime.parse(getEndDate + "T00:00:00", formatter);
+        System.out.println(endDate.getClass().getName() + " 엔드데이트");
+
+
+
+        // 변환된 LocalDateTime을 Entity에 매핑
+        CampaignDescription campaignEntity = modelMapper.map(campaign, CampaignDescription.class);
+
+        campaignEntity.endDate(endDate).builder();
+        campaignRepository.save(campaignEntity);
     }
     // 전체 진행중 조회 성공
     public List<CampaignDescription> findCampaignList() {

@@ -10,7 +10,7 @@ public class CampaignDescriptionDTO {
     private String campaignCode; // 모금 코드
     private String campaignTitle; // 모금 제목
     private String campaignContent; // 모금 내용
-    private String startDate; // 모금 시작 일자
+    private LocalDateTime startDate; // 모금 시작 일자
     private String endDate; // 모금 마감 일자
     private String campaignCategory; // 모금 카테고리
     private String currentBudget; // 현재 모금액
@@ -39,7 +39,7 @@ public class CampaignDescriptionDTO {
                 '}';
     }
 
-    public CampaignDescriptionDTO(String campaignTitle, String campaignContent, String endDate, String campaignCategory, String goalBudget, String orgName, String orgDescription, String orgTel) {
+    public CampaignDescriptionDTO(String campaignTitle, String campaignContent, String endDate, String campaignCategory, String currentBudget, String goalBudget, String orgName, String orgDescription, String orgTel) {
         this.campaignCode = campaignCode;
         this.campaignTitle = campaignTitle;
         this.campaignContent = campaignContent;
@@ -77,11 +77,11 @@ public class CampaignDescriptionDTO {
         this.campaignContent = campaignContent;
     }
 
-    public String getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 

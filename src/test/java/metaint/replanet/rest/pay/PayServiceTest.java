@@ -3,7 +3,7 @@ package metaint.replanet.rest.pay;
 import metaint.replanet.rest.pay.entity.Pay;
 import metaint.replanet.rest.pay.repository.DonationRepository;
 import metaint.replanet.rest.pay.repository.PayRepository;
-import metaint.replanet.rest.pay.service.KakaoPayService;
+import metaint.replanet.rest.pay.service.PayService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,20 +13,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.persistence.EntityNotFoundException;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureWebClient
-public class KakaoPayServiceTest {
+public class PayServiceTest {
 
     @Autowired
-    private KakaoPayService kakaoPayService;
+    private PayService payService;
 
     @MockBean
     private PayRepository payRepository;
@@ -46,7 +42,7 @@ public class KakaoPayServiceTest {
         when(payRepository.findByPayCode(123)).thenReturn(mockPay);
 
         // then
-        Pay resultPay = kakaoPayService.getPayByPayCode(payCode);
+        Pay resultPay = payService.getPayByPayCode(payCode);
         assertThat(resultPay).isEqualTo(mockPay);
     }
 
@@ -60,7 +56,7 @@ public class KakaoPayServiceTest {
 
         // then
         assertThrows(EntityNotFoundException.class, () -> {
-            kakaoPayService.getPayByPayCode(payCode);
+            payService.getPayByPayCode(payCode);
         });
     }
 }

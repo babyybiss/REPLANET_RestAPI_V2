@@ -10,7 +10,6 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +35,12 @@ public class SwaggerConfiguration {
         return new ApiInfoBuilder()
                 .title("기부모금 서비스 API 명세서")
                 .description("React - JWT 토큰 인증 방식의 Spring Data Jpa 기반 기부모금 서비스 API 명세서 ")
+                .contact(new Contact("전승재", "https://github.com/wjs960",""))
+                .contact(new Contact("김유빈", "https://github.com/peaknicc", ""))
+                .contact(new Contact("박지영", "https://github.com/jiyeong08",""))
+                .contact(new Contact("이영현", "https://github.com/babyybiss",""))
+                .contact(new Contact("김민주", "https://github.com/vaguewords",""))
+                .contact(new Contact("이효진", "https://github.com/Gray-Grazer","cleit8307@gmail.com"))
                 .build();
     }
 

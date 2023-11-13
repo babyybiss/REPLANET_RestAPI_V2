@@ -29,7 +29,7 @@ public class ChartController {
     }
 
 
-    @ApiOperation(value = "통계 조회 요청", notes = "현재 등록된 캠페인을 기준으로 통계를 조회합니다.", tags = {"ChartController"})
+    @ApiOperation(value = "통계 조회 요청", notes = "현재 등록된 캠페인을 기준으로 통계를 조회합니다.", tags = {"차트 조회 컨트롤러"})
     @GetMapping("/series")
     public ResponseEntity<ResponseMessageDTO> selectChartResult() {
         HttpHeaders headers = new HttpHeaders();

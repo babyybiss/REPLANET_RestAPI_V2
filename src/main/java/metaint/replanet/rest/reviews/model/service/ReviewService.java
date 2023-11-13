@@ -70,26 +70,58 @@ public class ReviewService {
     public void registNewReview(ReviewDTO reviewDTO, MultipartFile imageFile) throws IOException {
 
         log.info("[ReviewService] registNewReview Start ===========================");
-
+        log.info("[ReviewService] registNewReview : " + reviewDTO);
         Review insertReview = modelMapper.map(reviewDTO, Review.class);
 
         reviewRepository.save(insertReview);
+        reviewRepository.flush();
 
         /////////////////////////////////////////////////////////
+        Long reviewCode = reviewRepository.findByCampaignCode(reviewDTO.getCampaignCode());
+
+        //System.out.println("what is the fucking reviewCode??" + reviewCode);
         ReviewFileDTO reviewFileDTO = new ReviewFileDTO();
 
         String imageName = UUID.randomUUID().toString().replace("-", "");
         String replaceFileName = null;
         int result = 0;
 
+        replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
 
-            replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
+        reviewFileDTO.setReviewCode(reviewCode);
+        reviewFileDTO.setFileSaveName(replaceFileName);
+        reviewFileDTO.setFileSavePath("http://localhost:3000" + IMAGE_DIR + "/" + imageFile.getOriginalFilename());
+        reviewFileDTO.setFileExtension("PNG");
 
+        reviewFileDTO.setFileOriginName(imageFile.getOriginalFilename());
+        reviewFileDTO.setFileOriginPath(IMAGE_DIR);
+
+
+        log.info("[ReviewService] registNewReview Image name : " + replaceFileName);
+        log.info("[ReviewService] registNewReview result : " + reviewDTO);
+        log.info("[ReviewService] registNewReviewFile result : " + reviewFileDTO);
+
+        ReviewFile insertReview1 = modelMapper.map(reviewFileDTO, ReviewFile.class);
+        reviewFileRepository.save(insertReview1);
+
+        result = 1;
+
+        System.out.println("check");
+        //FileUploadUtils.deleteFile(IMAGE_DIR, replaceFileName);
+
+
+
+        log.info("[ReviewService] registReview End ===================");
+/*            replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
+
+            reviewFileDTO.setFileOriginName(imageFile.getOriginalFilename());
+            reviewFileDTO.setFileOriginPath(IMAGE_DIR);
             reviewFileDTO.setFileSaveName(replaceFileName);
             reviewFileDTO.setFileSavePath("http://localhost:3000" + IMAGE_DIR + "/" + imageFile.getOriginalFilename());
             reviewFileDTO.setFileExtension("PNG");
+            reviewFileDTO.setReviewCode(reviewCode);
 
-            log.info("[ReviewService] registNewReview Image name : " + replaceFileName);
+            log.info("[ReviewService] registNewReview replaceFileName : " + replaceFileName);
             log.info("[ReviewService] registNewReview result : " + reviewDTO);
             log.info("[ReviewService] registNewReviewFile result : " + reviewFileDTO);
 
@@ -101,9 +133,7 @@ public class ReviewService {
             System.out.println("check");
             FileUploadUtils.deleteFile(IMAGE_DIR, replaceFileName);
 
-
-
-        log.info("[ReviewService] registReview End ===================");
+        log.info("[ReviewService] registReview End ===================");*/
     }
 
     public List<CombineReviewDTO> findReviewsBySearchFilter(String searchFilter) {
@@ -113,6 +143,44 @@ public class ReviewService {
                 .map(filteredReviews -> modelMapper.map(filteredReviews, CombineReviewDTO.class))
                 .collect(Collectors.toList());
     }
+
+    public ReviewFileDTO getThumbnailPath(Long reviewCode) {
+
+        ReviewFile reviewFile = reviewFileRepository.findByReviewCode(reviewCode);
+
+        log.info("reviewFile path?? : " + reviewFile);
+
+        return modelMapper.map(reviewFile, ReviewFileDTO.class);
+    }
+
+    public void modifyReview(ReviewDTO reviewDTO, MultipartFile imageFile) {
+
+        log.info("[ProductService] updateReview Start ===================================");
+        log.info("[ProductService] productDTO : " + reviewDTO);
+
+        String replaceFileName = null;
+        int result = 0;
+
+        try {
+
+            Review review = reviewRepository.findById(reviewDTO.getReviewCode()).get();
+            List<ReviewFile> reviewFileList = review.getReviewFileList();
+
+            if(!reviewFileList.isEmpty()) {
+                String fileOriginpath = reviewFileList.get(0).getFileOriginPath();
+
+                System.out.println("FileOriginpath: " + fileOriginpath);
+            } else {
+                System.out.println("No files in the reviewFileList");
+            }
+        } catch (Exception e) {
+            System.out.println("Error occurred!");
+        }
+
+
+    }
+
+
 
     /*public String uploadFiles(MultipartFile file) {
 

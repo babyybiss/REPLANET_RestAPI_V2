@@ -57,14 +57,14 @@ CREATE TABLE `tbl_campaign_description`
 
 CREATE TABLE `tbl_campaign_rev_file`
 (
-    `rev_file_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기첨부파일코드',
+    `review_file_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기첨부파일코드',
     `file_origin_name`    VARCHAR(255) NOT NULL COMMENT '원본파일명',
     `file_origin_path`    VARCHAR(255) NOT NULL COMMENT '원본경로',
     `file_save_name`    VARCHAR(255) NOT NULL COMMENT '저장파일명',
     `file_save_path`    VARCHAR(255) NOT NULL COMMENT '저장경로',
     `file_extension`    VARCHAR(255) NOT NULL COMMENT '파일확장자',
-    `campaign_rev_code`    INTEGER NOT NULL COMMENT '후기코드',
- PRIMARY KEY ( `rev_file_code` )
+    `review_code`    INTEGER NOT NULL COMMENT '후기코드',
+ PRIMARY KEY ( `review_file_code` )
 ) COMMENT = '후기첨부파일';
 
 
@@ -72,11 +72,11 @@ CREATE TABLE `tbl_campaign_rev_file`
 
 CREATE TABLE `tbl_campaign_review`
 (
-    `campaign_rev_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기코드',
+    `review_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기코드',
     `review_title`    VARCHAR(500) NOT NULL COMMENT '후기제목',
     `description`    VARCHAR(1000) NOT NULL COMMENT '후기내용',
     `campaign_code`    INTEGER NOT NULL COMMENT '캠페인코드',
- PRIMARY KEY ( `campaign_rev_code` )
+ PRIMARY KEY ( `review_code` )
 ) COMMENT = '후기게시글';
 
 
@@ -168,7 +168,7 @@ CREATE TABLE `tbl_review_comment`
     `rev_comment_description`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
     `rev_comment_writer`    VARCHAR(255) NOT NULL COMMENT '작성자',
     `rev_comment_date`    DATETIME NOT NULL COMMENT '댓글작성일자',
-    `campaign_rev_code`    INTEGER NOT NULL COMMENT '후기코드',
+    `review_code`    INTEGER NOT NULL COMMENT '후기코드',
  PRIMARY KEY ( `rev_comment_code` )
 ) COMMENT = '후기댓글';
 

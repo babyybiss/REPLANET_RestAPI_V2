@@ -1,12 +1,17 @@
 package metaint.replanet.rest.reviews.dto;
 
+import lombok.*;
 import metaint.replanet.rest.reviews.entity.Campaign;
 
 import java.sql.Date;
 
+@RequiredArgsConstructor
+@Getter
+@Setter
+@ToString
 public class ReviewDTO{
 
-    private Long campaignRevCode;
+    private Long reviewCode;
     private String reviewTitle;
     private String description;
     private Long campaignCode;
@@ -22,57 +27,6 @@ public class ReviewDTO{
     private String orgDescription;
     private String orgTel;
 */
-    public ReviewDTO() {
-    }
-
-    public ReviewDTO(Long campaignRevCode, String reviewTitle, String description, Long campaignCode) {
-        this.campaignRevCode = campaignRevCode;
-        this.reviewTitle = reviewTitle;
-        this.description = description;
-        this.campaignCode = campaignCode;
-    }
-
-    public Long getCampaignRevCode() {
-        return campaignRevCode;
-    }
-
-    public void setCampaignRevCode(Long campaignRevCode) {
-        this.campaignRevCode = campaignRevCode;
-    }
-
-    public String getReviewTitle() {
-        return reviewTitle;
-    }
-
-    public void setReviewTitle(String reviewTitle) {
-        this.reviewTitle = reviewTitle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getCampaignCode() {
-        return campaignCode;
-    }
-
-    public void setCampaignCode(Long campaignCode) {
-        this.campaignCode = campaignCode;
-    }
-
-    @Override
-    public String toString() {
-        return "ReviewDTO{" +
-                "campaignRevCode=" + campaignRevCode +
-                ", reviewTitle='" + reviewTitle + '\'' +
-                ", description='" + description + '\'' +
-                ", campaignCode=" + campaignCode +
-                '}';
-    }
 }
 
 

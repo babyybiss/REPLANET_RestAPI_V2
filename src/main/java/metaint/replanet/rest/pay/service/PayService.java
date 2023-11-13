@@ -8,8 +8,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
+import metaint.replanet.rest.campaign.repository.CampaignRepository;
 import metaint.replanet.rest.pay.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.pay.dto.MemberDTO;
 import metaint.replanet.rest.pay.dto.pay.DonationAmountDTO;
@@ -20,6 +22,7 @@ import metaint.replanet.rest.pay.entity.Donation;
 import metaint.replanet.rest.pay.entity.Member;
 import metaint.replanet.rest.pay.entity.Pay;
 import metaint.replanet.rest.pay.repository.DonationRepository;
+import metaint.replanet.rest.pay.repository.PayCampaignRepository;
 import metaint.replanet.rest.pay.repository.PayRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpEntity;
@@ -40,31 +43,33 @@ public class PayService {
 
     private final DonationRepository donationRepository;
     private final PayRepository payRepository;
+    private final PayCampaignRepository payCampaignRepository;
     private final ModelMapper modelMapper;
 
-    public PayService(DonationRepository donationRepository, PayRepository payRepository, ModelMapper modelMapper) {
+    public PayService(DonationRepository donationRepository, PayRepository payRepository, CampaignRepository campaignRepository, PayCampaignRepository payCampaignRepository, ModelMapper modelMapper) {
         this.donationRepository = donationRepository;
         this.payRepository = payRepository;
+        this.payCampaignRepository = payCampaignRepository;
         this.modelMapper = modelMapper;
     }
     private static final String HOST = "https://kapi.kakao.com";
-
     private KakaoPayReadyVO kakaoPayReadyVO;
     private KakaoPayApprovalVO kakaoPayApprovalVO;
 
 
-    public String kakaoPayReady(DonationAmountDTO amount) {
+    public String kakaoPayReady(DonationAmountDTO amount, String campaignCode) {
         log.info("[kakaoPayReady()] ---------------------------------------- ");
         log.info("[kakaoPayReady() amount.getPointAmount()] : " + amount.getPointAmount());
+        log.info("[kakaoPayReady() amount.campaignCode] : " + campaignCode);
+
+        Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
+
 
         RestTemplate restTemplate = new RestTemplate();
 
         //임의 값 생성
         MemberDTO member = new MemberDTO();
         member.setMemberId("user01");
-        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO();
-        campaign.setCampaignCode(1);
-        campaign.setCampaignTitle("테스트테스트");
 
         // 서버로 요청할 Header
         HttpHeaders headers = new HttpHeaders();
@@ -75,15 +80,15 @@ public class PayService {
         // 서버로 요청할 Body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.add("cid", "TC0ONETIME"); // 가맹점코드 테스트에선 고정
-        params.add("partner_order_id", String.valueOf(campaign.getCampaignCode())); // orderId
+        params.add("partner_order_id", String.valueOf(campaignDescriptions.get().getCampaignCode())); // orderId
         params.add("partner_user_id", member.getMemberId()); // userId
-        params.add("item_name", campaign.getCampaignTitle()); // 상품명
+        params.add("item_name", campaignDescriptions.get().getCampaignTitle()); // 상품명
         params.add("quantity", "1"); // 수량
-        params.add("total_amount", String.valueOf(amount.getFinalAmount())); // 총액
+        params.add("total_amount", String.valueOf(amount.getCashAmount())); // 현금결제액
         params.add("tax_free_amount", "100"); // 상품 비과세 금액
-        params.add("approval_url", "http://localhost:8001/kakaoPaySuccess?pointAmount=" + amount.getPointAmount());
-        params.add("cancel_url", "http://localhost:8001/kakaoPayCancle");
-        params.add("fail_url", "http://localhost:8001/kakaoPaySuccessFail");
+        params.add("approval_url", "http://localhost:8001/kakaoPaySuccess?pointAmount=" + amount.getPointAmount() + "&campaignCode=" + campaignDescriptions.get().getCampaignCode());
+        params.add("cancel_url", "http://localhost:8001/kakaoPayCancle?campaignCode=" + campaignDescriptions.get().getCampaignCode());
+        params.add("fail_url", "http://localhost:8001/kakaoPaySuccessFail?campaignCode=" + campaignDescriptions.get().getCampaignCode());
         params.add("pointAmount", String.valueOf(amount.getPointAmount()));
         // 취소, 실패 페이지 만들어야함!
 
@@ -109,9 +114,11 @@ public class PayService {
         return "/donations";
     }
 
-    public KakaoPayApprovalVO kakaoPayInfo(String pg_token, String pointAmount) {
+    public KakaoPayApprovalVO kakaoPayInfo(String pg_token, String pointAmount, String campaignCode) {
 
         log.info("[kakaoPayInfo()]............................................");
+
+        Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -124,16 +131,13 @@ public class PayService {
         //임의 값 생성
         MemberDTO member = new MemberDTO();
         member.setMemberId("user01");
-        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO();
-        campaign.setCampaignCode(1);
-        campaign.setCampaignTitle("테스트테스트");
         // 회원정보랑 캠페인정보 자리잡히면 이거 바꿔야함! 까먹으면 안됨!!!!
 
         // 서버로 요청할 Body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.add("cid", "TC0ONETIME"); // 가맹점 코드 -> 테스트용 고정!
         params.add("tid", kakaoPayReadyVO.getTid()); // 결제 고유번호 -> 결제 준비 API 응답에 포함돼서 온거임 -> VO를 통해서 받아옴
-        params.add("partner_order_id", String.valueOf(campaign.getCampaignCode())); // order_id 이건 어디서 들고와야하지?? -> 캠페인번호!! -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 선택한 캠페인
+        params.add("partner_order_id", String.valueOf(campaignDescriptions.get().getCampaignCode())); // order_id 이건 어디서 들고와야하지?? -> 캠페인번호!! -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 선택한 캠페인
         params.add("partner_user_id", member.getMemberId()); // 얘도 동일하게 -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 로그인한 사용자!
         params.add("pg_token", pg_token);
 
@@ -153,16 +157,14 @@ public class PayService {
 
                 Member refMember = Member.builder()
                         .memberCode(1).build();
-                CampaignDescription refCampaign = CampaignDescription.builder()
-                        .campaignCode(1).build();
-                // 회원정보랑 캠페인정보 자리잡히면 이거 바꿔야함! 까먹으면 안됨!
+                // 회원정보 자리잡히면 이거 바꿔야함! 까먹으면 안됨!
 
                 // Donation 엔티티 생성
                 Donation newDonation = Donation.builder()
                                                 .donationDateTime(donationDateTime)
                                                 .donationPoint(Integer.parseInt(pointAmount))
                                                 .refMember(refMember)  // Member 엔티티 객체
-                                                .refCampaign(refCampaign)  // CampaignDescription 엔티티 객체
+                                                .refCampaign(campaignDescriptions.get())  // CampaignDescription 엔티티 객체
                                                 .build();
 
                 // builder() 통해서 값 넣기
@@ -175,6 +177,7 @@ public class PayService {
                 // Donation 엔티티 저장 -> DB에 값넣는거임
                 donationRepository.save(newDonation);
                 payRepository.save(newPay);
+                payCampaignRepository.updateCurrentBudget(newDonation.getDonationPoint(), newPay.getPayAmount(), newDonation.getRefCampaign().getCampaignCode());
                 kakaoPayApprovalVO.setPayCode(newPay.getPayCode());
                 log.info("[kakaoPayInfo() kakaoPayApprovalVO.payCode] : " + kakaoPayApprovalVO.getPayCode());
             }
@@ -251,32 +254,45 @@ public class PayService {
         }
     }
 
-    public int postPointDonation(DonationAmountDTO amount) {
+    public int postPointDonation(DonationAmountDTO amount, String campaignCode) {
         log.info("[postPointDonation(DonationAmountDTO amount)] -----------------------------------");
 
-        Member refMember = Member.builder()
-                .memberCode(1).build();
-        CampaignDescription refCampaign = CampaignDescription.builder()
-                .campaignCode(1).build();
+        Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
 
-        Donation newDonation = Donation.builder()
-                .donationDateTime(LocalDateTime.now())
-                .donationPoint(amount.getPointAmount())
-                .refMember(refMember)  // Member 엔티티 객체
-                .refCampaign(refCampaign)  // CampaignDescription 엔티티 객체
-                .build();
+        Optional<Pay> newPay = Optional.ofNullable(campaignDescriptions.map(campaignDescription -> {
+            log.info("[postPointDonation() campaignDescriptions] : " + campaignDescription);
 
-        // builder() 통해서 값 넣기
-        Pay newPay = Pay.builder()
-                .payAmount(amount.getCashAmount()) // 0일거임
-                .payTid(null) // 카카오페이API를 통해 결제한게 아니라 Tid가 없음
-                .refDonation(newDonation)
-                .build();
+            CampaignDescription campaign = campaignDescription;
 
-        // Donation 엔티티 저장 -> DB에 값넣는거임
-        donationRepository.save(newDonation);
-        payRepository.save(newPay);
+            Member refMember = Member.builder()
+                    .memberCode(1).build();
 
-        return newPay.getPayCode();
+
+            Donation newDonation = Donation.builder()
+                    .donationDateTime(LocalDateTime.now())
+                    .donationPoint(amount.getPointAmount())
+                    .refMember(refMember)  // Member 엔티티 객체
+                    .refCampaign(campaign)  // CampaignDescription 엔티티 객체
+                    .build();
+
+            // builder() 통해서 값 넣기
+
+            Pay pay = Pay.builder()
+                    .payAmount(amount.getCashAmount()) // 0일거임
+                    .payTid(null) // 카카오페이API를 통해 결제한게 아니라 Tid가 없음
+                    .refDonation(newDonation)
+                    .build();
+
+
+            // Donation 엔티티 저장 -> DB에 값넣는거임
+
+            donationRepository.save(newDonation);
+            payRepository.save(pay);
+            payCampaignRepository.updateCurrentBudget(newDonation.getDonationPoint(), 0, newDonation.getRefCampaign().getCampaignCode());
+
+            return pay;
+        }).orElseThrow(() -> new RuntimeException("해당하는 캠페인이 없습니다!")));
+
+        return newPay.get().getPayCode();
     }
 }

@@ -1,6 +1,7 @@
 package metaint.replanet.rest.pay.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import metaint.replanet.rest.pay.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.pay.dto.pay.DonationAmountDTO;
 import metaint.replanet.rest.pay.dto.pay.KakaoPayApprovalVO;
 import metaint.replanet.rest.pay.entity.Donation;
@@ -32,34 +33,37 @@ public class PayController {
     @GetMapping("/kakaoPay")
     public void kakaoPayGet() {}
 
-    @PostMapping("/kakaoPay")
-    public String kakaoPay(@RequestBody DonationAmountDTO amount) {
+    @PostMapping("/kakaoPay/{campaignCode}")
+    public String kakaoPay(@RequestBody DonationAmountDTO amount, @PathVariable String campaignCode) {
         log.info("[POST /kakaoPay] -------------------------------------");
         log.info("[/kakaoPay cashAmount] : " + amount.getCashAmount());
         log.info("[/kakaoPay pointAmount] : " + amount.getPointAmount());
         log.info("[/kakaoPay finalAmount] : " + amount.getFinalAmount());
+        log.info("[/kakaoPay campaign] : " + campaignCode);
         // RequestBody에 담아온 기부액수를 들고와서 확인하는거
 
-        String redirectUrl = payService.kakaoPayReady(amount);
+        String redirectUrl = payService.kakaoPayReady(amount, campaignCode);
 
         return "redirect:" + redirectUrl;
     }
 
-    @PostMapping("/pointDonation")
+    @PostMapping("/pointDonation/{campaignCode}")
     public ResponseEntity<Map<String, Integer>> pointDonation(@RequestBody DonationAmountDTO amount,
-                                                              ModelAndView mv) {
+                                                              @PathVariable String campaignCode) {
         log.info("[POST /pointDonation] -------------------------------------");
         log.info("[/pointDonation cashAmount] : " + amount.getCashAmount()); // 0일거임
         log.info("[/pointDonation pointAmount] : " + amount.getPointAmount());
         log.info("[/pointDonation finalAmount] : " + amount.getFinalAmount());
         // RequestBody에 담아온 기부액수를 들고와서 확인하는거
 
-        int payCode = payService.postPointDonation(amount);
+        log.info("[/pointDonation campaignCode] : " + campaignCode);
+
+
+        int payCode = payService.postPointDonation(amount, campaignCode);
         log.info("[GET /pointDonation] payCode : " + payCode);
 
         Map<String, Integer> response = new HashMap<>();
         response.put("payCode", payCode);
-//        mv.setViewName("redirect:http://localhost:3000/donations/success?number=" + payCode);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -67,28 +71,32 @@ public class PayController {
     @GetMapping("/kakaoPaySuccess")
     public ModelAndView kakaoPaySuccess(@RequestParam("pg_token") String pg_token,
                                         @RequestParam("pointAmount") String pointAmount,
+                                        @RequestParam("campaignCode") String campaignCode,
                                         ModelAndView mv) {
         log.info("[GET /kakaoPaySuccess]-------------------------------------");
-        KakaoPayApprovalVO info = payService.kakaoPayInfo(pg_token, pointAmount);
+        log.info("[GET /pg_token] : " + pg_token);
+        log.info("[GET /pointAmount] : " + pointAmount);
+        log.info("[GET /campaignCode] : " + campaignCode);
+        KakaoPayApprovalVO info = payService.kakaoPayInfo(pg_token, pointAmount, campaignCode);
 
         log.info("[GET /kakaoPaySuccess] info.getPayCode() : " + info.getPayCode());
-        mv.setViewName("redirect:http://localhost:3000/donations/success?number=" + info.getPayCode());
+        mv.setViewName("redirect:http://localhost:3000/campaign/" + campaignCode + "/donations/success?number=" + info.getPayCode());
 
         return mv;
     }
 
     @GetMapping("/kakaoPayCancle")
-    public void kakaoPayCancel(HttpServletResponse response) {
+    public void kakaoPayCancel(HttpServletResponse response, @RequestParam("campaignCode") String campaignCode) {
         log.info("[GET /kakaoPayCancle]-------------------------------------");
         response.setStatus(HttpServletResponse.SC_FOUND);
-        response.setHeader("Location", "http://localhost:3000/donations/cancel");
+        response.setHeader("Location", "http://localhost:3000/campaign/" + campaignCode + "/donations/cancel");
     }
 
     @GetMapping("/kakaoPaySuccessFail")
-    public void kakaoPaySuccessFail(HttpServletResponse response) {
+    public void kakaoPaySuccessFail(HttpServletResponse response, @RequestParam("campaignCode") String campaignCode) {
         log.info("[GET /kakaoPaySuccessFail]-------------------------------------");
         response.setStatus(HttpServletResponse.SC_FOUND);
-        response.setHeader("Location", "http://localhost:3000/donations/fail");
+        response.setHeader("Location", "http://localhost:3000/campaign/" + campaignCode + "/donations/fail");
     }
 
     @GetMapping("/pays")

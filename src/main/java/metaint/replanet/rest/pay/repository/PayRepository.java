@@ -1,6 +1,5 @@
 package metaint.replanet.rest.pay.repository;
 
-import metaint.replanet.rest.pay.entity.Donation;
 import metaint.replanet.rest.pay.entity.Pay;
 import org.springframework.data.jpa.repository.JpaRepository;
 

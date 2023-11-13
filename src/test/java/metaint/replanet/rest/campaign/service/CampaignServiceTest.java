@@ -160,7 +160,7 @@ public class CampaignServiceTest {
 
             }
         };
-        int code = 4;
+        int code = 6;
         //when
         //then
         Assertions.assertDoesNotThrow(
@@ -191,7 +191,7 @@ public class CampaignServiceTest {
 
             @Override
             public String getOriginalFilename() {
-                return "수정오리진파일네임.jpg";
+                return "11수정오리진파일네임22.jpg";
             }
 
             @Override
@@ -225,9 +225,9 @@ public class CampaignServiceTest {
             }
         };
         CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
-                4,
+                6,
                 "수정 진행중",
-                "수정 도와주세요~섬바리헤업미",
+                "수정 도와주세요~섬바리헤업미2",
                 "2021-12-05",
                 "지구촌",
                 "0",

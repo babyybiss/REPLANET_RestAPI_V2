@@ -187,9 +187,9 @@ public class CampaignService {
         /* update 할 엔티티 조회 */
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignDTO.getCampaignCode()).get();
 
-        System.out.println(campaign + "이놈 수정 캠펜");
 
-        CampaignDescFile oriImage = (CampaignDescFile) campaign.getCampaignDescfileList();
+        System.out.println(campaign);
+        CampaignDescFile oriImage = campaign.getCampaignDescfile();
         System.out.println(oriImage + " 이놈 수정 하기전 원본 이미지");
 
         /* update를 위한 엔티티 값 수정 */
@@ -212,14 +212,17 @@ public class CampaignService {
 
             // 파일 정보 세팅
             campaignFile.setFileOriginName(fileOriginName);
+            campaignFile.setFileOriginPath("이놈 필요함?수정");
             campaignFile.setFileSaveName(fileSaveName);
             campaignFile.setFileSavePath(IMAGE_URL);
             campaignFile.setFileExtension(fileExtension);
             campaignFile.setCampaignCode(campaign.getCampaignCode());
+            System.out.println(campaignFile + " 이놈 수정 dto");
+            // 바뀐 값 저장
+            oriImage = modelMapper.map(campaignFile, CampaignDescFile.class);
+            //campaign.campaignDescfile(oriImage).builder();
 
-
-            campaign.campaignDescfileList((List<CampaignDescFile>) oriImage).builder();
-
+            campaignFileRepository.save(oriImage);
             System.out.println(campaign + "마지막 수정");
             //campaignDescFile.setFileOriginPath("이게 필요할라나?");
             //campaignFileRepository.save(campaignDescFile);
@@ -227,7 +230,7 @@ public class CampaignService {
         }else {
 
             /* 이미지 변경 없을 시 */
-            campaign = campaign.campaignDescfileList((List<CampaignDescFile>) oriImage);
+            campaign = campaign.campaignDescfile(oriImage);
             System.out.println(campaign + "얜 수정 캠펜");
         }
 

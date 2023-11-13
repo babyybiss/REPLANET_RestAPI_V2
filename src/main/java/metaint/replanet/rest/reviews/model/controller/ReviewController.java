@@ -3,7 +3,9 @@ package metaint.replanet.rest.reviews.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.reviews.dto.*;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -100,6 +102,16 @@ public class ReviewController {
         reviewService.modifyReview(reviewDTO, imageFile);
 
         return ResponseEntity.ok("리뷰 수정 성공!");
+    }
+
+
+    @DeleteMapping("{reviewCode}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewCode, @RequestParam Long revFileCode) {
+        log.info("[Review COntroller] delete Review : " + reviewCode + "and revFileCode : " + revFileCode);
+
+        reviewService.deleteReview(reviewCode, revFileCode);
+
+        return ResponseEntity.ok("리뷰 삭제 성공!");
     }
 
 /*    @GetMapping("{reviewCode}/comments")

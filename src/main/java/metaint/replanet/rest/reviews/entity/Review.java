@@ -31,8 +31,28 @@ public class Review {
     @JoinColumn(name = "campaign_code", referencedColumnName = "campaign_code")
     private Campaign campaign;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "review_code", referencedColumnName = "review_code")
     private List<ReviewFile> reviewFileList;
 
+    public Review(Long reviewCode, String reviewTitle, String description) {
+    }
+
+    public Review reviewCode(Long reviewCode) {
+        this.reviewCode = reviewCode;
+        return this;
+    }
+    public Review reviewTitle(String reviewTitle) {
+        this.reviewTitle = reviewTitle;
+        return this;
+    }
+
+    public Review description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Review build() {
+        return new Review(reviewCode, reviewTitle, description);
+    }
 }

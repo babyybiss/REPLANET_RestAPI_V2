@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.Setter;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -69,10 +68,10 @@ public class PayController {
     }
 
     @GetMapping("/kakaoPaySuccess")
-    public ModelAndView kakaoPaySuccess(@RequestParam("pg_token") String pg_token,
-                                        @RequestParam("pointAmount") String pointAmount,
-                                        @RequestParam("campaignCode") String campaignCode,
-                                        ModelAndView mv) {
+    public void kakaoPaySuccess(@RequestParam("pg_token") String pg_token,
+                                @RequestParam("pointAmount") String pointAmount,
+                                @RequestParam("campaignCode") String campaignCode,
+                                HttpServletResponse response) {
         log.info("[GET /kakaoPaySuccess]-------------------------------------");
         log.info("[GET /pg_token] : " + pg_token);
         log.info("[GET /pointAmount] : " + pointAmount);
@@ -80,9 +79,9 @@ public class PayController {
         KakaoPayApprovalVO info = payService.kakaoPayInfo(pg_token, pointAmount, campaignCode);
 
         log.info("[GET /kakaoPaySuccess] info.getPayCode() : " + info.getPayCode());
-        mv.setViewName("redirect:http://localhost:3000/campaign/" + campaignCode + "/donations/success?number=" + info.getPayCode());
 
-        return mv;
+        response.setStatus(HttpServletResponse.SC_FOUND);
+        response.setHeader("Location", "http://localhost:3000/campaign/" + campaignCode + "/donations/success?number=" + info.getPayCode());
     }
 
     @GetMapping("/kakaoPayCancle")

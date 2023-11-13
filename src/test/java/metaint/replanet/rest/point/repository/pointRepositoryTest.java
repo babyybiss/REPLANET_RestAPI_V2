@@ -4,6 +4,7 @@ import metaint.replanet.rest.auth.repository.MemberRepository;
 import metaint.replanet.rest.point.dto.ExchangeDTO;
 import metaint.replanet.rest.point.dto.MemberDTO;
 import metaint.replanet.rest.point.dto.PointFileDTO;
+import metaint.replanet.rest.point.dto.PointHistoryDTO;
 import metaint.replanet.rest.point.entity.Exchange;
 import metaint.replanet.rest.point.entity.Member;
 import metaint.replanet.rest.point.entity.PointFile;
@@ -92,7 +93,7 @@ public class pointRepositoryTest {
         int memberCode = 1;
 
         //when
-        String sql = "SELECT e.exchange_code, e.exchange_date, e.title, e.status, f.file_path " +
+        String sql = "SELECT e.exchange_code, e.exchange_date, e.title, e.status, e.processing_date, e.return_detail, e.points, f.file_path " +
                 "FROM tbl_point_exchange e " +
                 "JOIN tbl_point_file f ON e.exchange_code = f.application_code " +
                 "WHERE e.member_code = ?1";
@@ -103,7 +104,7 @@ public class pointRepositoryTest {
         List<Map<String, Object>> memberExchangeList = new ArrayList<>();
 
         String[] columnNames = {
-                "exchange_code", "exchange_date", "title", "status", "file_path"
+                "exchange_code", "exchange_date", "title", "status", "processing_date", "return_detail", "points", "file_path"
         };
 
         for(Object[] exchangeList : memberExchanges){
@@ -224,11 +225,40 @@ public class pointRepositoryTest {
     @DisplayName("특정 회원 포인트 적립 / 사용 내역 조회")
     void testSelectMemberPoints(){
         //given
+        int memberCode = 4;
 
         //when
+        //List<PointHistoryDTO> pointHistory = exchangeRepository.findHistoryByMemberCode(memberCode);
+        String sql = "SELECT CASE WHEN e.points > 0 THEN e.processing_date WHEN d.donation_point > 0 THEN d.donation_date_time END AS changeDate, " +
+                    "CASE WHEN e.points > 0 THEN e.title WHEN d.donation_point > 0 THEN c.campaign_title END AS content, " +
+                    "CASE WHEN e.points > 0 THEN e.points WHEN d.donation_point > 0 THEN d.donation_point END AS changePoint, " +
+                    "m.current_point AS remainingPoint " +
+                    "FROM tbl_member m " +
+                    "LEFT JOIN tbl_point_exchange e ON m.member_code = e.member_code " +
+                    "LEFT JOIN tbl_donation d ON m.member_code = d.member_code " +
+                    "LEFT JOIN tbl_campaign_description c ON d.campaign_code = c.campaign_code " +
+                    "WHERE m.member_code = ?1 " +
+                    "ORDER BY COALESCE(e.processing_date, d.donation_date_time) DESC";
 
+        List<Object[]> resultList = entityManager.createNativeQuery(sql)
+                .setParameter(1, memberCode)
+                .getResultList();
+
+        List<Map<String, Object>> pointHistory = new ArrayList<>();
+
+        for(Object[] result : resultList){
+            Map<String, Object> pointHistoryMap = new HashMap<>();
+            pointHistoryMap.put("changeDate", result[0]);
+            pointHistoryMap.put("content", result[1]);
+            pointHistoryMap.put("changePoint", result[2]);
+            pointHistoryMap.put("remainingPoint", result[3]);
+
+            pointHistory.add(pointHistoryMap);
+        }
 
         //then
+        Assertions.assertNotNull(pointHistory);
+        System.out.println("포인트 내역 조회 : " + pointHistory);
     }
 
 

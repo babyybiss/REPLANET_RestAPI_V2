@@ -32,6 +32,9 @@ public class Exchange {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "processing_date")
+    private Date processingDate;
+
     @Column(name = "return_detail")
     private String returnDetail;
 
@@ -46,6 +49,11 @@ public class Exchange {
         return this;
     }
 
+    public Exchange processingDate(Date val){
+        this.processingDate = val;
+        return this;
+    }
+
     public Exchange returnDetail(String val){
         this.returnDetail = val;
         return this;
@@ -57,6 +65,6 @@ public class Exchange {
     }
 
     public Exchange builder(){
-        return new Exchange(exchangeCode, exchangeDate, title, status, returnDetail, points, memberCode);
+        return new Exchange(exchangeCode, exchangeDate, title, status, processingDate, returnDetail, points, memberCode);
     }
 }

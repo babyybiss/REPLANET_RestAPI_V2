@@ -139,6 +139,7 @@ CREATE TABLE `tbl_point_exchange`
     `exchange_date`    DATETIME NOT NULL COMMENT '신청일자',
     `title`    VARCHAR(255) NOT NULL COMMENT '신청제목',
     `status`    VARCHAR(255) DEFAULT '대기' NOT NULL COMMENT '상태',
+    `processing_date` DATETIME COMMENT '처리일자',
     `return_detail`    VARCHAR(255) COMMENT '반려사유',
     `points`    INTEGER COMMENT '승인포인트',
     `member_code`    INTEGER NOT NULL COMMENT '회원코드',

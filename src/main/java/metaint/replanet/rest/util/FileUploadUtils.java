@@ -16,24 +16,29 @@ import java.nio.file.StandardCopyOption;
 public class FileUploadUtils {
 
     public static String saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
-
         Path uploadPath = Paths.get(uploadDir);
 
-        if(!Files.exists(uploadPath)) {
+        if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
         String replaceFileName = fileName + "." + FilenameUtils.getExtension(multipartFile.getResource().getFilename());
 
-        try(InputStream inputStream = multipartFile.getInputStream()) {
+        // Print the absolute path before saving
+        System.out.println("Absolute Path before saving: " + uploadPath.resolve(replaceFileName).toAbsolutePath());
+
+        try (InputStream inputStream = multipartFile.getInputStream()) {
             Path filePath = uploadPath.resolve(replaceFileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        }catch (IOException ex){
+            System.out.println("file saved!!!!!");
+        } catch (IOException ex) {
             throw new IOException("Could not save file: " + fileName, ex);
         }
 
         return replaceFileName;
     }
+
+
 
     public static boolean deleteFile(String uploadDir, String fileName) {
 

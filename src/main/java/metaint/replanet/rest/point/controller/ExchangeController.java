@@ -12,8 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -44,27 +49,41 @@ public class ExchangeController {
             newExchange.setTitle(title);
             newExchange.setMemberCode(memberCode);
 
-            System.out.println(newExchange);
+            log.info("DTO 확인 " + newExchange);
 
             try {
                 int savedExchangeCode = exchangeService.insertExchange(newExchange);
 
-                System.out.println(savedExchangeCode);
+                log.info("저장된 코드 확인 " + savedExchangeCode);
 
                 String fileOriginName = pointFile.getOriginalFilename();
                 String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
                 String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
-                String filePath = "C:\\filetest";
+                String FILE_DIR = null;
+                Path filePath = Paths.get("/REPLANET_ReactAPI/public/exchangeFiles").toAbsolutePath();
+                Path rootPath;
+                if (FileSystems.getDefault().getSeparator().equals("/")) {
+                    // Unix-like system (MacOS, Linux)
+                    rootPath = Paths.get("/User").toAbsolutePath();
+                    Path relativePath = rootPath.relativize(filePath);
+                    FILE_DIR = String.valueOf(relativePath);
+                } else {
+                    // Windows
+                    rootPath = Paths.get("C:\\").toAbsolutePath();
+                    Path relativePath = rootPath.resolve(filePath);
+                    FILE_DIR = String.valueOf(relativePath);
+                }
+                log.info("경로 확인 : " + FILE_DIR);
 
                 PointFileDTO newFile = new PointFileDTO();
                 newFile.setFileOriginName(fileOriginName);
                 newFile.setFileSaveName(fileSaveName);
-                newFile.setFilePath(filePath);
+                newFile.setFilePath(FILE_DIR);
                 newFile.setFileExtension(fileExtension);
                 newFile.setApplicationCode(savedExchangeCode);
 
                 try{
-                    File directory = new File(filePath);
+                    File directory = new File(FILE_DIR);
                     if(!directory.exists()){
                         directory.mkdirs();
                         log.info("저장경로가 존재하지 않아 새로 생성되었습니다.");
@@ -93,11 +112,21 @@ public class ExchangeController {
 //        return ResponseEntity.status(HttpStatus.OK).body(exchangeList);
     }
 
-    @GetMapping("/{status}")
-    public List<ExchangeDTO> selectMemberAllExchange(@RequestParam(name = "status") String status){
+//    @GetMapping("/{status}")
+//    public List<ExchangeDTO> selectMemberAllExchange(@RequestParam(name = "status") String status){
+//
+//        List<ExchangeDTO> listByStatus = exchangeService.selectExchangesByStatus(status);
+//
+//        return listByStatus;
+//    }
 
-        List<ExchangeDTO> listByStatus = exchangeService.selectExchangesByStatus(status);
+    @GetMapping("/{exchangeCode}")
+    public ResponseEntity<Map<String, Object>> selectExchangeDetail(@PathVariable int exchangeCode){
 
-        return listByStatus;
+        log.info("요청 받았니? " + exchangeCode);
+        Map<String, Object> exchangeDetail = exchangeService.selectExchangeDetail(exchangeCode);
+        log.info("백에서 넘겨주는 값 확인 : " + exchangeDetail);
+
+        return ResponseEntity.status(HttpStatus.OK).body(exchangeDetail);
     }
 }

@@ -80,7 +80,7 @@ public class ExchangeService {
     }
 
     public Map<String, Object> selectExchangeDetail(int exchangeCode) {
-        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, f.file_path, m.member_id, m.member_name " +
+        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, f.file_path, f.file_save_name, m.member_id, m.member_name " +
                 "FROM tbl_point_exchange e " +
                 "JOIN tbl_point_file f ON e.exchange_code = f.application_code " +
                 "JOIN tbl_member m ON e.member_code = m.member_code " +
@@ -91,7 +91,7 @@ public class ExchangeService {
                 .getSingleResult();
 
         String[] columNames = {
-                "title", "exchange_date", "status", "points", "return_detail", "file_path", "member_id", "member_name"
+                "title", "exchangeDate", "status", "points", "returnDetail", "filePath", "fileSaveName", "memberId", "memberName"
         };
 
         Map<String, Object> detailResultMap = new HashMap<>();

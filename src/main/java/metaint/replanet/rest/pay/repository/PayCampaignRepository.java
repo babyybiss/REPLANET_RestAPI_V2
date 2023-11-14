@@ -13,6 +13,6 @@ public interface PayCampaignRepository extends JpaRepository<CampaignDescription
 
     @Modifying
     @Transactional
-    @Query("UPDATE CampaignDescription c SET c.currentBudget = c.currentBudget + (:donationPoint + :payAmount) WHERE c.campaignCode = :campaignCode")
+    @Query("UPDATE tblCampaignDescription c SET c.currentBudget = c.currentBudget + (:donationPoint + :payAmount) WHERE c.campaignCode = :campaignCode")
     void updateCurrentBudget(@Param("donationPoint") int donationPoint, @Param("payAmount") int payAmount, @Param("campaignCode") int campaignCode);
 }

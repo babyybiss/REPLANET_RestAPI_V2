@@ -12,7 +12,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
 
     /* ------------ RepositoryTest start ------------- */
 
-    @Query("SELECT DISTINCT campaignCategory FROM CampaignDescription")
+    @Query("SELECT DISTINCT campaignCategory FROM tblCampaignDescription")
     List<Object[]> findDistinctByCampaignCategory();
 
     @Query(value = "SELECT DISTINCT campaign_category FROM tbl_campaign_description"

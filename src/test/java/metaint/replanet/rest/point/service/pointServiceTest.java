@@ -94,7 +94,7 @@ public class pointServiceTest {
         String status = "대기";
 
         //when
-        List<Exchange> exchangeListByStatus = exchangeService.selectExchangesByStatus(status);
+        List<ExchangeDTO> exchangeListByStatus = exchangeService.selectExchangesByStatus(status);
 
         //then
         Assertions.assertNotNull(exchangeListByStatus);

@@ -70,7 +70,7 @@ CREATE TABLE `tbl_campaign_rev_file`
 
 
 
-CREATE TABLE `tbl_campaign_review`
+CREATE TABLE `tbl_review`
 (
     `review_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기코드',
     `review_title`    VARCHAR(500) NOT NULL COMMENT '후기제목',
@@ -112,7 +112,7 @@ CREATE TABLE `tbl_member`
     `member_name`    VARCHAR(255) NOT NULL COMMENT '이름',
     `password`    VARCHAR(255) NOT NULL COMMENT '비밀번호',
     `phone`    VARCHAR(255) NOT NULL COMMENT '휴대폰번호',
-    `join_date`    DATETIME NOT NULL COMMENT '가입일자',
+    `join_date`    DATETIME COMMENT '가입일자',
     `member_role`    VARCHAR(255) DEFAULT 'ROLE_USER' NOT NULL COMMENT '유저권한',
     `withdraw`    CHAR DEFAULT 'N' NOT NULL COMMENT '탈퇴여부',
     `withdraw_date`    DATETIME DEFAULT null COMMENT '탈퇴일자',
@@ -165,7 +165,7 @@ CREATE TABLE `tbl_point_file`
 CREATE TABLE `tbl_review_comment`
 (
     `rev_comment_code`    INTEGER ZEROFILL NOT NULL COMMENT '댓글코드',
-    `rev_comment_description`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
+    `rev_comment_context`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
     `rev_comment_writer`    VARCHAR(255) NOT NULL COMMENT '작성자',
     `rev_comment_date`    DATETIME NOT NULL COMMENT '댓글작성일자',
     `review_code`    INTEGER NOT NULL COMMENT '후기코드',

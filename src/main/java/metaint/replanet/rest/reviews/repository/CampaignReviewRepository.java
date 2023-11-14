@@ -12,5 +12,6 @@ import java.util.List;
 
 public interface CampaignReviewRepository extends JpaRepository<Campaign, Long> {
 
-
+    @Query("SELECT c FROM reviewPkg_entityCampaign c ORDER BY c.campaignCode DESC")
+    List<Campaign> findAllOrderedByCampaignCodeDesc();
 }

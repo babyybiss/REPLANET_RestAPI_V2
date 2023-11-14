@@ -28,8 +28,10 @@ public class CampaignDescFile {
     private String fileSavePath; // 저장 경로
     @Column(name = "file_extension")
     private String fileExtension; // 확장자
-    @OneToOne(mappedBy = "campaignDescfile")
-    private CampaignAndFile campaignCode; // 모금 코드
+    //@OneToOne(mappedBy = "campaignDescfile")
+    @Column(name = "campaign_code")
+    private int campaignCode; // 모금 코드
+    //private CampaignAndFile campaignCode; // 모금 코드
 
     protected CampaignDescFile() {}
 
@@ -53,10 +55,10 @@ public class CampaignDescFile {
         this.fileExtension = val;
         return this;
     }
-    public CampaignDescFile campaignCode(CampaignAndFile val){
-        this.campaignCode = val;
-        return this;
-    }
+//    public CampaignDescFile campaignCode(CampaignAndFile val){
+//        this.campaignCode = val;
+//        return this;
+//    }
     public CampaignDescFile builder(){
         return new CampaignDescFile(
                 fileCode,fileOriginName,fileOriginPath,fileSaveName,

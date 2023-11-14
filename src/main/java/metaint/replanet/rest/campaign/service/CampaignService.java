@@ -24,10 +24,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,9 +56,20 @@ public class CampaignService {
     //등록 성공
     @Transactional
     public int registCampaign(CampaignDescriptionDTO campaign) {
+        System.out.println("여긴오지?2");
+
         // 목표금액 , 제거
         String goalBudger = campaign.getGoalBudget().replaceAll(",", "");
         campaign.setGoalBudget(goalBudger);
+        Double overGoalBudger = Double.parseDouble(goalBudger);
+        System.out.println(overGoalBudger+"여긴오지?34");
+
+        // 금액 체크
+        if (overGoalBudger >= 1000000000){
+            System.out.println("이거 와야돼?");
+            return -2;
+        }
+
         // 현재 날짜
         LocalDateTime startDate = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
@@ -70,12 +78,17 @@ public class CampaignService {
         // 마감일 형변환 String =>  LocalDateTime
         String getEndDate = campaign.getEndDate();
         LocalDateTime endDate = LocalDateTime.parse(getEndDate + "T23:59:59", formatter);
+        if (endDate.isBefore(startDate)){
+            return 0;
+        }
+
 
         // 변환된 LocalDateTime을 Entity에 매핑
         CampaignDescription campaignEntity = modelMapper.map(campaign, CampaignDescription.class);
 
+
         campaignEntity.endDate(endDate).builder();
-        System.out.println(campaignEntity);
+
         campaignRepository.save(campaignEntity);
         System.out.println(campaignEntity.getCampaignCode() + " 여기가 캠페인 코드다!!");
 
@@ -98,6 +111,7 @@ public class CampaignService {
         String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
         String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
 
+        System.out.println(campaignCode + "코드만 확인");
 
         // 파일 정보 세팅
         campaignFile.setFileOriginName(fileOriginName);
@@ -105,6 +119,7 @@ public class CampaignService {
         campaignFile.setFileSavePath(IMAGE_URL);
         campaignFile.setFileExtension(fileExtension);
         campaignFile.setCampaignCode(campaignCode);
+        System.out.println(campaignFile + " 캠펜 코드 확인");
         //campaignFile.setFileSaveName(replaceFileName);
         try {
             // 폴더 없으면 폴더 생성
@@ -169,6 +184,7 @@ public class CampaignService {
     @Transactional
     public void deleteCampaign(int campaignCode) {
         System.out.println(campaignCode + "여기는 캠펜코드");
+
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignCode).orElse(null);
         System.out.println(campaign + "이건 삭제 캠펜");
         if (campaign != null) {
@@ -188,8 +204,10 @@ public class CampaignService {
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignDTO.getCampaignCode()).get();
 
 
+
         System.out.println(campaign);
-        CampaignDescFile oriImage = campaign.getCampaignDescfile();
+        List<CampaignDescFile> oriImage = new ArrayList<>();
+        oriImage.add((CampaignDescFile) campaign.getCampaignDescfileList());
         System.out.println(oriImage + " 이놈 수정 하기전 원본 이미지");
 
         /* update를 위한 엔티티 값 수정 */
@@ -219,10 +237,10 @@ public class CampaignService {
             campaignFile.setCampaignCode(campaign.getCampaignCode());
             System.out.println(campaignFile + " 이놈 수정 dto");
             // 바뀐 값 저장
-            oriImage = modelMapper.map(campaignFile, CampaignDescFile.class);
+            //oriImage = modelMapper.map(campaignFile, CampaignDescFile.class);
             //campaign.campaignDescfile(oriImage).builder();
 
-            campaignFileRepository.save(oriImage);
+            //campaignFileRepository.save(oriImage);
             System.out.println(campaign + "마지막 수정");
             //campaignDescFile.setFileOriginPath("이게 필요할라나?");
             //campaignFileRepository.save(campaignDescFile);
@@ -230,7 +248,7 @@ public class CampaignService {
         }else {
 
             /* 이미지 변경 없을 시 */
-            campaign = campaign.campaignDescfile(oriImage);
+            campaign = campaign.campaignDescfileList(oriImage);
             System.out.println(campaign + "얜 수정 캠펜");
         }
 

@@ -25,7 +25,7 @@ public class CampaignControllerTest {
     @Test
     void campaignDeleteTest(){
         //given
-        int campaignCode = 4;
+        int campaignCode = 6;
         //when
         //campaignController.campaignDelete(campaignCode);
         Assertions.assertDoesNotThrow(
@@ -79,7 +79,7 @@ public class CampaignControllerTest {
             }
         };
         CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
-                3,
+                6,
                 "진행중",
                 "도와주세요~섬바리헤업미",
                 "2021-12-05",

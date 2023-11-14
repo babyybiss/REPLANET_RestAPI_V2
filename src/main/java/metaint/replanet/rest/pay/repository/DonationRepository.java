@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface DonationRepository extends JpaRepository<Donation, Integer> {
 
-    Member findByRefMember(String memberCode);
 
-    List<Donation> findAllByDonationDateTimeBetween(LocalDateTime stardDateTime, LocalDateTime endDateTime);
+    List<Donation> findAllByRefMemberAndDonationDateTimeBetween(Member member, LocalDateTime stardDateTime, LocalDateTime endDateTime);
 }

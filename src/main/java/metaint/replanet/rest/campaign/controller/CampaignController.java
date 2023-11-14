@@ -86,7 +86,7 @@ public class CampaignController {
 
     // 캠페인 삭제 기부내역 없을 경우에만
     @DeleteMapping("campaigns/{campaignCode}")
-    public String campaignDelete(@PathVariable int campaignCode){
+    public ResponseEntity<?> campaignDelete(@PathVariable int campaignCode){
 
         System.out.println(campaignCode + "시작 캠펜");
         CampaignDescription campaign = campaignService.findCampaign(campaignCode);
@@ -95,13 +95,12 @@ public class CampaignController {
         int currentBudget = campaign.getCurrentBudget();
         if (currentBudget > 0 ){
             System.out.println("모금액 있어서 삭제 안됨");
-            return "삭제불가";
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("모금액 있어서 삭제 안됨");
         }else {
             campaignService.deleteCampaign(campaignCode);
             System.out.println("삭제됨");
-
+            return ResponseEntity.status(HttpStatus.OK).body("삭제됨");
         }
-        return "삭제완료";
     }
 
     // 캠페인 수정 기부내역 없을 경우에만

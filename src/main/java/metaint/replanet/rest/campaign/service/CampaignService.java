@@ -24,10 +24,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -209,7 +206,8 @@ public class CampaignService {
 
 
         System.out.println(campaign);
-        CampaignDescFile oriImage = campaign.getCampaignDescfile();
+        List<CampaignDescFile> oriImage = new ArrayList<>();
+        oriImage.add((CampaignDescFile) campaign.getCampaignDescfileList());
         System.out.println(oriImage + " 이놈 수정 하기전 원본 이미지");
 
         /* update를 위한 엔티티 값 수정 */
@@ -239,10 +237,10 @@ public class CampaignService {
             campaignFile.setCampaignCode(campaign.getCampaignCode());
             System.out.println(campaignFile + " 이놈 수정 dto");
             // 바뀐 값 저장
-            oriImage = modelMapper.map(campaignFile, CampaignDescFile.class);
+            //oriImage = modelMapper.map(campaignFile, CampaignDescFile.class);
             //campaign.campaignDescfile(oriImage).builder();
 
-            campaignFileRepository.save(oriImage);
+            //campaignFileRepository.save(oriImage);
             System.out.println(campaign + "마지막 수정");
             //campaignDescFile.setFileOriginPath("이게 필요할라나?");
             //campaignFileRepository.save(campaignDescFile);
@@ -250,7 +248,7 @@ public class CampaignService {
         }else {
 
             /* 이미지 변경 없을 시 */
-            campaign = campaign.campaignDescfile(oriImage);
+            campaign = campaign.campaignDescfileList(oriImage);
             System.out.println(campaign + "얜 수정 캠펜");
         }
 

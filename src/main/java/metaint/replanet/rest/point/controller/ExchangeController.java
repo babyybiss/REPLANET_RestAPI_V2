@@ -2,22 +2,21 @@ package metaint.replanet.rest.point.controller;
 
 import metaint.replanet.rest.point.dto.ExchangeDTO;
 import metaint.replanet.rest.point.dto.PointFileDTO;
-import metaint.replanet.rest.point.entity.Exchange;
 import metaint.replanet.rest.point.service.ExchangeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/exchanges")
 public class ExchangeController {
@@ -36,8 +35,8 @@ public class ExchangeController {
 
         int memberCode = Integer.parseInt(memberCodeStr);
 
-        System.out.println("제목 넘어왔니?" + title);
-        System.out.println("코드 넘어왔니?" + memberCode);
+        log.info("제목 넘어왔나요?" + title);
+        log.info("코드 넘어왔나요?" + memberCode);
 
         if(title != null && pointFile != null) {
             ExchangeDTO newExchange = new ExchangeDTO();
@@ -68,7 +67,7 @@ public class ExchangeController {
                     File directory = new File(filePath);
                     if(!directory.exists()){
                         directory.mkdirs();
-                        System.out.println("저장경로가 존재하지 않아 새로 생성되었습니다.");
+                        log.info("저장경로가 존재하지 않아 새로 생성되었습니다.");
                     }
                     File pf = new File(filePath + "/" + fileSaveName);
                     pointFile.transferTo(pf);
@@ -83,5 +82,22 @@ public class ExchangeController {
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청 오류");
+    }
+
+    @GetMapping("")
+    public List<ExchangeDTO> selectAllExchanges(){
+
+        List<ExchangeDTO> exchangeList = exchangeService.selectAllExchanges();
+
+        return exchangeList;
+//        return ResponseEntity.status(HttpStatus.OK).body(exchangeList);
+    }
+
+    @GetMapping("/{status}")
+    public List<ExchangeDTO> selectMemberAllExchange(@RequestParam(name = "status") String status){
+
+        List<ExchangeDTO> listByStatus = exchangeService.selectExchangesByStatus(status);
+
+        return listByStatus;
     }
 }

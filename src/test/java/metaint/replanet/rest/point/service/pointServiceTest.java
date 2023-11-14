@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 public class pointServiceTest {
@@ -65,20 +66,9 @@ public class pointServiceTest {
     @DisplayName("포인트 전환 신청 목록 전체 조회 테스트")
     void testSelectAllExchanges(){
         //given
-        ExchangeDTO exchange1 = new ExchangeDTO();
-        exchange1.setExchangeDate(new Date());
-        exchange1.setTitle("전체 목록 조회 테스트1~");
-        exchange1.setMemberCode(88);
-
-        ExchangeDTO exchange2 = new ExchangeDTO();
-        exchange2.setExchangeDate(new Date());
-        exchange2.setTitle("전체 목록 조회 테스트2~");
-        exchange2.setMemberCode(88);
 
         //when
-        exchangeService.insertExchange(exchange1);
-        exchangeService.insertExchange(exchange2);
-        List<Exchange> allExchanges = exchangeService.selectAllExchanges();
+        List<ExchangeDTO> allExchanges = exchangeService.selectAllExchanges();
 
         //then
         Assertions.assertNotNull(allExchanges);
@@ -88,24 +78,87 @@ public class pointServiceTest {
     @DisplayName("특정 회원의 전환 신청 목록 전체 조회 테스트")
     void testSelectMemberAllExchange(){
         //given
-        ExchangeDTO exchange1 = new ExchangeDTO();
-        exchange1.setExchangeDate(new Date());
-        exchange1.setTitle("회원 신청 목록 테스트1~");
-        exchange1.setMemberCode(77);
-
-        ExchangeDTO exchange2 = new ExchangeDTO();
-        exchange2.setExchangeDate(new Date());
-        exchange2.setTitle("회원 신청 목록 테스트2~");
-        exchange2.setMemberCode(88);
+        int memberCode = 1;
 
         //when
-        exchangeService.insertExchange(exchange1);
-        exchangeService.insertExchange(exchange2);
-        List<Exchange> memberAllExchange =  exchangeService.selectMemberAllExchange(77);
+        List<Exchange> memberAllExchange =  exchangeService.selectMemberAllExchange(memberCode);
 
         //then
         Assertions.assertNotNull(memberAllExchange);
     }
 
+    @Test
+    @DisplayName("포인트 전환 신청 목록 조건 조회 테스트")
+    void testSelectExchangeByStatus(){
+        //given
+        String status = "대기";
+
+        //when
+        List<Exchange> exchangeListByStatus = exchangeService.selectExchangesByStatus(status);
+
+        //then
+        Assertions.assertNotNull(exchangeListByStatus);
+    }
+
+    @Test
+    @DisplayName("전환 신청 상세 정보 조회 테스트")
+    void testSelectExchangeDetail(){
+        //given
+        int exchangeCode = 8;
+
+        //when
+        Map<String, Object> detailResult = exchangeService.selectExchangeDetail(exchangeCode);
+
+        //then
+        Assertions.assertNotNull(detailResult);
+    }
+
+    @Test
+    @DisplayName("포인트 전환 신청 승인 테스트")
+    void testExchangeApproval(){
+        //given
+        ExchangeDTO newExchange = new ExchangeDTO();
+        newExchange.setExchangeCode(27);
+        newExchange.setPoints(10000);
+        newExchange.setStatus("승인");
+        newExchange.setProcessingDate(new Date());
+
+        //when
+        int result = exchangeService.exchangeApproval(newExchange);
+
+        //then
+        Assertions.assertEquals(result, 1);
+    }
+
+    @Test
+    @DisplayName("포인트 전환 신청 반려 테스트")
+    void testExchangeRejection(){
+        //given
+        ExchangeDTO newExchange = new ExchangeDTO();
+        newExchange.setExchangeCode(27);
+        newExchange.setReturnDetail("잘못된 파일");
+        newExchange.setStatus("반려");
+        newExchange.setProcessingDate(new Date());
+
+        //when
+        int result = exchangeService.exchangeRejection(newExchange);
+
+        //then
+        Assertions.assertEquals(result, 1);
+    }
+
+    @Test
+    @DisplayName("특정 회원 포인트 적립 / 사용 내역 조회")
+    void testSelectMemberPoints(){
+        //given
+        int memberCode = 4;
+
+        //when
+        List<Map<String, Object>> pointHistory = exchangeService.selectMemberPoints(memberCode);
+
+        //then
+        Assertions.assertNotNull(pointHistory);
+        System.out.println("포인트 내역 조회 : " + pointHistory);
+    }
 
 }

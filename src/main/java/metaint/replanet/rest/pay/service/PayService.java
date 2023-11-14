@@ -5,16 +5,11 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.jwt.TokenProvider;
-import metaint.replanet.rest.auth.oauth2.PrincipalDetails;
 import metaint.replanet.rest.campaign.repository.CampaignRepository;
-import metaint.replanet.rest.pay.dto.MemberDTO;
 import metaint.replanet.rest.pay.dto.pay.DonationAmountDTO;
 import metaint.replanet.rest.pay.dto.pay.KakaoPayApprovalVO;
 import metaint.replanet.rest.pay.dto.pay.KakaoPayReadyVO;
@@ -24,12 +19,11 @@ import metaint.replanet.rest.pay.entity.Member;
 import metaint.replanet.rest.pay.entity.Pay;
 import metaint.replanet.rest.pay.repository.DonationRepository;
 import metaint.replanet.rest.pay.repository.PayCampaignRepository;
+import metaint.replanet.rest.pay.repository.PayMemberRepository;
 import metaint.replanet.rest.pay.repository.PayRepository;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -46,13 +40,15 @@ public class PayService {
     private final DonationRepository donationRepository;
     private final PayRepository payRepository;
     private final PayCampaignRepository payCampaignRepository;
+    private final PayMemberRepository payMemberRepository;
 
     private final TokenProvider tokenProvider;
 
-    public PayService(DonationRepository donationRepository, PayRepository payRepository, CampaignRepository campaignRepository, PayCampaignRepository payCampaignRepository, TokenProvider tokenProvider) {
+    public PayService(DonationRepository donationRepository, PayRepository payRepository, CampaignRepository campaignRepository, PayCampaignRepository payCampaignRepository, PayMemberRepository payMemberRepository, TokenProvider tokenProvider) {
         this.donationRepository = donationRepository;
         this.payRepository = payRepository;
         this.payCampaignRepository = payCampaignRepository;
+        this.payMemberRepository = payMemberRepository;
         this.tokenProvider = tokenProvider;
     }
     private static final String HOST = "https://kapi.kakao.com";
@@ -60,15 +56,22 @@ public class PayService {
     private KakaoPayApprovalVO kakaoPayApprovalVO;
 
 
-    public String kakaoPayReady(DonationAmountDTO amount, String campaignCode) {
+    public String kakaoPayReady(DonationAmountDTO amount, String campaignCode, String memberCode) {
         log.info("[kakaoPayReady()] ---------------------------------------- ");
         log.info("[kakaoPayReady() amount.getPointAmount()] : " + amount.getPointAmount());
         log.info("[kakaoPayReady() amount.campaignCode] : " + campaignCode);
 
-        Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
+        String memberId = null;
+        Optional<Member> optionalMember = payMemberRepository.findById(Long.parseLong(memberCode));
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            memberId = member.getMemberId();
+            log.info("kakaoPayReady() memberId" + memberId);
+        } else {
+            log.info("kakaoPayReady() 멤버 정보가 없습니다!");
+        }
 
-        // memberId 임의값!
-        String memberId = "user01";
+        Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -87,10 +90,9 @@ public class PayService {
         params.add("quantity", "1"); // 수량
         params.add("total_amount", String.valueOf(amount.getCashAmount())); // 현금결제액
         params.add("tax_free_amount", "100"); // 상품 비과세 금액
-        params.add("approval_url", "http://localhost:8001/kakaoPaySuccess?pointAmount=" + amount.getPointAmount() + "&campaignCode=" + campaignDescriptions.get().getCampaignCode());
-        params.add("cancel_url", "http://localhost:8001/kakaoPayCancle?campaignCode=" + campaignDescriptions.get().getCampaignCode());
-        params.add("fail_url", "http://localhost:8001/kakaoPaySuccessFail?campaignCode=" + campaignDescriptions.get().getCampaignCode());
-        params.add("pointAmount", String.valueOf(amount.getPointAmount()));
+        params.add("approval_url", "http://localhost:8001/kakaoPaySuccess?pointAmount=" + amount.getPointAmount() + "&campaignCode=" + campaignCode + "&memberCode=" + memberCode);
+        params.add("cancel_url", "http://localhost:8001/kakaoPayCancle?campaignCode=" + campaignCode);
+        params.add("fail_url", "http://localhost:8001/kakaoPaySuccessFail?campaignCode=" + campaignCode);
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
@@ -114,16 +116,23 @@ public class PayService {
         return "/donations";
     }
 
-    public KakaoPayApprovalVO kakaoPayInfo(String pg_token, String pointAmount, String campaignCode) {
+    public KakaoPayApprovalVO kakaoPayInfo(String pg_token, String pointAmount, String campaignCode, String memberCode) {
 
         log.info("[kakaoPayInfo()]............................................");
+
+        Member refMember = null;
+        Optional<Member> optionalMember = payMemberRepository.findById(Long.parseLong(memberCode));
+        if (optionalMember.isPresent()) {
+            refMember = optionalMember.get();
+            log.info("kakaoPayReady() refMember" + refMember);
+        } else {
+            refMember = null;
+            log.info("kakaoPayReady() 멤버 정보가 없습니다!");
+        }
 
         Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
 
         RestTemplate restTemplate = new RestTemplate();
-
-        // memberId 임의값!
-        String memberId = "user01";
 
         // 서버로 요청할 Header
         HttpHeaders headers = new HttpHeaders();
@@ -135,8 +144,8 @@ public class PayService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.add("cid", "TC0ONETIME"); // 가맹점 코드 -> 테스트용 고정!
         params.add("tid", kakaoPayReadyVO.getTid()); // 결제 고유번호 -> 결제 준비 API 응답에 포함돼서 온거임 -> VO를 통해서 받아옴
-        params.add("partner_order_id", String.valueOf(campaignDescriptions.get().getCampaignCode())); // order_id 이건 어디서 들고와야하지?? -> 캠페인번호!! -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 선택한 캠페인
-        params.add("partner_user_id", memberId); // 얘도 동일하게 -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 로그인한 사용자!
+        params.add("partner_order_id", String.valueOf(campaignDescriptions.get().getCampaignCode())); // 현재 선택한 캠페인
+        params.add("partner_user_id", refMember.getMemberId()); // 현재 로그인한 사용자!
         params.add("pg_token", pg_token);
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
@@ -152,10 +161,6 @@ public class PayService {
                 Instant instant = date.toInstant();
                 ZoneId zoneId = ZoneId.systemDefault(); // 또는 다른 시간대로 설정
                 LocalDateTime donationDateTime = instant.atZone(zoneId).toLocalDateTime();
-
-                Member refMember = Member.builder()
-                        .memberCode(1).build();
-                // 회원정보 자리잡히면 이거 바꿔야함! 까먹으면 안됨!
 
                 // Donation 엔티티 생성
                 Donation newDonation = Donation.builder()
@@ -193,25 +198,37 @@ public class PayService {
         return null;
     }
 
-    public List<Pay> getPays() {
+    public List<Pay> getPaysByMember(String memberCode) {
         log.info("[getPays()] -----------------------------------");
         // 마이페이지 완성되면 넣기!
         // 기부내역 끌여오는거임 근데 내가 필요한건 로그인한 사용자의 기부내역!
 
-        List<Pay> payList = payRepository.findAll();
+        Long memberId = Long.parseLong(memberCode);
+
+        Member member = payMemberRepository.findByMemberCode(memberId);
+
+        List<Pay> payList = payRepository.findByRefDonationRefMember(member);
 
         log.info("[getDonation() payList] : " + payList);
 
         return payList;
     }
 
-    public List<Pay> getPaysByDateRange(String startDate, String endDate) {
+    public List<Pay> getPaysByDateRange(String startDate, String endDate, String memberCode) {
         log.info("[getPaysByDateRange()] -----------------------------------");
 
         LocalDateTime stardDateTime = LocalDateTime.parse(startDate + "T00:00:00");
         LocalDateTime endDateTime = LocalDateTime.parse(endDate + "T23:59:59");
 
-        List<Donation> donations = donationRepository.findAllByDonationDateTimeBetween(stardDateTime, endDateTime);
+        Optional<Member> optionalMember = Optional.ofNullable(payMemberRepository.findByMemberCode(Long.parseLong(memberCode)));
+        if(!optionalMember.isPresent()) {
+            log.info("[getPaysByDateRange()] 멤버를 찾을 수 없습니다 해당 멤버 코드 : " + memberCode);
+            return Collections.emptyList();
+        }
+
+        Member member = optionalMember.get();
+
+        List<Donation> donations = donationRepository.findAllByRefMemberAndDonationDateTimeBetween(member, stardDateTime, endDateTime);
 
         List<Pay> pays = new ArrayList<>();
         for (Donation donation : donations) {
@@ -242,7 +259,7 @@ public class PayService {
         log.info("[getPointByMember(String memberCode)] -----------------------------------");
         // 결제페이지에서 가용 포인트를 보여주기위한 메소드
 
-        Member member = donationRepository.findByRefMember(memberCode);
+        Member member = payMemberRepository.findByMemberCode(Long.valueOf(memberCode));
 
         if (member != null) {
             return member;
@@ -252,8 +269,18 @@ public class PayService {
         }
     }
 
-    public int postPointDonation(DonationAmountDTO amount, String campaignCode) {
+    public int postPointDonation(DonationAmountDTO amount, String campaignCode, String memberCode) {
         log.info("[postPointDonation(DonationAmountDTO amount)] -----------------------------------");
+
+        Member refMember;
+        Optional<Member> optionalMember = payMemberRepository.findById(Long.parseLong(memberCode));
+        if (optionalMember.isPresent()) {
+            refMember = optionalMember.get();
+            log.info("kakaoPayReady() refMember" + refMember);
+        } else {
+            refMember = null;
+            log.info("kakaoPayReady() 멤버 정보가 없습니다!");
+        }
 
         Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
 
@@ -261,10 +288,6 @@ public class PayService {
             log.info("[postPointDonation() campaignDescriptions] : " + campaignDescription);
 
             CampaignDescription campaign = campaignDescription;
-
-            Member refMember = Member.builder()
-                    .memberCode(1).build();
-
 
             Donation newDonation = Donation.builder()
                     .donationDateTime(LocalDateTime.now())

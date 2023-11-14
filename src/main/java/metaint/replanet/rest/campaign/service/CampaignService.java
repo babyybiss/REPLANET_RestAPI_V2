@@ -59,9 +59,20 @@ public class CampaignService {
     //등록 성공
     @Transactional
     public int registCampaign(CampaignDescriptionDTO campaign) {
+        System.out.println("여긴오지?2");
+
         // 목표금액 , 제거
         String goalBudger = campaign.getGoalBudget().replaceAll(",", "");
         campaign.setGoalBudget(goalBudger);
+        Double overGoalBudger = Double.parseDouble(goalBudger);
+        System.out.println(overGoalBudger+"여긴오지?34");
+
+        // 금액 체크
+        if (overGoalBudger >= 1000000000){
+            System.out.println("이거 와야돼?");
+            return -2;
+        }
+
         // 현재 날짜
         LocalDateTime startDate = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
@@ -70,12 +81,17 @@ public class CampaignService {
         // 마감일 형변환 String =>  LocalDateTime
         String getEndDate = campaign.getEndDate();
         LocalDateTime endDate = LocalDateTime.parse(getEndDate + "T23:59:59", formatter);
+        if (endDate.isBefore(startDate)){
+            return 0;
+        }
+
 
         // 변환된 LocalDateTime을 Entity에 매핑
         CampaignDescription campaignEntity = modelMapper.map(campaign, CampaignDescription.class);
 
+
         campaignEntity.endDate(endDate).builder();
-        System.out.println(campaignEntity);
+
         campaignRepository.save(campaignEntity);
         System.out.println(campaignEntity.getCampaignCode() + " 여기가 캠페인 코드다!!");
 
@@ -98,6 +114,7 @@ public class CampaignService {
         String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
         String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
 
+        System.out.println(campaignCode + "코드만 확인");
 
         // 파일 정보 세팅
         campaignFile.setFileOriginName(fileOriginName);
@@ -105,6 +122,7 @@ public class CampaignService {
         campaignFile.setFileSavePath(IMAGE_URL);
         campaignFile.setFileExtension(fileExtension);
         campaignFile.setCampaignCode(campaignCode);
+        System.out.println(campaignFile + " 캠펜 코드 확인");
         //campaignFile.setFileSaveName(replaceFileName);
         try {
             // 폴더 없으면 폴더 생성
@@ -169,6 +187,7 @@ public class CampaignService {
     @Transactional
     public void deleteCampaign(int campaignCode) {
         System.out.println(campaignCode + "여기는 캠펜코드");
+
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignCode).orElse(null);
         System.out.println(campaign + "이건 삭제 캠펜");
         if (campaign != null) {
@@ -186,6 +205,7 @@ public class CampaignService {
 
         /* update 할 엔티티 조회 */
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignDTO.getCampaignCode()).get();
+
 
 
         System.out.println(campaign);

@@ -11,36 +11,30 @@ public class Chatbot {
     @Column(name = "question_code")
     private int questionCode;
     @Column(name = "question_content")
-    private String question_content;
+    private String questionContent;
     @Column(name = "answer_content")
-    private String answer_content;
+    private String answerContent;
 
     protected Chatbot() {}
-
-    public Chatbot(int questionCode, String question_content, String answer_content) {
-        this.questionCode = questionCode;
-        this.question_content = question_content;
-        this.answer_content = answer_content;
-    }
 
     public int getQuestionCode() {
         return questionCode;
     }
 
-    public String getQuestion_content() {
-        return question_content;
+    public String getQuestionContent() {
+        return questionContent;
     }
 
-    public String getAnswer_content() {
-        return answer_content;
+    public String getAnswerContent() {
+        return answerContent;
     }
 
     @Override
     public String toString() {
         return "Chatbot{" +
                 "questionCode=" + questionCode +
-                ", question_content='" + question_content + '\'' +
-                ", answer_content='" + answer_content + '\'' +
+                ", questionContent='" + questionContent + '\'' +
+                ", answerContent='" + answerContent + '\'' +
                 '}';
     }
 }

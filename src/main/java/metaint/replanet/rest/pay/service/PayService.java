@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
+import metaint.replanet.rest.auth.jwt.TokenProvider;
+import metaint.replanet.rest.auth.oauth2.PrincipalDetails;
 import metaint.replanet.rest.campaign.repository.CampaignRepository;
-import metaint.replanet.rest.pay.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.pay.dto.MemberDTO;
 import metaint.replanet.rest.pay.dto.pay.DonationAmountDTO;
 import metaint.replanet.rest.pay.dto.pay.KakaoPayApprovalVO;
@@ -24,10 +25,11 @@ import metaint.replanet.rest.pay.entity.Pay;
 import metaint.replanet.rest.pay.repository.DonationRepository;
 import metaint.replanet.rest.pay.repository.PayCampaignRepository;
 import metaint.replanet.rest.pay.repository.PayRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -44,13 +46,14 @@ public class PayService {
     private final DonationRepository donationRepository;
     private final PayRepository payRepository;
     private final PayCampaignRepository payCampaignRepository;
-    private final ModelMapper modelMapper;
 
-    public PayService(DonationRepository donationRepository, PayRepository payRepository, CampaignRepository campaignRepository, PayCampaignRepository payCampaignRepository, ModelMapper modelMapper) {
+    private final TokenProvider tokenProvider;
+
+    public PayService(DonationRepository donationRepository, PayRepository payRepository, CampaignRepository campaignRepository, PayCampaignRepository payCampaignRepository, TokenProvider tokenProvider) {
         this.donationRepository = donationRepository;
         this.payRepository = payRepository;
         this.payCampaignRepository = payCampaignRepository;
-        this.modelMapper = modelMapper;
+        this.tokenProvider = tokenProvider;
     }
     private static final String HOST = "https://kapi.kakao.com";
     private KakaoPayReadyVO kakaoPayReadyVO;
@@ -64,12 +67,10 @@ public class PayService {
 
         Optional<CampaignDescription> campaignDescriptions = payCampaignRepository.findById(Integer.valueOf(campaignCode));
 
+        // memberId 임의값!
+        String memberId = "user01";
 
         RestTemplate restTemplate = new RestTemplate();
-
-        //임의 값 생성
-        MemberDTO member = new MemberDTO();
-        member.setMemberId("user01");
 
         // 서버로 요청할 Header
         HttpHeaders headers = new HttpHeaders();
@@ -81,7 +82,7 @@ public class PayService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.add("cid", "TC0ONETIME"); // 가맹점코드 테스트에선 고정
         params.add("partner_order_id", String.valueOf(campaignDescriptions.get().getCampaignCode())); // orderId
-        params.add("partner_user_id", member.getMemberId()); // userId
+        params.add("partner_user_id", memberId); // userId
         params.add("item_name", campaignDescriptions.get().getCampaignTitle()); // 상품명
         params.add("quantity", "1"); // 수량
         params.add("total_amount", String.valueOf(amount.getCashAmount())); // 현금결제액
@@ -90,7 +91,6 @@ public class PayService {
         params.add("cancel_url", "http://localhost:8001/kakaoPayCancle?campaignCode=" + campaignDescriptions.get().getCampaignCode());
         params.add("fail_url", "http://localhost:8001/kakaoPaySuccessFail?campaignCode=" + campaignDescriptions.get().getCampaignCode());
         params.add("pointAmount", String.valueOf(amount.getPointAmount()));
-        // 취소, 실패 페이지 만들어야함!
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
 
@@ -122,23 +122,21 @@ public class PayService {
 
         RestTemplate restTemplate = new RestTemplate();
 
+        // memberId 임의값!
+        String memberId = "user01";
+
         // 서버로 요청할 Header
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "KakaoAK " + "77683905e97c497707a05671168be68f");
         headers.add("Accept", MediaType.APPLICATION_JSON_UTF8_VALUE);
         headers.add("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE + ";charset=UTF-8");
 
-        //임의 값 생성
-        MemberDTO member = new MemberDTO();
-        member.setMemberId("user01");
-        // 회원정보랑 캠페인정보 자리잡히면 이거 바꿔야함! 까먹으면 안됨!!!!
-
         // 서버로 요청할 Body
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
         params.add("cid", "TC0ONETIME"); // 가맹점 코드 -> 테스트용 고정!
         params.add("tid", kakaoPayReadyVO.getTid()); // 결제 고유번호 -> 결제 준비 API 응답에 포함돼서 온거임 -> VO를 통해서 받아옴
         params.add("partner_order_id", String.valueOf(campaignDescriptions.get().getCampaignCode())); // order_id 이건 어디서 들고와야하지?? -> 캠페인번호!! -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 선택한 캠페인
-        params.add("partner_user_id", member.getMemberId()); // 얘도 동일하게 -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 로그인한 사용자!
+        params.add("partner_user_id", memberId); // 얘도 동일하게 -> 뭐 dto나 엔티티 통해서 들고오던가 해야지 -> 현재 로그인한 사용자!
         params.add("pg_token", pg_token);
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
@@ -243,9 +241,9 @@ public class PayService {
     public Member getPointByMember(String memberCode) {
         log.info("[getPointByMember(String memberCode)] -----------------------------------");
         // 결제페이지에서 가용 포인트를 보여주기위한 메소드
-        
+
         Member member = donationRepository.findByRefMember(memberCode);
-        
+
         if (member != null) {
             return member;
         } else {

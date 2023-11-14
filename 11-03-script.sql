@@ -190,3 +190,8 @@ CREATE TABLE `tbl_refresh_token`
 ALTER TABLE tbl_donation ADD FOREIGN KEY (ref_member_code) REFERENCES tbl_member(member_code);
 ALTER TABLE tbl_donation ADD FOREIGN KEY (ref_campaign_code) REFERENCES tbl_campaign_description(campaign_code);
 ALTER TABLE tbl_pay ADD FOREIGN KEY (ref_donation_code) REFERENCES tbl_donation(donation_code);
+
+-- 캠페인첨부파일
+ALTER TABLE tbl_campaign_desc_file ADD FOREIGN KEY (campaign_code) REFERENCES tbl_campaign_description(campaign_code);
+
+

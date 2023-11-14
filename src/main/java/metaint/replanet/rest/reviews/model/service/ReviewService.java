@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -153,6 +154,7 @@ public class ReviewService {
         return modelMapper.map(reviewFile, ReviewFileDTO.class);
     }
 
+    @Transactional
     public void modifyReview(ReviewDTO reviewDTO, MultipartFile imageFile) {
 
         log.info("[ProductService] updateReview Start ===================================");
@@ -164,13 +166,43 @@ public class ReviewService {
         try {
 
             Review review = reviewRepository.findById(reviewDTO.getReviewCode()).get();
+            ReviewFile replaceableReview = reviewFileRepository.findByReviewCode(reviewDTO.getReviewCode());
+            String replaceableImgPath = replaceableReview.getFileSaveName();
+            log.info("what are we deleting? : " + replaceableImgPath);
+
             List<ReviewFile> reviewFileList = review.getReviewFileList();
 
             if(!reviewFileList.isEmpty()) {
                 String fileOriginpath = reviewFileList.get(0).getFileOriginPath();
 
                 System.out.println("FileOriginpath: " + fileOriginpath);
+
+                review = review.reviewCode(reviewDTO.getReviewCode())
+                        .reviewTitle(reviewDTO.getReviewTitle())
+                        .description(reviewDTO.getDescription()).build();
+
+                if(imageFile != null) {
+                    String imageName = UUID.randomUUID().toString().replace("-", "");
+                    replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
+
+                    ////////////////////////////
+
+
+                    ReviewFile reviewFile = reviewFileRepository.findByReviewCode(reviewDTO.getReviewCode());
+
+                    //ReviewFileDTO reviewFileDTO = new ReviewFileDTO();
+
+                    reviewFile = reviewFile.fileSaveName(replaceFileName).build();
+
+                    boolean isDelete = FileUploadUtils.deleteFile(IMAGE_DIR, replaceableImgPath);
+                    log.info("[Update Review] isDelete : " + isDelete);
+
+                    log.info("[Update Review] InserFileName : " + replaceFileName);
+                }
             } else {
+                ReviewFile reviewFile = reviewFileRepository.findByReviewCode(reviewDTO.getReviewCode());
+                reviewFile = reviewFile.fileSaveName(replaceableImgPath).build();
+
                 System.out.println("No files in the reviewFileList");
             }
         } catch (Exception e) {
@@ -178,6 +210,20 @@ public class ReviewService {
         }
 
 
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewCode, Long revFileCode) {
+
+        ReviewFile replaceableReview = reviewFileRepository.findByReviewCode(reviewCode);
+        String deleteImgPath = replaceableReview.getFileSaveName();
+
+        boolean isDelete = FileUploadUtils.deleteFile(IMAGE_DIR, deleteImgPath);
+        log.info("[Update Review] isDelete : " + isDelete);
+
+        reviewFileRepository.deleteByRevFileCode(revFileCode);
+        //reviewFileRepository.deleteByReviewCode(revFileCode);
+        reviewRepository.deleteById(reviewCode);
     }
 
 

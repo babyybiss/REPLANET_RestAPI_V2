@@ -39,4 +39,38 @@ public class ReviewFile {
     @JsonIgnore
     private Review review;
 
+    public ReviewFile(String fileSaveName) {
+    }
+/*
+    public ReviewFile fileOriginName(String fileOriginName) {
+        this.fileOriginName = fileOriginName;
+        return this;
+    }
+    
+    public ReviewFile fileOriginPath(String fileOriginPath) {
+        this.fileOriginPath = fileOriginPath;
+        return this;
+    }
+    
+
+    
+    public ReviewFile fileSavePath(String fileSavePath) {
+        this.fileSavePath = fileSavePath;
+        return this;
+    }
+    
+    public ReviewFile build() {
+        return new ReviewFile(fileOriginName, fileOriginPath, fileSaveName, fileSavePath);
+    }*/
+
+
+    public ReviewFile fileSaveName(String fileSaveName) {
+        this.fileSaveName = fileSaveName;
+        return this;
+    }
+
+    public ReviewFile build() {
+        return new ReviewFile(fileSaveName);
+    }
+    
 }

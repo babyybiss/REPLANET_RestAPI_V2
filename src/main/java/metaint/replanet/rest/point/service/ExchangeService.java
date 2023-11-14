@@ -3,8 +3,10 @@ package metaint.replanet.rest.point.service;
 import metaint.replanet.rest.point.dto.ExchangeDTO;
 import metaint.replanet.rest.point.dto.PointFileDTO;
 import metaint.replanet.rest.point.entity.Exchange;
+import metaint.replanet.rest.point.entity.Member;
 import metaint.replanet.rest.point.entity.PointFile;
 import metaint.replanet.rest.point.repository.ExchangeRepository;
+import metaint.replanet.rest.point.repository.MemberPointRepository;
 import metaint.replanet.rest.point.repository.PointFileRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ExchangeService {
@@ -21,12 +24,18 @@ public class ExchangeService {
 
     private final PointFileRepository pointFileRepository;
 
+    private MemberPointRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ExchangeService(ExchangeRepository exchangeRepository, PointFileRepository pointFileRepository, ModelMapper modelMapper) {
+    public ExchangeService(ExchangeRepository exchangeRepository, PointFileRepository pointFileRepository, MemberPointRepository memberRepository, ModelMapper modelMapper) {
         this.exchangeRepository = exchangeRepository;
         this.pointFileRepository = pointFileRepository;
+        this.memberRepository = memberRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -45,15 +54,131 @@ public class ExchangeService {
         return applicationCode;
     }
 
-    public List<Exchange> selectAllExchanges() {
+    public List<ExchangeDTO> selectAllExchanges() {
         List<Exchange> allExchanges = exchangeRepository.findAll();
 
-        return allExchanges;
+        allExchanges.sort(Comparator.comparingInt(Exchange::getExchangeCode));
+        Collections.reverse(allExchanges);
+
+        return allExchanges.stream()
+                .map(list -> modelMapper.map(list, ExchangeDTO.class))
+                .collect(Collectors.toList());
     }
 
     public List<Exchange> selectMemberAllExchange(int memberCode) {
         List<Exchange> memberAllExchange = exchangeRepository.findByMemberCode(memberCode);
 
         return memberAllExchange;
+    }
+
+    public List<ExchangeDTO> selectExchangesByStatus(String status) {
+        List<Exchange> listByStatus = exchangeRepository.findByStatus(status);
+
+        return listByStatus.stream()
+                .map(list -> modelMapper.map(list, ExchangeDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, Object> selectExchangeDetail(int exchangeCode) {
+        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, f.file_path, m.member_id, m.member_name " +
+                "FROM tbl_point_exchange e " +
+                "JOIN tbl_point_file f ON e.exchange_code = f.application_code " +
+                "JOIN tbl_member m ON e.member_code = m.member_code " +
+                "WHERE e.exchange_code = ?1";
+
+        Object[] detailResult = (Object[]) entityManager.createNativeQuery(sql)
+                .setParameter(1, exchangeCode)
+                .getSingleResult();
+
+        String[] columNames = {
+                "title", "exchange_date", "status", "points", "return_detail", "file_path", "member_id", "member_name"
+        };
+
+        Map<String, Object> detailResultMap = new HashMap<>();
+        for(int i = 0; i<columNames.length; i++){
+            detailResultMap.put(columNames[i], detailResult[i]);
+        }
+
+        return detailResultMap;
+    }
+
+    public int exchangeApproval(ExchangeDTO exchangeDTO){
+        Exchange approveExchange = exchangeRepository.findById(exchangeDTO.getExchangeCode()).get();
+
+        if (approveExchange != null) {
+            approveExchange = approveExchange.points(exchangeDTO.getPoints())
+                    .status(exchangeDTO.getStatus())
+                    .processingDate(exchangeDTO.getProcessingDate())
+                    .builder();
+            exchangeRepository.save(approveExchange);
+            Member memberPoint = memberRepository.findById(approveExchange.getMemberCode()).get();
+            System.out.println("적립 전 보유 포인트 : " + memberPoint.getCurrentPoint());
+
+            if (memberPoint != null) {
+                memberPoint = memberPoint.currentPoint(memberPoint.getCurrentPoint() + approveExchange.getPoints())
+                        .builder();
+                memberRepository.save(memberPoint);
+
+                System.out.println("신청 상태 확인 : " + approveExchange.getStatus());
+                System.out.println("승인 포인트 확인 : " + approveExchange.getPoints());
+                System.out.println("현재 포인트 확인 : " + memberPoint.getCurrentPoint());
+
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    public int exchangeRejection(ExchangeDTO exchangeDTO) {
+        Exchange rejectExchange = exchangeRepository.findById(exchangeDTO.getExchangeCode()).get();
+
+        if (rejectExchange != null) {
+            rejectExchange = rejectExchange.returnDetail(exchangeDTO.getReturnDetail())
+                    .status(exchangeDTO.getStatus())
+                    .processingDate(exchangeDTO.getProcessingDate())
+                    .builder();
+            exchangeRepository.save(rejectExchange);
+
+            System.out.println("신청 상태 확인 : " + rejectExchange.getStatus());
+            System.out.println("반려 사유 확인 : " + rejectExchange.getReturnDetail());
+
+            return 1;
+        }
+        return 0;
+    }
+
+    public List<Map<String, Object>> selectMemberPoints(int memberCode) {
+        String sql = "SELECT changeDate, content, changePoint, remainingPoint FROM ( " +
+                "SELECT e.processing_date AS changeDate, e.title AS content, e.points AS changePoint, m.current_point AS remainingPoint " +
+                "FROM tbl_member m " +
+                "LEFT JOIN tbl_point_exchange e ON m.member_code = e.member_code AND e.points > 0 " +
+                "WHERE m.member_code = ?1 " +
+                "UNION " +
+                "SELECT d.donation_date_time AS changeDate, c.campaign_title AS content, d.donation_point AS changePoint, m.current_point AS remainingPoint " +
+                "FROM tbl_member m " +
+                "LEFT JOIN tbl_donation d ON m.member_code = d.member_code AND d.donation_point > 0 " +
+                "LEFT JOIN tbl_campaign_description c ON d.campaign_code = c.campaign_code " +
+                "WHERE m.member_code = ?1 " +
+                ") AS pointHistory " +
+                "ORDER BY changeDate DESC";
+
+        List<Object[]> resultList = entityManager.createNativeQuery(sql)
+                .setParameter(1, memberCode)
+                .getResultList();
+
+        List<Map<String, Object>> pointHistory = new ArrayList<>();
+
+        for(Object[] result : resultList){
+            Map<String, Object> pointHistoryMap = new HashMap<>();
+            pointHistoryMap.put("changeDate", result[0]);
+            pointHistoryMap.put("content", result[1]);
+            pointHistoryMap.put("changePoint", result[2]);
+            pointHistoryMap.put("remainingPoint", result[3]);
+
+            pointHistory.add(pointHistoryMap);
+        }
+        System.out.println("포인트 내역 조회 : " + pointHistory);
+
+        return pointHistory;
     }
 }

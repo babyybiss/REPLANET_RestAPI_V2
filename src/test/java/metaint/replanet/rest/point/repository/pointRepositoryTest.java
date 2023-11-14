@@ -1,18 +1,13 @@
 package metaint.replanet.rest.point.repository;
 
-import metaint.replanet.rest.auth.repository.MemberRepository;
 import metaint.replanet.rest.point.dto.ExchangeDTO;
-import metaint.replanet.rest.point.dto.MemberDTO;
 import metaint.replanet.rest.point.dto.PointFileDTO;
-import metaint.replanet.rest.point.dto.PointHistoryDTO;
 import metaint.replanet.rest.point.entity.Exchange;
 import metaint.replanet.rest.point.entity.Member;
 import metaint.replanet.rest.point.entity.PointFile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.PropertyNameInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -175,12 +170,14 @@ public class pointRepositoryTest {
         int exchangeCode = 25;
         int points = 10000;
         String status = "승인";
+        Date processingDate = new Date();
         // 실제 코드에서는 ExchangeDTO로 파라미터를 받아와서 build
 
         //when
         Exchange approveExchange = exchangeRepository.findById(exchangeCode).get();
         approveExchange = approveExchange.points(points)
                 .status(status)
+                .processingDate(processingDate)
                 .builder();
         exchangeRepository.save(approveExchange);
 
@@ -206,12 +203,14 @@ public class pointRepositoryTest {
         int exchangeCode = 18;
         String returnDetail = "잘못된 파일";
         String status = "반려";
+        Date processingDate = new Date();
         // 실제 코드에서는 ExchangeDTO로 파라미터를 받아와서 build
 
         //when
         Exchange rejectExchange = exchangeRepository.findById(exchangeCode).get();
         rejectExchange = rejectExchange.returnDetail(returnDetail)
                 .status(status)
+                .processingDate(processingDate)
                 .builder();
         exchangeRepository.save(rejectExchange);
 
@@ -228,17 +227,19 @@ public class pointRepositoryTest {
         int memberCode = 4;
 
         //when
-        //List<PointHistoryDTO> pointHistory = exchangeRepository.findHistoryByMemberCode(memberCode);
-        String sql = "SELECT CASE WHEN e.points > 0 THEN e.processing_date WHEN d.donation_point > 0 THEN d.donation_date_time END AS changeDate, " +
-                    "CASE WHEN e.points > 0 THEN e.title WHEN d.donation_point > 0 THEN c.campaign_title END AS content, " +
-                    "CASE WHEN e.points > 0 THEN e.points WHEN d.donation_point > 0 THEN d.donation_point END AS changePoint, " +
-                    "m.current_point AS remainingPoint " +
-                    "FROM tbl_member m " +
-                    "LEFT JOIN tbl_point_exchange e ON m.member_code = e.member_code " +
-                    "LEFT JOIN tbl_donation d ON m.member_code = d.member_code " +
-                    "LEFT JOIN tbl_campaign_description c ON d.campaign_code = c.campaign_code " +
-                    "WHERE m.member_code = ?1 " +
-                    "ORDER BY COALESCE(e.processing_date, d.donation_date_time) DESC";
+        String sql = "SELECT changeDate, content, changePoint, remainingPoint FROM ( " +
+                "SELECT e.processing_date AS changeDate, e.title AS content, e.points AS changePoint, m.current_point AS remainingPoint " +
+                "FROM tbl_member m " +
+                "LEFT JOIN tbl_point_exchange e ON m.member_code = e.member_code AND e.points > 0 " +
+                "WHERE m.member_code = ?1 " +
+                "UNION " +
+                "SELECT d.donation_date_time AS changeDate, c.campaign_title AS content, d.donation_point AS changePoint, m.current_point AS remainingPoint " +
+                "FROM tbl_member m " +
+                "LEFT JOIN tbl_donation d ON m.member_code = d.member_code AND d.donation_point > 0 " +
+                "LEFT JOIN tbl_campaign_description c ON d.campaign_code = c.campaign_code " +
+                "WHERE m.member_code = ?1 " +
+                ") AS pointHistory " +
+                "ORDER BY changeDate DESC";
 
         List<Object[]> resultList = entityManager.createNativeQuery(sql)
                 .setParameter(1, memberCode)

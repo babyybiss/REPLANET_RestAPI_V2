@@ -47,4 +47,6 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
 
     /* ------------ RepositoryTest END ------------- */
 
+
+
 }

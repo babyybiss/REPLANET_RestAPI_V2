@@ -20,6 +20,21 @@ CREATE TABLE `tbl_bookmark`
 ) COMMENT = '북마크';
 
 
+CREATE TABLE `tbl_campaign_description`
+(
+    `campaign_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '캠페인코드',
+    `campaign_title`    VARCHAR(500) NOT NULL COMMENT '캠페인제목',
+    `campaign_content`    BLOB NOT NULL COMMENT '캠페인내용',
+    `start_date`    DATETIME NOT NULL COMMENT '캠페인시작일자',
+    `end_date`    DATETIME NOT NULL COMMENT '캠페인마감일자',
+    `campaign_category`    VARCHAR(255) NOT NULL COMMENT '캠페인카테고리',
+    `current_budget`    INTEGER DEFAULT 0 NOT NULL COMMENT '캠페인현재모금액',
+    `goal_budget`    INTEGER NOT NULL COMMENT '캠페인목표액',
+    `org_name`    VARCHAR(255) NOT NULL COMMENT '단체명',
+    `org_description`    VARCHAR(1000) NOT NULL COMMENT '단체소개',
+    `org_tel`    VARCHAR(255) NOT NULL COMMENT '단체연락처',
+    PRIMARY KEY ( `campaign_code` )
+) COMMENT = '캠페인상세내용';
 
 
 CREATE TABLE `tbl_campaign_desc_file`
@@ -31,27 +46,10 @@ CREATE TABLE `tbl_campaign_desc_file`
     `file_origin_path`    VARCHAR(255) NOT NULL COMMENT '원본경로',
     `file_save_path`    VARCHAR(255) NOT NULL COMMENT '저장경로',
     `campaign_code`    INTEGER NOT NULL COMMENT '캠페인코드',
- PRIMARY KEY ( `campaign_file_code` )
+    PRIMARY KEY (`campaign_file_code`),
+    KEY `campaign_code` (`campaign_code`),
+    CONSTRAINT `tbl_campaign_desc_file` FOREIGN KEY (`campaign_code`) REFERENCES `tbl_campaign_description` (`campaign_code`)
 ) COMMENT = '캠페인첨부파일';
-
-
-
-
-CREATE TABLE `tbl_campaign_description`
-(
-    `campaign_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '캠페인코드',
-    `campaign_title`    VARCHAR(500) NOT NULL COMMENT '캠페인제목',
-    `campaign_content`    VARCHAR(1000) NOT NULL COMMENT '캠페인내용',
-    `start_date`    DATETIME NOT NULL COMMENT '캠페인시작일자',
-    `end_date`    DATETIME NOT NULL COMMENT '캠페인마감일자',
-    `campaign_category`    VARCHAR(255) NOT NULL COMMENT '캠페인카테고리',
-    `current_budget`    INTEGER NOT NULL COMMENT '캠페인현재모금액',
-    `goal_budget`    INTEGER NOT NULL COMMENT '캠페인목표액',
-    `org_name`    VARCHAR(255) NOT NULL COMMENT '단체명',
-    `org_description`    VARCHAR(1000) NOT NULL COMMENT '단체소개',
-    `org_tel`    VARCHAR(255) NOT NULL COMMENT '단체연락처',
- PRIMARY KEY ( `campaign_code` )
-) COMMENT = '캠페인상세내용';
 
 
 
@@ -74,7 +72,7 @@ CREATE TABLE `tbl_review`
 (
     `review_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기코드',
     `review_title`    VARCHAR(500) NOT NULL COMMENT '후기제목',
-    `description`    VARCHAR(1000) NOT NULL COMMENT '후기내용',
+    `description`    BLOB NOT NULL COMMENT '후기내용',
     `campaign_code`    INTEGER NOT NULL COMMENT '캠페인코드',
  PRIMARY KEY ( `review_code` )
 ) COMMENT = '후기게시글';
@@ -187,9 +185,9 @@ CREATE TABLE `tbl_refresh_token`
 
 -- FK 설정
 -- 기부내역, 결제내역
-ALTER TABLE tbl_donation ADD FOREIGN KEY (ref_member_code) REFERENCES tbl_member(member_code);
-ALTER TABLE tbl_donation ADD FOREIGN KEY (ref_campaign_code) REFERENCES tbl_campaign_description(campaign_code);
-ALTER TABLE tbl_pay ADD FOREIGN KEY (ref_donation_code) REFERENCES tbl_donation(donation_code);
+ALTER TABLE tbl_donation ADD FOREIGN KEY (member_code) REFERENCES tbl_member(member_code);
+ALTER TABLE tbl_donation ADD FOREIGN KEY (campaign_code) REFERENCES tbl_campaign_description(campaign_code);
+ALTER TABLE tbl_pay ADD FOREIGN KEY (donation_code) REFERENCES tbl_donation(donation_code);
 
 -- 캠페인첨부파일
 ALTER TABLE tbl_campaign_desc_file ADD FOREIGN KEY (campaign_code) REFERENCES tbl_campaign_description(campaign_code);

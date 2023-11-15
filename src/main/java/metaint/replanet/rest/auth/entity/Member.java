@@ -26,7 +26,7 @@ public class Member {
     private Long id;
 
     @NotNull
-    @Column(name = "member_id")
+    @Column(name = "member_email")
     private String email;
 
     @NotNull

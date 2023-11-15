@@ -1,10 +1,16 @@
 package metaint.replanet.rest.reviews.model.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import metaint.replanet.rest.auth.jwt.TokenProvider;
 import metaint.replanet.rest.reviews.dto.*;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static java.lang.Long.parseLong;
 
 @RestController
 @RequestMapping("/reviews")
@@ -23,7 +31,8 @@ public class ReviewController {
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
-
+    @Autowired
+    private TokenProvider tokenProvider;
 
     @GetMapping("/")
     public ResponseEntity<List<CombineReviewDTO>> getReviewList() {
@@ -34,7 +43,6 @@ public class ReviewController {
 
         log.info("(review controller): 가져온 총 결과 : " +details);
         return  ResponseEntity.ok(details);
-
     }
 
     @GetMapping("/{campaignCode}")
@@ -114,6 +122,29 @@ public class ReviewController {
         return ResponseEntity.ok("리뷰 삭제 성공!");
     }
 
+    @GetMapping("/memberCode")
+    public ResponseEntity<Long> getMemberCode(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
+        String token = extractToken(authorizationHeader);
+        Authentication authentication = tokenProvider.getAuthentication(token);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String memberCodeString = userDetails.getUsername();
+        Long memberCode = parseLong(memberCodeString);
+
+        log.info("[/kakaoPay memberCode] : " + memberCode);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private String extractToken(String authorizationHeader) {
+        log.info("[extractToken(String authorizationHeader)] ----------------------------------------------");
+        log.info("[extractToken() authorizationHeader] : " + authorizationHeader);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            log.info("[extractToken()] 토큰 추출 성공 ");
+            return authorizationHeader.substring(7);
+        }
+        log.info("[extractToken()] 토큰 추출 실패 ");
+        return null;
+    }
 /*    @GetMapping("{reviewCode}/comments")
     public ResponseEntity<ReviewCommentsDTO> getCommentsForSpecificReview(@PathVariable Long reviewCode) {
         return ResponseEntity.ok(details);

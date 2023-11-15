@@ -8,15 +8,17 @@ public class CountAndSumByMonthlyDTO {
     private int campaigns; // 캠페인 수 카운트
     private int sumCurrentBudget;
     private int sumGoalBudget;
+    private int sumExpectBudget;
 
     public CountAndSumByMonthlyDTO() {
     }
 
-    public CountAndSumByMonthlyDTO(String monthly, int campaigns, int sumCurrentBudget, int sumGoalBudget) {
+    public CountAndSumByMonthlyDTO(String monthly, int campaigns, int sumCurrentBudget, int sumGoalBudget, int sumExpectBudget) {
         this.monthly = monthly;
         this.campaigns = campaigns;
         this.sumCurrentBudget = sumCurrentBudget;
         this.sumGoalBudget = sumGoalBudget;
+        this.sumExpectBudget = sumExpectBudget;
     }
 
     public String getMonthly() {
@@ -51,6 +53,14 @@ public class CountAndSumByMonthlyDTO {
         this.sumGoalBudget = sumGoalBudget;
     }
 
+    public int getSumExpectBudget() {
+        return sumExpectBudget;
+    }
+
+    public void setSumExpectBudget(int sumExpectBudget) {
+        this.sumExpectBudget = sumExpectBudget;
+    }
+
     @Override
     public String toString() {
         return "CountAndSumByMonthlyDTO{" +
@@ -58,6 +68,7 @@ public class CountAndSumByMonthlyDTO {
                 ", campaigns=" + campaigns +
                 ", sumCurrentBudget=" + sumCurrentBudget +
                 ", sumGoalBudget=" + sumGoalBudget +
+                ", sumExpectBudget=" + sumExpectBudget +
                 '}';
     }
 }

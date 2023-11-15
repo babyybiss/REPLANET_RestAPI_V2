@@ -21,7 +21,8 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
 
     @Query(value = "SELECT c.campaign_category, COUNT(*) AS campaigns, " +
             "SUM(current_budget) AS sum_current_budget, " +
-            "SUM(goal_budget) AS sum_goal_budget " +
+            "SUM(goal_budget) AS sum_goal_budget, " +
+            "SUM(goal_budget-current_budget) AS sum_expect_budget " +
             "FROM tbl_campaign_description c " +
             "GROUP BY campaign_category"
             , nativeQuery = true)
@@ -29,7 +30,8 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
 
     @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns, " +
             "SUM(current_budget) AS sum_current_budget, " +
-            "SUM(goal_budget) AS sum_goal_budget " +
+            "SUM(goal_budget) AS sum_goal_budget, " +
+            "SUM(goal_budget-current_budget) AS sum_expect_budget " +
             "FROM tbl_campaign_description " +
             "WHERE DATE_FORMAT(start_date, '%Y-%m') BETWEEN '2023-01' AND '2023-12' " +
             "GROUP BY monthly"
@@ -38,7 +40,8 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
 
     @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns, " +
             "SUM(current_budget) AS sum_current_budget, " +
-            "SUM(goal_budget) AS sum_goal_budget " +
+            "SUM(goal_budget) AS sum_goal_budget, " +
+            "SUM(goal_budget-current_budget) AS sum_expect_budget " +
             "FROM tbl_campaign_description " +
             "WHERE DATE_FORMAT(start_date, '%Y-%m') BETWEEN '2022-01' AND '2022-12' " +
             "GROUP BY monthly"

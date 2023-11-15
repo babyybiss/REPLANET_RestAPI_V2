@@ -31,7 +31,7 @@ public class ChartService {
         return countResult;
     }
 
-    // 카테고리별 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    // 카테고리별 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계, 목표까지 남은모금액 조회
     public List<CountAndSumByCategoryDTO> countAndSumByCampaignCategory() {
 
         List<Object[]> resultList = chartRepository.countAndSumByCategory();
@@ -51,19 +51,21 @@ public class ChartService {
                     int campaigns = ((Number) row[1]).intValue();
                     int sumCurrentBudget = ((Number) row[2]).intValue();
                     int sumGoalBudget = ((Number) row[3]).intValue();
+                    int sumExpectBudget = ((Number) row[4]).intValue();
 
                     CountAndSumByCategoryDTO dto = new CountAndSumByCategoryDTO();
                     dto.setCampaignCategory(campaignCategory);
                     dto.setCampaigns(campaigns);
                     dto.setSumCurrentBudget(sumCurrentBudget);
                     dto.setSumGoalBudget(sumGoalBudget);
+                    dto.setSumExpectBudget(sumExpectBudget);
 
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
 
-    // 당해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    // 당해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계, 목표까지 남은모금액 조회
     public List<CountAndSumByMonthlyDTO> countAndSumByCurrentyear() {
         List<Object[]> resultList = chartRepository.countAndSumByCurrentyear();
 
@@ -73,18 +75,20 @@ public class ChartService {
                     int campaigns = ((Number) row[1]).intValue();
                     int sumCurrentBudget = ((Number) row[2]).intValue();
                     int sumGoalBudget = ((Number) row[3]).intValue();
+                    int sumExpectBudget = ((Number) row[4]).intValue();
 
                     CountAndSumByMonthlyDTO dto = new CountAndSumByMonthlyDTO();
                     dto.setMonthly(monthly);
                     dto.setCampaigns(campaigns);
                     dto.setSumCurrentBudget(sumCurrentBudget);
                     dto.setSumGoalBudget(sumGoalBudget);
+                    dto.setSumExpectBudget(sumExpectBudget);
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
 
-    // 전해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    // 전해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계, 목표까지 남은모금액 조회
     public List<CountAndSumByMonthlyDTO> countAndSumByPreviousyear() {
         List<Object[]> resultList = chartRepository.countAndSumByPreviousyear();
 
@@ -94,12 +98,14 @@ public class ChartService {
                     int campaigns = ((Number) row[1]).intValue();
                     int sumCurrentBudget = ((Number) row[2]).intValue();
                     int sumGoalBudget = ((Number) row[3]).intValue();
+                    int sumExpectBudget = ((Number) row[4]).intValue();
 
                     CountAndSumByMonthlyDTO dto = new CountAndSumByMonthlyDTO();
                     dto.setMonthly(monthly);
                     dto.setCampaigns(campaigns);
                     dto.setSumCurrentBudget(sumCurrentBudget);
                     dto.setSumGoalBudget(sumGoalBudget);
+                    dto.setSumExpectBudget(sumExpectBudget);
                     return dto;
                 })
                 .collect(Collectors.toList());

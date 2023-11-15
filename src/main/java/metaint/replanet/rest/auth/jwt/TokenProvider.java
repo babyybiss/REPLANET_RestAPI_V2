@@ -69,6 +69,7 @@ public class TokenProvider {
                 .claim("memberCode", memberCode)
                 .claim("memberName", memberName)
                 .claim("memberRole", memberRole)
+                .claim("email", email)
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(tokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)

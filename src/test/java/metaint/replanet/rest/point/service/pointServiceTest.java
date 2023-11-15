@@ -81,7 +81,7 @@ public class pointServiceTest {
         int memberCode = 1;
 
         //when
-        List<Exchange> memberAllExchange =  exchangeService.selectMemberAllExchange(memberCode);
+        List<ExchangeDTO> memberAllExchange =  exchangeService.selectMemberAllExchange(memberCode);
 
         //then
         Assertions.assertNotNull(memberAllExchange);
@@ -107,7 +107,7 @@ public class pointServiceTest {
         int exchangeCode = 8;
 
         //when
-        Map<String, Object> detailResult = exchangeService.selectExchangeDetail(exchangeCode);
+        Map<String, Object> detailResult = exchangeService.selectExchangeDetailA(exchangeCode);
 
         //then
         Assertions.assertNotNull(detailResult);

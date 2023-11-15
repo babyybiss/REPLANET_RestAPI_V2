@@ -65,10 +65,15 @@ public class ExchangeService {
                 .collect(Collectors.toList());
     }
 
-    public List<Exchange> selectMemberAllExchange(int memberCode) {
+    public List<ExchangeDTO> selectMemberAllExchange(int memberCode) {
         List<Exchange> memberAllExchange = exchangeRepository.findByMemberCode(memberCode);
 
-        return memberAllExchange;
+        memberAllExchange.sort(Comparator.comparingInt(Exchange::getExchangeCode));
+        Collections.reverse(memberAllExchange);
+
+        return memberAllExchange.stream()
+                .map(list -> modelMapper.map(list, ExchangeDTO.class))
+                .collect(Collectors.toList());
     }
 
     public List<ExchangeDTO> selectExchangesByStatus(String status) {
@@ -79,8 +84,8 @@ public class ExchangeService {
                 .collect(Collectors.toList());
     }
 
-    public Map<String, Object> selectExchangeDetail(int exchangeCode) {
-        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, f.file_path, f.file_save_name, m.member_id, m.member_name " +
+    public Map<String, Object> selectExchangeDetailA(int exchangeCode) {
+        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, f.file_path, f.file_save_name, m.member_email, m.member_name " +
                 "FROM tbl_point_exchange e " +
                 "JOIN tbl_point_file f ON e.exchange_code = f.application_code " +
                 "JOIN tbl_member m ON e.member_code = m.member_code " +
@@ -91,7 +96,7 @@ public class ExchangeService {
                 .getSingleResult();
 
         String[] columNames = {
-                "title", "exchangeDate", "status", "points", "returnDetail", "filePath", "fileSaveName", "memberId", "memberName"
+                "title", "exchangeDate", "status", "points", "returnDetail", "filePath", "fileSaveName", "memberEmail", "memberName"
         };
 
         Map<String, Object> detailResultMap = new HashMap<>();
@@ -100,6 +105,28 @@ public class ExchangeService {
         }
 
         return detailResultMap;
+    }
+
+    public Map<String, Object> selectExchangeDetailU(int exchangeCode) {
+        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, e.processing_date, f.file_save_name, f.file_extension " +
+                "FROM tbl_point_exchange e " +
+                "JOIN tbl_point_file f ON e.exchange_code = f.application_code " +
+                "WHERE e.exchange_code = ?1";
+
+        Object[] detailResultU = (Object[]) entityManager.createNativeQuery(sql)
+                .setParameter(1, exchangeCode)
+                .getSingleResult();
+
+        String[] columNames = {
+                "title", "exchangeDate", "status", "points", "returnDetail", "processingDate", "fileSaveName", "fileExtension"
+        };
+
+        Map<String, Object> detailResultUMap = new HashMap<>();
+        for(int i = 0; i<columNames.length; i++){
+            detailResultUMap.put(columNames[i], detailResultU[i]);
+        }
+
+        return detailResultUMap;
     }
 
     public int exchangeApproval(ExchangeDTO exchangeDTO){
@@ -181,4 +208,5 @@ public class ExchangeService {
 
         return pointHistory;
     }
+
 }

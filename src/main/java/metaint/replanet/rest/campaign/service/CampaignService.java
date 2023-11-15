@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,7 +44,7 @@ public class CampaignService {
     @Value("C:\\filetest")
     private String IMAGE_DIR;
 
-    @Value("C:\\filetest")
+    @Value("http://localhost:3000/campaigns")
     public String IMAGE_URL;
 
     @Autowired
@@ -56,17 +59,13 @@ public class CampaignService {
     //등록 성공
     @Transactional
     public int registCampaign(CampaignDescriptionDTO campaign) {
-        System.out.println("여긴오지?2");
-
         // 목표금액 , 제거
         String goalBudger = campaign.getGoalBudget().replaceAll(",", "");
         campaign.setGoalBudget(goalBudger);
         Double overGoalBudger = Double.parseDouble(goalBudger);
-        System.out.println(overGoalBudger+"여긴오지?34");
 
         // 금액 체크
         if (overGoalBudger >= 1000000000){
-            System.out.println("이거 와야돼?");
             return -2;
         }
 
@@ -79,7 +78,7 @@ public class CampaignService {
         String getEndDate = campaign.getEndDate();
         LocalDateTime endDate = LocalDateTime.parse(getEndDate + "T23:59:59", formatter);
         if (endDate.isBefore(startDate)){
-            return 0;
+            return -1;
         }
 
 
@@ -97,31 +96,58 @@ public class CampaignService {
 
     // 파일 등록 성공
     @Transactional
-    public String registImage(MultipartFile imageFile, int campaignCode) {
+    public String registImage(MultipartFile imageFile, int campaignCode) throws IOException {
 
-        CampaignDescFileDTO campaignFile = new CampaignDescFileDTO();
+        CampaignDescFileDTO campaignFileDTO = new CampaignDescFileDTO();
 
-        //String imageName = UUID.randomUUID().toString().replace("-", "");
-        //String replaceFileName = null;
+        String fileSaveName = null;
         int result = 0;
-        //String replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
 
-        // 파일 정보 가져오기
-        String fileOriginName = imageFile.getOriginalFilename();
-        String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
-        String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
+        Path rootPath;
+        String IMAGE_DIR = null;
+        if (FileSystems.getDefault().getSeparator().equals("/")) {
+            Path MACPath = Paths.get("/REPLANET_ReactAPI/public/campaigns").toAbsolutePath();
+            // Unix-like system (MacOS, Linux)
+            rootPath = Paths.get("/User").toAbsolutePath();
+            Path relativePath = rootPath.relativize(MACPath);
+            IMAGE_DIR = String.valueOf(relativePath);
+        } else {
+            // Windows
+            Path WinPath = Paths.get("/dev/metaint/REPLANET_React/public/campaigns").toAbsolutePath();
+            rootPath = Paths.get("C:\\").toAbsolutePath();
+            Path relativePath = rootPath.resolve(WinPath);
+            IMAGE_DIR = String.valueOf(relativePath);
+        }
 
-        System.out.println(campaignCode + "코드만 확인");
 
-        // 파일 정보 세팅
-        campaignFile.setFileOriginName(fileOriginName);
-        campaignFile.setFileSaveName(fileSaveName);
-        campaignFile.setFileSavePath(IMAGE_URL);
-        campaignFile.setFileExtension(fileExtension);
-        campaignFile.setCampaignCode(campaignCode);
-        System.out.println(campaignFile + " 캠펜 코드 확인");
-        //campaignFile.setFileSaveName(replaceFileName);
         try {
+            // 파일 정보 가져오기
+            String fileOriginName = imageFile.getOriginalFilename();
+            String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
+            String imageName = UUID.randomUUID().toString().replaceAll("-", "");
+
+            fileSaveName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
+
+
+            System.out.println(campaignCode + "코드만 확인");
+
+            // 파일 정보 세팅
+            campaignFileDTO.setFileOriginName(fileOriginName);
+            campaignFileDTO.setFileOriginPath("얜 필요 없을거음");
+            campaignFileDTO.setFileSaveName(fileSaveName);
+            campaignFileDTO.setFileSavePath(IMAGE_URL);
+            campaignFileDTO.setFileExtension(fileExtension);
+            campaignFileDTO.setCampaignCode(campaignCode);
+            System.out.println(campaignFileDTO + " 캠펜 코드 확인");
+            //campaignFile.setFileSaveName(replaceFileName);
+            CampaignDescFile campaignDescFile = modelMapper.map(campaignFileDTO, CampaignDescFile.class);
+            campaignFileRepository.save(campaignDescFile);
+            result = 1;
+        }catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("파일이 읍서");
+        }
+        /*try {
             // 폴더 없으면 폴더 생성
             File directory = new File(IMAGE_DIR);
             if (!directory.exists()) {
@@ -129,15 +155,15 @@ public class CampaignService {
             }
             imageFile.transferTo(new File(IMAGE_URL + "/" + fileSaveName));
 
-            System.out.println(campaignFile + "얜 켐펜팔");
-            CampaignDescFile campaignDescFile = modelMapper.map(campaignFile, CampaignDescFile.class);
+            System.out.println(campaignFileDTO + "얜 켐펜팔");
+            CampaignDescFile campaignDescFile = modelMapper.map(campaignFileDTO, CampaignDescFile.class);
             campaignDescFile.fileOriginPath("이게 필요할라나?");
             campaignFileRepository.save(campaignDescFile);
             result = 1;
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("파일이 읍서");
-        }
+        }*/
 
 
         return (result > 0) ? "상품 입력 성공" : "상품 입력 실패";
@@ -145,30 +171,32 @@ public class CampaignService {
 
 
     // 전체 진행중 조회 성공
-    public List<CampaignDescription> findCampaignList() {
-//        LocalDateTime currentDate = LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHH")));
+    public List<CampaignAndFile> findCampaignList() {
         LocalDateTime currentDate = LocalDateTime.now();
-        System.out.println(currentDate);
 
-        List<CampaignDescription> campaignList = campaignRepository.findByEndDateAfter(currentDate);
+        List<CampaignAndFile> campaignList = campaignAndFileRepository.findByEndDateAfter(currentDate);
 
-        System.out.println(campaignList);
         return campaignList;
     }
 
     // 전체 종료 조회 성공
-    public List<CampaignDescription> findCampaignListDone() {
+    public List<CampaignAndFile> findCampaignListDone() {
         LocalDateTime currentDate = LocalDateTime.now();
-        List<CampaignDescription> campaignList = campaignRepository.findByEndDateBefore(currentDate);
 
+        List<CampaignAndFile> campaignList = campaignAndFileRepository.findByEndDateBefore(currentDate);
+
+        //List<CampaignDescription> campaignList = campaignRepository.findByEndDateBefore(currentDate);
+
+        System.out.println(campaignList + "앤드조회");
         return campaignList;
     }
 
     // 상세 조회 성공
-    public CampaignDescription findCampaign(int campaignCode) {
-        CampaignDescription findCampaign = campaignRepository.findById(campaignCode).orElseThrow(IllegalArgumentException::new);
+    public CampaignAndFile findCampaign(int campaignCode) {
+        CampaignAndFile findCampaign = campaignAndFileRepository.findById(campaignCode).orElseThrow(IllegalArgumentException::new);
+        //CampaignDescription findCampaign = campaignRepository.findById(campaignCode).orElseThrow(IllegalArgumentException::new);
 
-        System.out.println(findCampaign);
+        System.out.println(findCampaign + "니차례");
         return findCampaign;
     }
 
@@ -185,22 +213,22 @@ public class CampaignService {
     public void deleteCampaign(int campaignCode) {
         System.out.println(campaignCode + "여기는 캠펜코드");
 
-        CampaignAndFile campaign = campaignAndFileRepository.findById(campaignCode).orElse(null);
-        System.out.println(campaign + "이건 삭제 캠펜");
+        List<CampaignDescFile> campaign = campaignFileRepository.findByCampaignCodeCampaignCode(campaignCode);
+        System.out.println(campaign + "화긴");
         if (campaign != null) {
-            campaignAndFileRepository.delete(campaign);
+            campaignFileRepository.deleteByCampaignCodeCampaignCode(campaignCode);
+            campaignRepository.deleteById(campaignCode);
+
         }
 
-        //campaignRepository.deleteById(campaignCode);
 
-        //campaignFileRepository.deleteByCampaignCode();
     }
     // 캠페인 수정
-    @Transactional
+/*    @Transactional
     public void modifyCampaign(CampaignDescriptionDTO campaignDTO,
                                MultipartFile imageFile) {
 
-        /* update 할 엔티티 조회 */
+        // update 할 엔티티 조회
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignDTO.getCampaignCode()).get();
 
 
@@ -210,7 +238,7 @@ public class CampaignService {
         oriImage.add((CampaignDescFile) campaign.getCampaignDescfileList());
         System.out.println(oriImage + " 이놈 수정 하기전 원본 이미지");
 
-        /* update를 위한 엔티티 값 수정 */
+        // update를 위한 엔티티 값 수정
 
         campaign = campaign.campaignTitle(campaignDTO.getCampaignTitle())
                 .campaignContent(campaignDTO.getCampaignContent())
@@ -247,14 +275,13 @@ public class CampaignService {
 
         }else {
 
-            /* 이미지 변경 없을 시 */
+            //이미지 변경 없을 시
             campaign = campaign.campaignDescfileList(oriImage);
             System.out.println(campaign + "얜 수정 캠펜");
         }
 
 
-    }
-
+    }*/
     public List<Donation> findDonationList(int campaignCode) {
         List<Donation> donationList = donationRepository1.findByCampaignDescription_CampaignCode(campaignCode);
         System.out.println(donationList + "도네");

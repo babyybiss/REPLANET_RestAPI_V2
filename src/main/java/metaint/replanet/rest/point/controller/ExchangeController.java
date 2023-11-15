@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,7 +22,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/exchanges")
+@RequestMapping("/")
 public class ExchangeController {
 
     private ExchangeService exchangeService;
@@ -33,12 +32,10 @@ public class ExchangeController {
     }
 
     @Transactional
-    @PostMapping("")
+    @PostMapping("exchanges")
     public ResponseEntity<?> insertExchange (@RequestPart(value="title") String title,
-                                            @RequestPart(value = "memberCode") String memberCodeStr,
-                                            @RequestPart(value="file")MultipartFile pointFile){
-
-        int memberCode = Integer.parseInt(memberCodeStr);
+                                             @RequestPart(value="file") MultipartFile pointFile,
+                                             @RequestPart(value = "memberCode") String memberCode){
 
         log.info("제목 넘어왔나요?" + title);
         log.info("코드 넘어왔나요?" + memberCode);
@@ -47,7 +44,7 @@ public class ExchangeController {
             ExchangeDTO newExchange = new ExchangeDTO();
             newExchange.setExchangeDate(new Date());
             newExchange.setTitle(title);
-            newExchange.setMemberCode(memberCode);
+            newExchange.setMemberCode(Integer.parseInt(memberCode));
 
             log.info("DTO 확인 " + newExchange);
 
@@ -60,20 +57,21 @@ public class ExchangeController {
                 String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
                 String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
                 String FILE_DIR = null;
-                Path filePath = Paths.get("/REPLANET_ReactAPI/public/exchangeFiles").toAbsolutePath();
                 Path rootPath;
                 if (FileSystems.getDefault().getSeparator().equals("/")) {
                     // Unix-like system (MacOS, Linux)
+                    Path filePath1 = Paths.get("/REPLANET_ReactAPI/public/exchangeFiles").toAbsolutePath();
                     rootPath = Paths.get("/User").toAbsolutePath();
-                    Path relativePath = rootPath.relativize(filePath);
+                    Path relativePath = rootPath.relativize(filePath1);
                     FILE_DIR = String.valueOf(relativePath);
                 } else {
                     // Windows
+                    Path filePath2 = Paths.get("/dev/metaint/REPLANET_ReactAPI/public/exchangeFiles").toAbsolutePath();
                     rootPath = Paths.get("C:\\").toAbsolutePath();
-                    Path relativePath = rootPath.resolve(filePath);
+                    Path relativePath = rootPath.resolve(filePath2);
                     FILE_DIR = String.valueOf(relativePath);
                 }
-                log.info("경로 확인 : " + FILE_DIR);
+                log.info("저장 경로 확인 : " + FILE_DIR);
 
                 PointFileDTO newFile = new PointFileDTO();
                 newFile.setFileOriginName(fileOriginName);
@@ -88,7 +86,7 @@ public class ExchangeController {
                         directory.mkdirs();
                         log.info("저장경로가 존재하지 않아 새로 생성되었습니다.");
                     }
-                    File pf = new File(filePath + "/" + fileSaveName);
+                    File pf = new File(FILE_DIR + "/" + fileSaveName);
                     pointFile.transferTo(pf);
                     exchangeService.insertPointFile(newFile);
                 } catch (IOException e) {
@@ -103,11 +101,10 @@ public class ExchangeController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청 오류");
     }
 
-    @GetMapping("")
+    @GetMapping("exchanges")
     public List<ExchangeDTO> selectAllExchanges(){
 
         List<ExchangeDTO> exchangeList = exchangeService.selectAllExchanges();
-
         return exchangeList;
 //        return ResponseEntity.status(HttpStatus.OK).body(exchangeList);
     }
@@ -120,13 +117,29 @@ public class ExchangeController {
 //        return listByStatus;
 //    }
 
-    @GetMapping("/{exchangeCode}")
+    @GetMapping("exchanges/{exchangeCode}")
     public ResponseEntity<Map<String, Object>> selectExchangeDetail(@PathVariable int exchangeCode){
 
-        log.info("요청 받았니? " + exchangeCode);
-        Map<String, Object> exchangeDetail = exchangeService.selectExchangeDetail(exchangeCode);
-        log.info("백에서 넘겨주는 값 확인 : " + exchangeDetail);
+        log.info("전환 신청 코드 " + exchangeCode);
+        Map<String, Object> exchangeDetailA = exchangeService.selectExchangeDetailA(exchangeCode);
+        log.info("조회 값 확인 : " + exchangeDetailA);
+        return ResponseEntity.status(HttpStatus.OK).body(exchangeDetailA);
+    }
 
-        return ResponseEntity.status(HttpStatus.OK).body(exchangeDetail);
+    @GetMapping("users/{memberCode}/exchanges")
+    public ResponseEntity<List<ExchangeDTO>> selectMemberAllExchange(@PathVariable int memberCode){
+
+        log.info("memberCode 확인 : " + memberCode);
+        List<ExchangeDTO> memberAllExchange = exchangeService.selectMemberAllExchange(memberCode);
+        return ResponseEntity.status(HttpStatus.OK).body(memberAllExchange);
+    }
+
+    @GetMapping("users/exchangeDetail/{exchangeCode}")
+    public ResponseEntity<?> selectExchangeDetailU(@PathVariable int exchangeCode){
+
+        log.info("전환 신청 코드 : " + exchangeCode);
+        Map<String, Object> exchangeDetailU = exchangeService.selectExchangeDetailU(exchangeCode);
+        log.info("조회 값 확인 : " + exchangeDetailU);
+        return ResponseEntity.status(HttpStatus.OK).body(exchangeDetailU);
     }
 }

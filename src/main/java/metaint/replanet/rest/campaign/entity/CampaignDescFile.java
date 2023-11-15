@@ -7,7 +7,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.List;
 
-@ToString
 @AllArgsConstructor
 @Getter
 @Entity(name = "campaignDescFile")
@@ -29,8 +28,10 @@ public class CampaignDescFile {
     @Column(name = "file_extension")
     private String fileExtension; // 확장자
     //@OneToOne(mappedBy = "campaignDescfile")
-    @Column(name = "campaign_code")
-    private int campaignCode; // 모금 코드
+    @Getter
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "campaign_code")
+    private CampaignDescription campaignCode; // 모금 코드
     //private CampaignAndFile campaignCode; // 모금 코드
 
     protected CampaignDescFile() {}
@@ -55,13 +56,27 @@ public class CampaignDescFile {
         this.fileExtension = val;
         return this;
     }
-//    public CampaignDescFile campaignCode(CampaignAndFile val){
-//        this.campaignCode = val;
-//        return this;
-//    }
+    public CampaignDescFile campaignCode(CampaignDescription val){
+        this.campaignCode = val;
+        return this;
+    }
     public CampaignDescFile builder(){
         return new CampaignDescFile(
                 fileCode,fileOriginName,fileOriginPath,fileSaveName,
                 fileSavePath,fileExtension,campaignCode);
     }
+
+    @Override
+    public String toString() {
+        return "CampaignDescFile{" +
+                "fileCode=" + fileCode +
+                ", fileOriginName='" + fileOriginName + '\'' +
+                ", fileOriginPath='" + fileOriginPath + '\'' +
+                ", fileSaveName='" + fileSaveName + '\'' +
+                ", fileSavePath='" + fileSavePath + '\'' +
+                ", fileExtension='" + fileExtension + '\'' +
+                ", campaignCode=" + campaignCode +
+                '}';
+    }
+
 }

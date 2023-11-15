@@ -1,10 +1,13 @@
 package metaint.replanet.rest.auth.jwt;
 
 import metaint.replanet.rest.auth.dto.TokenDto;
+import metaint.replanet.rest.auth.entity.Member;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import metaint.replanet.rest.auth.entity.MemberRole;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,7 +31,7 @@ public class TokenProvider {
     private static final String BEARER_TYPE = "bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
     private final Key key;
-
+    private Member member;
 
 
     // 주의점: 여기서 @Value는 `springframework.beans.factory.annotation.Value`소속이다! lombok의 @Value와 착각하지 말것!
@@ -42,12 +45,20 @@ public class TokenProvider {
     // 토큰 생성
     public TokenDto generateTokenDto(Authentication authentication) {
 
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+
+        String memberCode = ((UserDetails) authentication.getPrincipal()).getUsername();
+
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-
+        Member member = new Member();
+        String memberName = member.getMemberName();
+        MemberRole memberRole = member.getMemberRole();
+        String email = member.getEmail();
 
         Date tokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
 
@@ -55,6 +66,10 @@ public class TokenProvider {
 
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
+                .claim("memberCode", memberCode)
+                .claim("memberName", memberName)
+                .claim("memberRole", memberRole)
+                .claim("email", email)
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(tokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -80,6 +95,7 @@ public class TokenProvider {
                         .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
+
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }

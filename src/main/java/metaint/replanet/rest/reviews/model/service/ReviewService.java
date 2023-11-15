@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -110,22 +111,25 @@ public class ReviewService {
         int result = 0;
 
         //////////////////////////////////////////////////////////////////////////////
-        Path filePath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
         Path rootPath;
         String IMAGE_DIR = null;
         if (FileSystems.getDefault().getSeparator().equals("/")) {
-
+            Path MACPath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
             // Unix-like system (MacOS, Linux)
             rootPath = Paths.get("/User").toAbsolutePath();
-            Path relativePath = rootPath.relativize(filePath);
+            Path relativePath = rootPath.relativize(MACPath);
             IMAGE_DIR = String.valueOf(relativePath);
             log.info("what is the paaaaath: " + IMAGE_DIR);
+
         } else {
             // Windows
+            Path WinPath = Paths.get("/dev/metaint/REPLANET_React/public/reviewImgs").toAbsolutePath();
             rootPath = Paths.get("C:\\").toAbsolutePath();
-            Path relativePath = rootPath.resolve(filePath);
+            Path relativePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(relativePath);
-            log.info("what is the paaaaath: " + IMAGE_DIR);
+            rootPath = Paths.get("C:\\dev\\metaint\\").toAbsolutePath();
+            Path resolvePath = rootPath.resolve(filePath);
+            IMAGE_DIR = String.valueOf(resolvePath);
         }
 
 
@@ -212,13 +216,13 @@ public class ReviewService {
                         rootPath = Paths.get("/User").toAbsolutePath();
                         Path relativePath = rootPath.relativize(filePath);
                         IMAGE_DIR = String.valueOf(relativePath);
-                        log.info("what is the paaaaath: " + IMAGE_DIR);
+                        log.info("what is the path: " + IMAGE_DIR);
                     } else {
                         // Windows
                         rootPath = Paths.get("C:\\").toAbsolutePath();
                         Path relativePath = rootPath.resolve(filePath);
                         IMAGE_DIR = String.valueOf(relativePath);
-                        log.info("what is the paaaaath: " + IMAGE_DIR);
+
                     }
 
 

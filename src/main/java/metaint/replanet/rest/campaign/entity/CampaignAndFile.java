@@ -84,6 +84,10 @@ public class CampaignAndFile {
         this.campaignDescfile = val;
         return this;
     }
+//        public CampaignAndFile campaignDescfileList(List<CampaignDescFile> val){
+//        this.campaignDescfileList = val;
+//        return this;
+//    }
 
     public CampaignAndFile builder(){
         return new CampaignAndFile(

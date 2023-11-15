@@ -20,10 +20,10 @@
         @Column(name = "donation_point")
         private int donationPoint;
         @ManyToOne
-        @JoinColumn(name = "ref_member_code")
+        @JoinColumn(name = "member_code")
         private Member refMember;
         @ManyToOne
-        @JoinColumn(name = "ref_campaign_code")
+        @JoinColumn(name = "campaign_code")
         private CampaignDescription refCampaign;
 
         public Donation(int donationCode, LocalDateTime donationDateTime, int donationPoint, Member refMember, CampaignDescription refCampaign) {

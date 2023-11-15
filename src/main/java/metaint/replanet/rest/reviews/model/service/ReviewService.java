@@ -19,7 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,11 +38,30 @@ public class ReviewService {
     private final ReviewFileRepository reviewFileRepository;
     private final ModelMapper modelMapper;
 
-    @Value("/Users/babyybiss/Documents/FullStackJava/REPLANET_ReactAPI/public/reviewImgs")
-    private String IMAGE_DIR;
 
     @Value("http://localhost:3000/reviewImgs")
     public String IMAGE_URL;
+
+    // Specify the relative path of the folder
+
+
+    //Path basePath = Paths.get("User").toAbsolutePath();
+
+    // Specify the root directory based on the operating system
+
+
+    //Path relativePath = basePath.relativize(filePath);
+    // Get the current working directory
+
+
+    Path currentPath = Paths.get("").toAbsolutePath();
+
+    //Path relativePath =  currentPath.relativize(filePath);
+
+    // Resolve the relative path against the current working directory
+   // Path fullPath = currentPath.resolve(relativePathString);
+
+
 
     public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ModelMapper modelMapper) {
         this.campaignReviewRepository = campaignReviewRepository;
@@ -48,8 +71,7 @@ public class ReviewService {
     }
 
     public List<CombineReviewDTO> findAllReviews() {
-
-        List<Campaign> reviewList = campaignReviewRepository.findAll();
+        List<Campaign> reviewList = campaignReviewRepository.findAllOrderedByCampaignCodeDesc();
 
         log.info("findAllReviews: " + reviewList);
 
@@ -70,6 +92,7 @@ public class ReviewService {
     @Transactional
     public void registNewReview(ReviewDTO reviewDTO, MultipartFile imageFile) throws IOException {
 
+
         log.info("[ReviewService] registNewReview Start ===========================");
         log.info("[ReviewService] registNewReview : " + reviewDTO);
         Review insertReview = modelMapper.map(reviewDTO, Review.class);
@@ -77,7 +100,7 @@ public class ReviewService {
         reviewRepository.save(insertReview);
         reviewRepository.flush();
 
-        /////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////
         Long reviewCode = reviewRepository.findByCampaignCode(reviewDTO.getCampaignCode());
 
         //System.out.println("what is the fucking reviewCode??" + reviewCode);
@@ -87,11 +110,36 @@ public class ReviewService {
         String replaceFileName = null;
         int result = 0;
 
+        //////////////////////////////////////////////////////////////////////////////
+        Path rootPath;
+        String IMAGE_DIR = null;
+        if (FileSystems.getDefault().getSeparator().equals("/")) {
+            Path MACPath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
+            // Unix-like system (MacOS, Linux)
+            rootPath = Paths.get("/User").toAbsolutePath();
+            Path relativePath = rootPath.relativize(MACPath);
+            IMAGE_DIR = String.valueOf(relativePath);
+            log.info("what is the paaaaath: " + IMAGE_DIR);
+
+        } else {
+            // Windows
+            Path WinPath = Paths.get("/dev/metaint/REPLANET_React/public/reviewImgs").toAbsolutePath();
+            rootPath = Paths.get("C:\\").toAbsolutePath();
+            Path relativePath = rootPath.resolve(WinPath);
+            IMAGE_DIR = String.valueOf(relativePath);
+            rootPath = Paths.get("C:\\dev\\metaint\\").toAbsolutePath();
+            Path resolvePath = rootPath.resolve(filePath);
+            IMAGE_DIR = String.valueOf(resolvePath);
+        }
+
+
+        log.info("what is the path: " + IMAGE_DIR);
+
         replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
 
         reviewFileDTO.setReviewCode(reviewCode);
         reviewFileDTO.setFileSaveName(replaceFileName);
-        reviewFileDTO.setFileSavePath("http://localhost:3000" + IMAGE_DIR + "/" + imageFile.getOriginalFilename());
+        reviewFileDTO.setFileSavePath("http://localhost:3000" + IMAGE_DIR + "/" + replaceFileName);
         reviewFileDTO.setFileExtension("PNG");
 
         reviewFileDTO.setFileOriginName(imageFile.getOriginalFilename());
@@ -108,33 +156,8 @@ public class ReviewService {
         result = 1;
 
         System.out.println("check");
-        //FileUploadUtils.deleteFile(IMAGE_DIR, replaceFileName);
-
-
 
         log.info("[ReviewService] registReview End ===================");
-/*            replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
-
-            reviewFileDTO.setFileOriginName(imageFile.getOriginalFilename());
-            reviewFileDTO.setFileOriginPath(IMAGE_DIR);
-            reviewFileDTO.setFileSaveName(replaceFileName);
-            reviewFileDTO.setFileSavePath("http://localhost:3000" + IMAGE_DIR + "/" + imageFile.getOriginalFilename());
-            reviewFileDTO.setFileExtension("PNG");
-            reviewFileDTO.setReviewCode(reviewCode);
-
-            log.info("[ReviewService] registNewReview replaceFileName : " + replaceFileName);
-            log.info("[ReviewService] registNewReview result : " + reviewDTO);
-            log.info("[ReviewService] registNewReviewFile result : " + reviewFileDTO);
-
-            ReviewFile insertReview1 = modelMapper.map(reviewFileDTO, ReviewFile.class);
-            reviewFileRepository.save(insertReview1);
-
-            result = 1;
-
-            System.out.println("check");
-            FileUploadUtils.deleteFile(IMAGE_DIR, replaceFileName);
-
-        log.info("[ReviewService] registReview End ===================");*/
     }
 
     public List<CombineReviewDTO> findReviewsBySearchFilter(String searchFilter) {
@@ -182,6 +205,29 @@ public class ReviewService {
                         .description(reviewDTO.getDescription()).build();
 
                 if(imageFile != null) {
+
+                    Path filePath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
+                    Path rootPath;
+                    String IMAGE_DIR = null;
+
+                    if (FileSystems.getDefault().getSeparator().equals("/")) {
+
+                        // Unix-like system (MacOS, Linux)
+                        rootPath = Paths.get("/User").toAbsolutePath();
+                        Path relativePath = rootPath.relativize(filePath);
+                        IMAGE_DIR = String.valueOf(relativePath);
+                        log.info("what is the path: " + IMAGE_DIR);
+                    } else {
+                        // Windows
+                        rootPath = Paths.get("C:\\").toAbsolutePath();
+                        Path relativePath = rootPath.resolve(filePath);
+                        IMAGE_DIR = String.valueOf(relativePath);
+
+                    }
+
+
+                    log.info("what is the path: " + IMAGE_DIR);
+
                     String imageName = UUID.randomUUID().toString().replace("-", "");
                     replaceFileName = FileUploadUtils.saveFile(IMAGE_DIR, imageName, imageFile);
 
@@ -208,8 +254,6 @@ public class ReviewService {
         } catch (Exception e) {
             System.out.println("Error occurred!");
         }
-
-
     }
 
     @Transactional
@@ -218,12 +262,39 @@ public class ReviewService {
         ReviewFile replaceableReview = reviewFileRepository.findByReviewCode(reviewCode);
         String deleteImgPath = replaceableReview.getFileSaveName();
 
-        boolean isDelete = FileUploadUtils.deleteFile(IMAGE_DIR, deleteImgPath);
-        log.info("[Update Review] isDelete : " + isDelete);
+        Path filePath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
+        Path rootPath;
+        String IMAGE_DIR = null;
+        if (FileSystems.getDefault().getSeparator().equals("/")) {
 
-        reviewFileRepository.deleteByRevFileCode(revFileCode);
-        //reviewFileRepository.deleteByReviewCode(revFileCode);
-        reviewRepository.deleteById(reviewCode);
+            // Unix-like system (MacOS, Linux)
+            rootPath = Paths.get("/User").toAbsolutePath();
+            Path relativePath = rootPath.relativize(filePath);
+            IMAGE_DIR = String.valueOf(relativePath);
+            log.info("what is the paaaaath: " + IMAGE_DIR);
+        } else {
+            // Windows
+            rootPath = Paths.get("C:\\").toAbsolutePath();
+            Path relativePath = rootPath.resolve(filePath);
+            IMAGE_DIR = String.valueOf(relativePath);
+            log.info("what is the paaaaath: " + IMAGE_DIR);
+        }
+
+
+        log.info("what is the path: " + IMAGE_DIR);
+
+        boolean isDelete = FileUploadUtils.deleteFile(IMAGE_DIR, deleteImgPath);
+        log.info("[Delete Review] isDelete : " + isDelete);
+        log.info("[Delete Review] deleting reviewCode : " + reviewCode);
+
+        //reviewRepository.deleteById(reviewCode);
+        try {
+            reviewRepository.deleteByReviewCode(reviewCode);
+            reviewFileRepository.deleteByRevFileCode(revFileCode);
+        } catch (Exception e) {
+            System.out.println("Error occurred during review deletion!");
+            e.printStackTrace();
+        }
     }
 
 

@@ -1,13 +1,16 @@
 package metaint.replanet.rest.reviews.service;
 
 import io.jsonwebtoken.lang.Assert;
+import metaint.replanet.rest.reviews.dto.CommentDTO;
 import metaint.replanet.rest.reviews.dto.ReviewDTO;
 import metaint.replanet.rest.reviews.dto.ReviewFileDTO;
 import metaint.replanet.rest.reviews.entity.Campaign;
+import metaint.replanet.rest.reviews.entity.Comment;
 import metaint.replanet.rest.reviews.entity.Review;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
 import metaint.replanet.rest.reviews.repository.CampaignReviewRepository;
+import metaint.replanet.rest.reviews.repository.CommentRespository;
 import metaint.replanet.rest.reviews.repository.ReviewFileRepository;
 import metaint.replanet.rest.reviews.repository.ReviewRepository;
 import metaint.replanet.rest.util.FileUploadUtils;
@@ -20,6 +23,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +48,8 @@ public class ReviewServiceTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private CommentRespository commentRespository;
 
     private final ModelMapper modelMapper;
 
@@ -187,9 +195,33 @@ public class ReviewServiceTest {
         List<Campaign> reviewList = campaignReviewRepository.findAll();
 
         Assertions.assertEquals(expectedReview, reviewList.size());
+    }
 
+    @DisplayName("댓글 등록 테스트")
+    @Test
+    public void registCommentTest() {
+        //given
+        LocalDateTime localDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        CommentDTO commentDTO = new CommentDTO();
+
+        commentDTO.setCommentContext("댓글 테스트입니다!");
+        commentDTO.setCommentWriter("user01");
+        commentDTO.setCommentDate(String.valueOf(LocalDateTime.now()));
+        commentDTO.setReviewCode(57L);
+
+        //when
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
+        commentRespository.save(comment);
+
+        List<Comment> commentList = commentRespository.findAll();
+        //then
+        Assertions.assertNotNull(comment);
+        Assertions.assertNotNull(commentList);
 
     }
+
 
 
 }

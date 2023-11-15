@@ -3,6 +3,7 @@ package metaint.replanet.rest.reviews.dto;
 import lombok.*;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -16,8 +17,8 @@ public class CombineReviewDTO {
     private Long campaignCode;
     private String campaignTitle;
     private String campaignContent;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private String campaignCategory;
     private Integer currentBudget;
     private Integer goalBudget;

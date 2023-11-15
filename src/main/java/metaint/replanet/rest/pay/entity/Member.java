@@ -18,8 +18,8 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_code")
     private Long memberCode;
-    @Column(name = "member_id")
-    private String memberId;
+    @Column(name = "member_email")
+    private String memberEmail;
     @Column(name = "member_name")
     private String memberName;
     @Column(name = "password")

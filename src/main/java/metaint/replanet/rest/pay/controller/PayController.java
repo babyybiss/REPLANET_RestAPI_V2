@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -42,17 +43,17 @@ public class PayController {
     public String kakaoPay(@RequestBody DonationAmountDTO amount,
                            @PathVariable String campaignCode,
                            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        log.info("[POST /kakaoPay] -------------------------------------");
-        log.info("[/kakaoPay cashAmount] : " + amount.getCashAmount());
-        log.info("[/kakaoPay pointAmount] : " + amount.getPointAmount());
-        log.info("[/kakaoPay finalAmount] : " + amount.getFinalAmount());
-        log.info("[/kakaoPay campaign] : " + campaignCode);
+        log.info("[POST /kakaoPay/{campaignCode}] -------------------------------------");
+        log.info("[/kakaoPay/{campaignCode} cashAmount] : " + amount.getCashAmount());
+        log.info("[/kakaoPay/{campaignCode} pointAmount] : " + amount.getPointAmount());
+        log.info("[/kakaoPay/{campaignCode} finalAmount] : " + amount.getFinalAmount());
+        log.info("[/kakaoPay/{campaignCode} campaign] : " + campaignCode);
 
         String token = extractToken(authorizationHeader);
         Authentication authentication = tokenProvider.getAuthentication(token);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String memberCode = userDetails.getUsername();
-        log.info("[/kakaoPay memberCode] : " + memberCode);
+        log.info("[/kakaoPay/{campaignCode} memberCode] : " + memberCode);
 
         String redirectUrl = payService.kakaoPayReady(amount, campaignCode, memberCode);
 
@@ -63,20 +64,20 @@ public class PayController {
     public ResponseEntity<Map<String, Integer>> pointDonation(@RequestBody DonationAmountDTO amount,
                                                               @PathVariable String campaignCode,
                                                               @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        log.info("[POST /pointDonation] -------------------------------------");
-        log.info("[/pointDonation cashAmount] : " + amount.getCashAmount()); // 0일거임
-        log.info("[/pointDonation pointAmount] : " + amount.getPointAmount());
-        log.info("[/pointDonation finalAmount] : " + amount.getFinalAmount());
-        log.info("[/pointDonation campaignCode] : " + campaignCode);
+        log.info("[POST /pointDonation/{campaignCode}] -------------------------------------");
+        log.info("[/pointDonation/{campaignCode} cashAmount] : " + amount.getCashAmount()); // 0일거임
+        log.info("[/pointDonation/{campaignCode} pointAmount] : " + amount.getPointAmount());
+        log.info("[/pointDonation/{campaignCode} finalAmount] : " + amount.getFinalAmount());
+        log.info("[/pointDonation/{campaignCode} campaignCode] : " + campaignCode);
 
         String token = extractToken(authorizationHeader);
         Authentication authentication = tokenProvider.getAuthentication(token);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String memberCode = userDetails.getUsername();
-        log.info("[/kakaoPay memberCode] : " + memberCode);
+        log.info("[/pointDonation/{campaignCode} memberCode] : " + memberCode);
 
         int payCode = payService.postPointDonation(amount, campaignCode, memberCode);
-        log.info("[GET /pointDonation] payCode : " + payCode);
+        log.info("[GET /pointDonation/{campaignCode} payCode] : " + payCode);
 
         Map<String, Integer> response = new HashMap<>();
         response.put("payCode", payCode);
@@ -91,9 +92,9 @@ public class PayController {
                                 @RequestParam("memberCode") String memberCode,
                                 HttpServletResponse response) {
         log.info("[GET /kakaoPaySuccess]-------------------------------------");
-        log.info("[GET /pg_token] : " + pg_token);
-        log.info("[GET /pointAmount] : " + pointAmount);
-        log.info("[GET /campaignCode] : " + campaignCode);
+        log.info("[GET /kakaoPaySuccess pg_token] : " + pg_token);
+        log.info("[GET /kakaoPaySuccess pointAmount] : " + pointAmount);
+        log.info("[GET /kakaoPaySuccess campaignCode] : " + campaignCode);
 
         KakaoPayApprovalVO info = payService.kakaoPayInfo(pg_token, pointAmount, campaignCode, memberCode);
 
@@ -122,15 +123,15 @@ public class PayController {
                                              @RequestParam(required = false) String endDate,
                                              @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
 
-        log.info("[GET /pays] ----------------------------------------------");
-        log.info("[GET /pays startDate] : " + startDate);
-        log.info("[GET /pays endDate] : " + endDate);
+        log.info("[GET /paysByMemberWithDate] ----------------------------------------------");
+        log.info("[GET /paysByMemberWithDate startDate] : " + startDate);
+        log.info("[GET /paysByMemberWithDate endDate] : " + endDate);
 
         String token = extractToken(authorizationHeader);
         Authentication authentication = tokenProvider.getAuthentication(token);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String memberCode = userDetails.getUsername();
-        log.info("[/kakaoPay memberCode] : " + memberCode);
+        log.info("[/paysByMemberWithDate memberCode] : " + memberCode);
 
         List<Pay> payList;
 
@@ -140,8 +141,8 @@ public class PayController {
             payList = payService.getPaysByMember(memberCode);
         }
 
-        log.info("[/pays payList] : " + payList);
-        log.info("[/pays payList.size()] : " + payList.size());
+        log.info("[/paysByMemberWithDate payList] : " + payList);
+        log.info("[/paysByMemberWithDate payList.size()] : " + payList.size());
 
         return ResponseEntity.ok(payList);
     }
@@ -149,7 +150,7 @@ public class PayController {
     @GetMapping("/donations/payCode={payCode}")
     public ResponseEntity<Pay> getDonationByTid(@PathVariable String payCode) {
         Pay pay = payService.getPayByPayCode(payCode);
-        log.info("GET /donations/{payTid} pay : " + pay);
+        log.info("GET /donations/payCode={payCode} pay : " + pay);
 
         if (pay != null) {
             Donation donation = pay.getRefDonation();
@@ -162,21 +163,38 @@ public class PayController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
-    @GetMapping("/users/point")
-    public ResponseEntity<Member> getPointByMember(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+
+    @GetMapping("/users")
+    public ResponseEntity<Map<String, Object>> getMemberByToken(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
 
         String token = extractToken(authorizationHeader);
         Authentication authentication = tokenProvider.getAuthentication(token);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String memberCode = userDetails.getUsername();
-        log.info("[/kakaoPay memberCode] : " + memberCode);
+        log.info("[/users memberCode] : " + memberCode);
 
         Member member = payService.getPointByMember(memberCode);
-        log.info("GET /users/point member.getCurrentPoint() : " + member.getCurrentPoint());
+        List<Pay> payList = payService.getPaysByMember(memberCode);
+        int totalDonation = payList.size();
+        int totalAmount = 0;
+
+        for (Pay pay : payList) {
+            totalAmount += pay.getPayAmount();
+
+            if (pay.getRefDonation() != null) {
+                totalAmount += pay.getRefDonation().getDonationPoint();
+            }
+        }
+
+        log.info("[/users totalDonation] : " + totalDonation);
+        log.info("[/users totalAmount] : " + totalAmount);
 
         if (member != null) {
-            return new ResponseEntity<>(member, HttpStatus.OK);
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("member", member);
+            responseMap.put("totalDonation", totalDonation);
+            responseMap.put("totalAmount", totalAmount);
+            return new ResponseEntity<>(responseMap, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -192,4 +210,5 @@ public class PayController {
         log.info("[extractToken()] 토큰 추출 실패 ");
         return null;
     }
+
 }

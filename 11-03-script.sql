@@ -108,7 +108,7 @@ CREATE TABLE `tbl_donation`
 CREATE TABLE `tbl_member`
 (
     `member_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '회원코드',
-    `member_id`    VARCHAR(255) NOT NULL COMMENT '아이디',
+    `member_email`    VARCHAR(255) NOT NULL COMMENT '이메일',
     `member_name`    VARCHAR(255) NOT NULL COMMENT '이름',
     `password`    VARCHAR(255) NOT NULL COMMENT '비밀번호',
     `phone`    VARCHAR(255) NOT NULL COMMENT '휴대폰번호',

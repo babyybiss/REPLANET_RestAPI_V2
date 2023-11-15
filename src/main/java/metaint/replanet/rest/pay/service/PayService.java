@@ -25,6 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
@@ -65,7 +66,7 @@ public class PayService {
         Optional<Member> optionalMember = payMemberRepository.findById(Long.parseLong(memberCode));
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
-            memberId = member.getMemberId();
+            memberId = member.getMemberEmail();
             log.info("kakaoPayReady() memberId" + memberId);
         } else {
             log.info("kakaoPayReady() 멤버 정보가 없습니다!");
@@ -116,6 +117,7 @@ public class PayService {
         return "/donations";
     }
 
+    @Transactional
     public KakaoPayApprovalVO kakaoPayInfo(String pg_token, String pointAmount, String campaignCode, String memberCode) {
 
         log.info("[kakaoPayInfo()]............................................");
@@ -145,7 +147,7 @@ public class PayService {
         params.add("cid", "TC0ONETIME"); // 가맹점 코드 -> 테스트용 고정!
         params.add("tid", kakaoPayReadyVO.getTid()); // 결제 고유번호 -> 결제 준비 API 응답에 포함돼서 온거임 -> VO를 통해서 받아옴
         params.add("partner_order_id", String.valueOf(campaignDescriptions.get().getCampaignCode())); // 현재 선택한 캠페인
-        params.add("partner_user_id", refMember.getMemberId()); // 현재 로그인한 사용자!
+        params.add("partner_user_id", refMember.getMemberEmail()); // 현재 로그인한 사용자!
         params.add("pg_token", pg_token);
 
         HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<MultiValueMap<String, String>>(params, headers);
@@ -177,10 +179,14 @@ public class PayService {
                                 .refDonation(newDonation)
                                 .build();
 
-                // Donation 엔티티 저장 -> DB에 값넣는거임
-                donationRepository.save(newDonation);
-                payRepository.save(newPay);
-                payCampaignRepository.updateCurrentBudget(newDonation.getDonationPoint(), newPay.getPayAmount(), newDonation.getRefCampaign().getCampaignCode());
+                donationRepository.save(newDonation); // 기부 내역 테이블에 값 저장
+                payRepository.save(newPay); // 결제 내역 테이블에 값 저장
+                payCampaignRepository.updateCurrentBudget(newDonation.getDonationPoint(), newPay.getPayAmount(), newDonation.getRefCampaign().getCampaignCode()); // 캠페인 테이블에 currentBudget 업데이트
+
+                int updatedPoint = refMember.getCurrentPoint() - Integer.parseInt(pointAmount);
+                payMemberRepository.updateCurrentPointByMemberCode(updatedPoint, refMember.getMemberCode());
+                log.info("postPointDonation() updatedPoint : " + updatedPoint);
+
                 kakaoPayApprovalVO.setPayCode(newPay.getPayCode());
                 log.info("[kakaoPayInfo() kakaoPayApprovalVO.payCode] : " + kakaoPayApprovalVO.getPayCode());
             }
@@ -200,8 +206,6 @@ public class PayService {
 
     public List<Pay> getPaysByMember(String memberCode) {
         log.info("[getPays()] -----------------------------------");
-        // 마이페이지 완성되면 넣기!
-        // 기부내역 끌여오는거임 근데 내가 필요한건 로그인한 사용자의 기부내역!
 
         Long memberId = Long.parseLong(memberCode);
 
@@ -269,6 +273,7 @@ public class PayService {
         }
     }
 
+    @Transactional
     public int postPointDonation(DonationAmountDTO amount, String campaignCode, String memberCode) {
         log.info("[postPointDonation(DonationAmountDTO amount)] -----------------------------------");
 
@@ -292,28 +297,29 @@ public class PayService {
             Donation newDonation = Donation.builder()
                     .donationDateTime(LocalDateTime.now())
                     .donationPoint(amount.getPointAmount())
-                    .refMember(refMember)  // Member 엔티티 객체
-                    .refCampaign(campaign)  // CampaignDescription 엔티티 객체
+                    .refMember(refMember)
+                    .refCampaign(campaign)
                     .build();
 
-            // builder() 통해서 값 넣기
-
             Pay pay = Pay.builder()
-                    .payAmount(amount.getCashAmount()) // 0일거임
-                    .payTid(null) // 카카오페이API를 통해 결제한게 아니라 Tid가 없음
+                    .payAmount(amount.getCashAmount())
+                    .payTid(null)
                     .refDonation(newDonation)
                     .build();
 
 
-            // Donation 엔티티 저장 -> DB에 값넣는거임
-
             donationRepository.save(newDonation);
             payRepository.save(pay);
             payCampaignRepository.updateCurrentBudget(newDonation.getDonationPoint(), 0, newDonation.getRefCampaign().getCampaignCode());
+
+            int updatedPoint = refMember.getCurrentPoint() - amount.getPointAmount();
+            payMemberRepository.updateCurrentPointByMemberCode(updatedPoint, refMember.getMemberCode());
+            log.info("postPointDonation() updatedPoint : " + updatedPoint);
 
             return pay;
         }).orElseThrow(() -> new RuntimeException("해당하는 캠페인이 없습니다!")));
 
         return newPay.get().getPayCode();
     }
+
 }

@@ -2,6 +2,7 @@ package metaint.replanet.rest.campaign.controller;
 
 import metaint.replanet.rest.campaign.dto.CampaignDescFileDTO;
 import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
+import metaint.replanet.rest.campaign.entity.CampaignAndFile;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import metaint.replanet.rest.campaign.entity.Donation;
 import metaint.replanet.rest.campaign.service.CampaignService;
@@ -37,18 +38,18 @@ public class CampaignController {
 
     // 진행중 조회 
     @GetMapping()
-    public List<CampaignDescription> main() {
+    public List<CampaignAndFile> main() {
         return campaignService.findCampaignList();
     }
 
     // 종료 조회
     @GetMapping("done")
-    public List<CampaignDescription> campaignListDone() {
+    public List<CampaignAndFile> campaignListDone() {
         return campaignService.findCampaignListDone();
     }
 
     @GetMapping("{campaignCode}")
-    public CampaignDescription campaignDetail(@PathVariable int campaignCode) {
+    public CampaignAndFile campaignDetail(@PathVariable int campaignCode) {
         System.out.println(campaignCode);
         return campaignService.findCampaign(campaignCode);
     }
@@ -56,19 +57,18 @@ public class CampaignController {
     // 캠페인 등록
     @PostMapping(name = "campaigns", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> campaignRegist(@ModelAttribute CampaignDescriptionDTO campaign,
-                                            MultipartFile imageFile) {
+                                            MultipartFile imageFile) throws IOException {
 
         System.out.println(campaign);
         System.out.println(imageFile);
         if (campaign != null && imageFile != null) {
-            System.out.println("지나갑니다1");
             int campaignCode = campaignService.registCampaign(campaign);
 
             if (campaignCode == 0 ){
                 System.out.println("마감일은 현재날짜보다 커야함");
                 return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("마감일은 현재날짜보다 커야함");
             }
-            if (campaignCode == -2 ){
+            if (campaignCode == -2){
                 return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("이걸로 부자되게? 금액이 너무 크다 10억 이상은 좀.. ");
             }
             campaignService.registImage(imageFile,campaignCode);
@@ -89,13 +89,13 @@ public class CampaignController {
     public ResponseEntity<?> campaignDelete(@PathVariable int campaignCode){
 
         System.out.println(campaignCode + "시작 캠펜");
-        CampaignDescription campaign = campaignService.findCampaign(campaignCode);
+        CampaignAndFile campaign = campaignService.findCampaign(campaignCode);
 
         System.out.println(campaign + " 여기 지나갑니다");
         int currentBudget = campaign.getCurrentBudget();
         if (currentBudget > 0 ){
             System.out.println("모금액 있어서 삭제 안됨");
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("모금액 있어서 삭제 안됨");
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("모금액 있어서 삭제 안됨");
         }else {
             campaignService.deleteCampaign(campaignCode);
             System.out.println("삭제됨");
@@ -108,7 +108,7 @@ public class CampaignController {
     public String campaignModify(@ModelAttribute CampaignDescriptionDTO campaignDTO,
                                  MultipartFile imageFile){
 
-        CampaignDescription campaign = campaignService.findCampaign(campaignDTO.getCampaignCode());
+        CampaignAndFile campaign = campaignService.findCampaign(campaignDTO.getCampaignCode());
 
         int currentBudget = campaign.getCurrentBudget();
         LocalDateTime endDate = campaign.getEndDate();
@@ -118,7 +118,7 @@ public class CampaignController {
             System.out.println("모금액 있어서 수정 안됨");
             return "수정불가";
         }else {
-            campaignService.modifyCampaign(campaignDTO,imageFile);
+           // campaignService.modifyCampaign(campaignDTO,imageFile);
             System.out.println("수정됨");
 
         }

@@ -106,7 +106,7 @@ CREATE TABLE `tbl_donation`
 CREATE TABLE `tbl_member`
 (
     `member_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '회원코드',
-    `member_id`    VARCHAR(255) NOT NULL COMMENT '아이디',
+    `member_email`    VARCHAR(255) NOT NULL COMMENT '이메일',
     `member_name`    VARCHAR(255) NOT NULL COMMENT '이름',
     `password`    VARCHAR(255) NOT NULL COMMENT '비밀번호',
     `phone`    VARCHAR(255) NOT NULL COMMENT '휴대폰번호',
@@ -164,7 +164,7 @@ CREATE TABLE `tbl_review_comment`
 (
     `rev_comment_code`    INTEGER ZEROFILL NOT NULL COMMENT '댓글코드',
     `rev_comment_context`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
-    `rev_comment_writer`    VARCHAR(255) NOT NULL COMMENT '작성자',
+    `member_code`    VARCHAR(255) NOT NULL COMMENT '작성자',
     `rev_comment_date`    DATETIME NOT NULL COMMENT '댓글작성일자',
     `review_code`    INTEGER NOT NULL COMMENT '후기코드',
  PRIMARY KEY ( `rev_comment_code` )

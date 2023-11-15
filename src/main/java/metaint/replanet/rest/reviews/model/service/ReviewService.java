@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -119,13 +120,16 @@ public class ReviewService {
             Path relativePath = rootPath.relativize(MACPath);
             IMAGE_DIR = String.valueOf(relativePath);
             log.info("what is the paaaaath: " + IMAGE_DIR);
+
         } else {
             // Windows
             Path WinPath = Paths.get("/dev/metaint/REPLANET_React/public/reviewImgs").toAbsolutePath();
             rootPath = Paths.get("C:\\").toAbsolutePath();
             Path relativePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(relativePath);
-            log.info("what is the paaaaath: " + IMAGE_DIR);
+            rootPath = Paths.get("C:\\dev\\metaint\\").toAbsolutePath();
+            Path resolvePath = rootPath.resolve(filePath);
+            IMAGE_DIR = String.valueOf(resolvePath);
         }
 
 
@@ -212,13 +216,13 @@ public class ReviewService {
                         rootPath = Paths.get("/User").toAbsolutePath();
                         Path relativePath = rootPath.relativize(filePath);
                         IMAGE_DIR = String.valueOf(relativePath);
-                        log.info("what is the paaaaath: " + IMAGE_DIR);
+                        log.info("what is the path: " + IMAGE_DIR);
                     } else {
                         // Windows
                         rootPath = Paths.get("C:\\").toAbsolutePath();
                         Path relativePath = rootPath.resolve(filePath);
                         IMAGE_DIR = String.valueOf(relativePath);
-                        log.info("what is the paaaaath: " + IMAGE_DIR);
+
                     }
 
 

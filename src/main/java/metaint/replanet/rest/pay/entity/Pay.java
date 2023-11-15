@@ -21,6 +21,6 @@ public class Pay {
     @Column(name = "pay_tid")
     private String payTid;
     @ManyToOne
-    @JoinColumn(name = "ref_donation_code")
+    @JoinColumn(name = "donation_code")
     private Donation refDonation;
 }

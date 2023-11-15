@@ -15,7 +15,6 @@ spring:
     username: HIkdt6
     password: HIkdt6
 
-
   logging:
     level:
       org.hibernate: info

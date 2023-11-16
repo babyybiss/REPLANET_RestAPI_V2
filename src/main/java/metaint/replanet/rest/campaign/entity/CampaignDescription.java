@@ -24,10 +24,10 @@ public class CampaignDescription {
     @Column(name = "campaign_content")
     private String campaignContent; // 모금 내용
     @Column(name = "start_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd/HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate; // 모금 시작 일자
     @Column(name = "end_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd/HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate; // 모금 마감 일자
     @Column(name = "campaign_category")
     private String campaignCategory; // 모금 카테고리

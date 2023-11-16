@@ -128,7 +128,7 @@ public class ReviewService {
             Path relativePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(relativePath);
             rootPath = Paths.get("C:\\dev\\metaint\\").toAbsolutePath();
-            Path resolvePath = rootPath.resolve(filePath);
+            Path resolvePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(resolvePath);
         }
 

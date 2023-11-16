@@ -64,12 +64,12 @@ public class CampaignController {
         if (campaign != null && imageFile != null) {
             int campaignCode = campaignService.registCampaign(campaign);
 
-            if (campaignCode == 0 ){
+            if (campaignCode == -1 ){
                 System.out.println("마감일은 현재날짜보다 커야함");
                 return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("마감일은 현재날짜보다 커야함");
             }
             if (campaignCode == -2){
-                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("이걸로 부자되게? 금액이 너무 크다 10억 이상은 좀.. ");
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("10억 이상은 좀.. ");
             }
             campaignService.registImage(imageFile,campaignCode);
 
@@ -107,7 +107,8 @@ public class CampaignController {
     @PutMapping("campaigns/{campaignCode}")
     public String campaignModify(@ModelAttribute CampaignDescriptionDTO campaignDTO,
                                  MultipartFile imageFile){
-
+        System.out.println(campaignDTO);
+        System.out.println(imageFile + "임지");
         CampaignAndFile campaign = campaignService.findCampaign(campaignDTO.getCampaignCode());
 
         int currentBudget = campaign.getCurrentBudget();
@@ -118,7 +119,7 @@ public class CampaignController {
             System.out.println("모금액 있어서 수정 안됨");
             return "수정불가";
         }else {
-           // campaignService.modifyCampaign(campaignDTO,imageFile);
+            campaignService.modifyCampaign(campaignDTO,imageFile);
             System.out.println("수정됨");
 
         }

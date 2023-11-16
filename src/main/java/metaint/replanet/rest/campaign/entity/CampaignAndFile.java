@@ -42,10 +42,10 @@ public class CampaignAndFile {
     @Column(name = "org_tel")
     private String orgTel; // 단체 연락처
     //@OneToMany(mappedBy = "campaignCode", cascade = CascadeType.ALL)
-    @OneToOne
+    @OneToMany
     @JoinColumn(name = "campaign_code")
-    private CampaignDescFile campaignDescfile; // 파일 정보
-    //private List<CampaignDescFile> campaignDescfileList = new ArrayList<>(); // 파일 정보
+    //private CampaignDescFile campaignDescfile; // 파일 정보
+    private List<CampaignDescFile> campaignDescfileList; // 파일 정보
 
     protected CampaignAndFile() {}
     public CampaignAndFile campaignTitle(String val){
@@ -80,19 +80,19 @@ public class CampaignAndFile {
         this.orgTel = val;
         return this;
     }
-    public CampaignAndFile campaignDescfile(CampaignDescFile val){
-        this.campaignDescfile = val;
-        return this;
-    }
-//        public CampaignAndFile campaignDescfileList(List<CampaignDescFile> val){
-//        this.campaignDescfileList = val;
+//    public CampaignAndFile campaignDescfile(CampaignDescFile val){
+//        this.campaignDescfile = val;
 //        return this;
 //    }
+        public CampaignAndFile campaignDescfileList(List<CampaignDescFile> val){
+        this.campaignDescfileList = val;
+        return this;
+    }
 
     public CampaignAndFile builder(){
         return new CampaignAndFile(
                 campaignCode,campaignTitle,campaignContent,
                 startDate,endDate,campaignCategory,currentBudget,
-                goalBudget,orgName,orgDescription,orgTel,campaignDescfile);
+                goalBudget,orgName,orgDescription,orgTel,campaignDescfileList);
     }
 }

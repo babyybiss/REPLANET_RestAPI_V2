@@ -28,7 +28,6 @@ public class CampaignDescFile {
     @Column(name = "file_extension")
     private String fileExtension; // 확장자
     //@OneToOne(mappedBy = "campaignDescfile")
-    @Getter
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "campaign_code")
     private CampaignDescription campaignCode; // 모금 코드

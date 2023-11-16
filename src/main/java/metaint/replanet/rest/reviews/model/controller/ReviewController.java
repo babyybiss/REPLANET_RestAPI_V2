@@ -3,6 +3,7 @@ package metaint.replanet.rest.reviews.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.jwt.TokenProvider;
 import metaint.replanet.rest.reviews.dto.*;
+import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class ReviewController {
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
+
     @Autowired
     private TokenProvider tokenProvider;
 
@@ -115,7 +117,7 @@ public class ReviewController {
 
     @DeleteMapping("{reviewCode}")
     public ResponseEntity<?> deleteReview(@PathVariable Long reviewCode, @RequestParam Long revFileCode) {
-        log.info("[Review COntroller] delete Review : " + reviewCode + "and revFileCode : " + revFileCode);
+        log.info("[Review Controller] delete Review : " + reviewCode + "and revFileCode : " + revFileCode);
 
         reviewService.deleteReview(reviewCode, revFileCode);
 
@@ -127,12 +129,15 @@ public class ReviewController {
         String token = extractToken(authorizationHeader);
         Authentication authentication = tokenProvider.getAuthentication(token);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String memberCodeString = userDetails.getUsername();
-        Long memberCode = parseLong(memberCodeString);
+        String memberCode = userDetails.getUsername();
 
-        log.info("[/kakaoPay memberCode] : " + memberCode);
+        // Convert memberCode to Long if it's a numeric value
+        Long memberCodeLong = Long.parseLong(memberCode);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        log.info("[/kakaoPay memberCode] : " + memberCodeLong);
+
+        // Return memberCode in the response body
+        return new ResponseEntity<>(memberCodeLong, HttpStatus.OK);
     }
 
     private String extractToken(String authorizationHeader) {
@@ -145,6 +150,18 @@ public class ReviewController {
         log.info("[extractToken()] 토큰 추출 실패 ");
         return null;
     }
+
+
+    @PostMapping("/{reviewCode}/comments")
+    public ResponseEntity<?> registNewComment(@PathVariable Long reviewCode, @ModelAttribute ReviewCommentDTO reviewCommentDTO){
+
+        log.info("[Review Controller] regist Comment : " + reviewCommentDTO);
+        log.info("[Review Controller] regist Comment : " + reviewCode);
+        reviewService.registNewComment(reviewCode, reviewCommentDTO);
+        return ResponseEntity.ok("신규 댓글 등록 성공!");
+    }
+
+
 /*    @GetMapping("{reviewCode}/comments")
     public ResponseEntity<ReviewCommentsDTO> getCommentsForSpecificReview(@PathVariable Long reviewCode) {
         return ResponseEntity.ok(details);

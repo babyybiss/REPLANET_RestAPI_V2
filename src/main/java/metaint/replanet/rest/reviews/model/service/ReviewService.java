@@ -1,14 +1,13 @@
 package metaint.replanet.rest.reviews.model.service;
 
 import lombok.extern.slf4j.Slf4j;
-import metaint.replanet.rest.reviews.dto.CombineReviewDTO;
-import metaint.replanet.rest.reviews.dto.ReviewDTO;
-import metaint.replanet.rest.reviews.dto.ReviewFileCombineDTO;
-import metaint.replanet.rest.reviews.dto.ReviewFileDTO;
+import metaint.replanet.rest.reviews.dto.*;
 import metaint.replanet.rest.reviews.entity.Campaign;
 import metaint.replanet.rest.reviews.entity.Review;
+import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 import metaint.replanet.rest.reviews.repository.CampaignReviewRepository;
+import metaint.replanet.rest.reviews.repository.ReviewCommentRepository;
 import metaint.replanet.rest.reviews.repository.ReviewFileRepository;
 import metaint.replanet.rest.reviews.repository.ReviewRepository;
 import metaint.replanet.rest.util.FileUploadUtils;
@@ -18,12 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,6 +35,7 @@ public class ReviewService {
     private final CampaignReviewRepository campaignReviewRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewFileRepository reviewFileRepository;
+    private final ReviewCommentRepository reviewCommentRepository;
     private final ModelMapper modelMapper;
 
 
@@ -63,10 +63,11 @@ public class ReviewService {
 
 
 
-    public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ModelMapper modelMapper) {
+    public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ReviewCommentRepository reviewCommentRepository, ModelMapper modelMapper) {
         this.campaignReviewRepository = campaignReviewRepository;
         this.reviewRepository = reviewRepository;
         this.reviewFileRepository = reviewFileRepository;
+        this.reviewCommentRepository = reviewCommentRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -128,7 +129,7 @@ public class ReviewService {
             Path relativePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(relativePath);
             rootPath = Paths.get("C:\\dev\\metaint\\").toAbsolutePath();
-            Path resolvePath = rootPath.resolve(filePath);
+            Path resolvePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(resolvePath);
         }
 
@@ -295,6 +296,19 @@ public class ReviewService {
             System.out.println("Error occurred during review deletion!");
             e.printStackTrace();
         }
+    }
+
+    public void registNewComment(Long reviewCode, ReviewCommentDTO reviewCommentDTO) {
+
+        // 현재 날짜
+        LocalDateTime date = LocalDateTime.now();
+       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        reviewCommentDTO.setRevCommentDate(date);
+
+        ReviewComment comment = modelMapper.map(reviewCommentDTO, ReviewComment.class);
+        reviewCommentRepository.save(comment);
+
+        log.info("hihihihi:" + reviewCode + reviewCommentDTO);
     }
 
 

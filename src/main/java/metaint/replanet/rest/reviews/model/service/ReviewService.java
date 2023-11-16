@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -37,6 +38,8 @@ public class ReviewService {
     private final ReviewFileRepository reviewFileRepository;
     private final ReviewCommentRepository reviewCommentRepository;
     private final ModelMapper modelMapper;
+
+    private WebMvcConfigurer corsConfigurer;
 
 
     @Value("http://localhost:3000/reviewImgs")
@@ -131,6 +134,7 @@ public class ReviewService {
             rootPath = Paths.get("C:\\dev\\metaint\\").toAbsolutePath();
             Path resolvePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(resolvePath);
+
         }
 
 

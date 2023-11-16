@@ -142,4 +142,22 @@ public class ExchangeController {
         log.info("조회 값 확인 : " + exchangeDetailU);
         return ResponseEntity.status(HttpStatus.OK).body(exchangeDetailU);
     }
+
+    @PutMapping("exchanges/{exchangeCode}")
+    public ResponseEntity<?> updateExchangeStatus(@PathVariable int exchangeCode,
+                                                  @RequestBody ExchangeDTO exchangeDTO){
+
+        int result = 0;
+        log.info("excjangeDTO 확인 : " + exchangeDTO);
+        if(exchangeDTO.getStatus() == "승인"){
+            result = exchangeService.exchangeApproval(exchangeDTO);
+        } else if(exchangeDTO.getStatus() == "반려"){
+            result = exchangeService.exchangeRejection(exchangeDTO);
+        }
+        if(result == 1){
+            return ResponseEntity.status(HttpStatus.OK).body("신청 처리 완료");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청 처리 중 오류 발생");
+        }
+    }
 }

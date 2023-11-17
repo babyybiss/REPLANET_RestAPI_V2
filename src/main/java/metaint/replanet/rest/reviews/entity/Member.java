@@ -33,3 +33,4 @@ public class Member {
     private MemberRole memberRole;
 }
 
+

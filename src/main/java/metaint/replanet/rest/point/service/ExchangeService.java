@@ -85,7 +85,7 @@ public class ExchangeService {
     }
 
     public Map<String, Object> selectExchangeDetailA(int exchangeCode) {
-        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, f.file_extension, f.file_save_name, m.member_email, m.member_name " +
+        String sql = "SELECT e.title, e.exchange_date, e.status, e.points, e.return_detail, e.processing_date, f.file_extension, f.file_save_name, m.member_email, m.member_name " +
                 "FROM tbl_point_exchange e " +
                 "JOIN tbl_point_file f ON e.exchange_code = f.application_code " +
                 "JOIN tbl_member m ON e.member_code = m.member_code " +
@@ -96,7 +96,7 @@ public class ExchangeService {
                 .getSingleResult();
 
         String[] columNames = {
-                "title", "exchangeDate", "status", "points", "returnDetail", "fileExtension", "fileSaveName", "memberEmail", "memberName"
+                "title", "exchangeDate", "status", "points", "returnDetail", "processingDate", "fileExtension", "fileSaveName", "memberEmail", "memberName"
         };
 
         Map<String, Object> detailResultMap = new HashMap<>();
@@ -130,12 +130,14 @@ public class ExchangeService {
     }
 
     public int exchangeApproval(ExchangeDTO exchangeDTO){
+        System.out.println("여기까지 오는거야??");
         Exchange approveExchange = exchangeRepository.findById(exchangeDTO.getExchangeCode()).get();
+        System.out.println("approveExchange 확인 : "+approveExchange);
 
         if (approveExchange != null) {
             approveExchange = approveExchange.points(exchangeDTO.getPoints())
                     .status(exchangeDTO.getStatus())
-                    .processingDate(exchangeDTO.getProcessingDate())
+                    .processingDate(new Date())
                     .builder();
             exchangeRepository.save(approveExchange);
             Member memberPoint = memberRepository.findById(approveExchange.getMemberCode()).get();
@@ -162,7 +164,7 @@ public class ExchangeService {
         if (rejectExchange != null) {
             rejectExchange = rejectExchange.returnDetail(exchangeDTO.getReturnDetail())
                     .status(exchangeDTO.getStatus())
-                    .processingDate(exchangeDTO.getProcessingDate())
+                    .processingDate(new Date())
                     .builder();
             exchangeRepository.save(rejectExchange);
 
@@ -175,13 +177,13 @@ public class ExchangeService {
     }
 
     public List<Map<String, Object>> selectMemberPoints(int memberCode) {
-        String sql = "SELECT changeDate, content, changePoint, remainingPoint FROM ( " +
-                "SELECT e.processing_date AS changeDate, e.title AS content, e.points AS changePoint, m.current_point AS remainingPoint " +
+        String sql = "SELECT changeDate, content, changePoint, remainingPoint, status, code FROM ( " +
+                "SELECT e.processing_date AS changeDate, e.title AS content, e.points AS changePoint, m.current_point AS remainingPoint, e.status AS status, e.exchange_code AS code " +
                 "FROM tbl_member m " +
                 "LEFT JOIN tbl_point_exchange e ON m.member_code = e.member_code AND e.points > 0 " +
                 "WHERE m.member_code = ?1 " +
                 "UNION " +
-                "SELECT d.donation_date_time AS changeDate, c.campaign_title AS content, d.donation_point AS changePoint, m.current_point AS remainingPoint " +
+                "SELECT d.donation_date_time AS changeDate, c.campaign_title AS content, d.donation_point AS changePoint, m.current_point AS remainingPoint, c.campaign_category AS status, c.campaign_code AS code " +
                 "FROM tbl_member m " +
                 "LEFT JOIN tbl_donation d ON m.member_code = d.member_code AND d.donation_point > 0 " +
                 "LEFT JOIN tbl_campaign_description c ON d.campaign_code = c.campaign_code " +
@@ -201,6 +203,8 @@ public class ExchangeService {
             pointHistoryMap.put("content", result[1]);
             pointHistoryMap.put("changePoint", result[2]);
             pointHistoryMap.put("remainingPoint", result[3]);
+            pointHistoryMap.put("status", result[4]);
+            pointHistoryMap.put("code", result[5]);
 
             pointHistory.add(pointHistoryMap);
         }

@@ -22,8 +22,8 @@ public class Member {
     @Column(name = "member_code")
     private int memberCode;
 
-    @Column(name = "member_id")
-    private String memberId;
+    @Column(name = "member_email")
+    private String memberEmail;
 
     @Column(name = "member_name")
     private String memberName;
@@ -56,6 +56,6 @@ public class Member {
     }
 
     public Member builder(){
-        return new Member(memberCode, memberId, memberName, password, phone, joinDate, memberRole, withdraw, withdrawDate, currentPoint);
+        return new Member(memberCode, memberEmail, memberName, password, phone, joinDate, memberRole, withdraw, withdrawDate, currentPoint);
     }
 }

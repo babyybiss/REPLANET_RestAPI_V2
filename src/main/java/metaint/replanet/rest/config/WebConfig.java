@@ -28,11 +28,6 @@ public class WebConfig implements WebMvcConfigurer {
         //.allowCredentials(true); // .allowedOriginPatterns("*") 이렇게 와일드 카드로 설정하면 이거 쓰면 에러남 ( 실행 조차  X )
     }
 
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer){
-        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
-    }
-
 
 
 }

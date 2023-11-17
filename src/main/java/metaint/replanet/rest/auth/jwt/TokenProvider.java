@@ -45,24 +45,25 @@ public class TokenProvider {
     // 토큰 생성
     public TokenDto generateTokenDto(Authentication authentication) {
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String memberCode = userDetails.getMemberCode();
+        String memberName = userDetails.getMemberName();
+        String email = userDetails.getEmail();
+        String memberRole = String.valueOf(userDetails.getMemberRole());
 
+        log.info("[generateTokenDto() memberCode] : " + memberCode);
+        log.info("[generateTokenDto() memberName] : " + memberName);
+        log.info("[generateTokenDto() email] : " + email);
+        log.info("[generateTokenDto() memberRole] : " + memberRole);
 
-        String memberCode = ((UserDetails) authentication.getPrincipal()).getUsername();
 
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Member member = new Member();
-        String memberName = member.getMemberName();
-        MemberRole memberRole = member.getMemberRole();
-        String email = member.getEmail();
 
         Date tokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-
-        System.out.println(tokenExpiresIn);
 
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())

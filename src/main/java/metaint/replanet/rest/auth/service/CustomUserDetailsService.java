@@ -1,11 +1,11 @@
 package metaint.replanet.rest.auth.service;
 
 import metaint.replanet.rest.auth.entity.Member;
+import metaint.replanet.rest.auth.jwt.CustomUserDetails;
 import metaint.replanet.rest.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,9 +28,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserDetails createUserDetails(Member member) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getMemberRole().toString());
 
-        return new User(
+        return new CustomUserDetails(
                 String.valueOf(member.getMemberCode()),
+                member.getMemberName(),
+                member.getEmail(),
                 member.getPassword(),
+                member.getMemberRole(),
                 Collections.singleton(grantedAuthority)
         );
     }

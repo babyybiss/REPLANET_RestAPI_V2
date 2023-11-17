@@ -5,6 +5,7 @@ import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.campaign.entity.CampaignAndFile;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import metaint.replanet.rest.campaign.entity.Donation;
+import metaint.replanet.rest.campaign.entity.Pay;
 import metaint.replanet.rest.point.dto.PointFileDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -240,7 +241,7 @@ public class CampaignServiceTest {
         //when
         //then
         Assertions.assertDoesNotThrow(
-                () -> campaignService.modifyCampaign(campaign,mFile)
+                () -> campaignService.modifyCampaign(campaign,1,mFile)
         );
     }
 
@@ -250,7 +251,7 @@ public class CampaignServiceTest {
         //given
         int code = 1;
         //when
-        List<Donation> donationList = campaignService.findDonationList(code);
+        List<Pay> donationList = campaignService.findparticipationList(code);
         //then
         Assertions.assertNotNull(donationList);
         donationList.forEach(System.out::println);

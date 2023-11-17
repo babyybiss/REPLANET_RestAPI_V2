@@ -2,29 +2,24 @@ package metaint.replanet.rest.campaign.service;
 
 import metaint.replanet.rest.campaign.dto.CampaignDescFileDTO;
 import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
-import metaint.replanet.rest.campaign.entity.CampaignAndFile;
-import metaint.replanet.rest.campaign.entity.CampaignDescFile;
-import metaint.replanet.rest.campaign.entity.CampaignDescription;
-import metaint.replanet.rest.campaign.entity.Donation;
+import metaint.replanet.rest.campaign.dto.TodayDonationsDTO;
+import metaint.replanet.rest.campaign.entity.*;
 import metaint.replanet.rest.campaign.repository.CampaignAndFileRepository;
 import metaint.replanet.rest.campaign.repository.CampaignFileRepository;
 import metaint.replanet.rest.campaign.repository.CampaignRepository;
-import metaint.replanet.rest.campaign.repository.DonationRepository1;
+import metaint.replanet.rest.campaign.repository.ParticipationRepository;
 import metaint.replanet.rest.util.FileUploadUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -38,7 +33,7 @@ public class CampaignService {
     private final CampaignFileRepository campaignFileRepository;
 
     private final CampaignAndFileRepository campaignAndFileRepository;
-    private final DonationRepository1 donationRepository1;
+    private final ParticipationRepository participationRepository;
     private final ModelMapper modelMapper;
 
     @Value("C:\\filetest")
@@ -48,11 +43,11 @@ public class CampaignService {
     public String IMAGE_URL;
 
     @Autowired
-    public CampaignService(CampaignRepository campaignRepository, CampaignFileRepository campaignFileRepository, CampaignAndFileRepository campaignAndFileRepository, DonationRepository1 donationRepository1, ModelMapper modelMapper) {
+    public CampaignService(CampaignRepository campaignRepository, CampaignFileRepository campaignFileRepository, CampaignAndFileRepository campaignAndFileRepository, ParticipationRepository participationRepository, ModelMapper modelMapper) {
         this.campaignRepository = campaignRepository;
         this.campaignFileRepository = campaignFileRepository;
         this.campaignAndFileRepository = campaignAndFileRepository;
-        this.donationRepository1 = donationRepository1;
+        this.participationRepository = participationRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -130,7 +125,7 @@ public class CampaignService {
 
             // 파일 정보 세팅
             campaignFileDTO.setFileOriginName(fileOriginName);
-            campaignFileDTO.setFileOriginPath("얜 필요 없을거음");
+            campaignFileDTO.setFileOriginPath("얜 필요 없을거가틈");
             campaignFileDTO.setFileSaveName(fileSaveName);
             campaignFileDTO.setFileSavePath(IMAGE_URL);
             campaignFileDTO.setFileExtension(fileExtension);
@@ -161,7 +156,7 @@ public class CampaignService {
         }*/
 
 
-        return (result > 0) ? "상품 입력 성공" : "상품 입력 실패";
+        return (result > 0) ? "성공" : "실패";
     }
 
 
@@ -221,19 +216,18 @@ public class CampaignService {
 
     // 캠페인 수정
     @Transactional
-    public int modifyCampaign(CampaignDescriptionDTO campaignDTO,
-                              MultipartFile imageFile) {
+    public int modifyCampaign(CampaignDescriptionDTO campaignDTO, int campaignCode, MultipartFile imageFile) {
 
-        int campaignCode = campaignDTO.getCampaignCode();
+        // 이미지 파일 있음 삭제
+        if (imageFile != null){
+            campaignFileRepository.deleteByCampaignCodeCampaignCode(campaignCode);
+        }
+        int result;
         // update 할 엔티티 조회
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignCode).get();
-        // 파일 원본
-        List<CampaignDescFile> oriImage = campaignFileRepository.findByCampaignCodeCampaignCode(campaignCode);
-        System.out.println(oriImage + "니놈 누구?");
 
-        //List<?> oriImage = camFile.
-        //System.out.println(oriImage + " 이놈 수정 하기전 원본 이미지");
-
+        //List<CampaignDescFile> file = campaignFileRepository.findByCampaignCodeCampaignCode(campaignCode);
+        System.out.println(campaign + "캠펜 확인");
         // 목표금액 , 제거
         String goalBudger = campaignDTO.getGoalBudget().replaceAll(",", "");
         campaignDTO.setGoalBudget(goalBudger);
@@ -241,7 +235,8 @@ public class CampaignService {
 
         // 금액 체크
         if (overGoalBudger >= 1000000000) {
-            return -2;
+            result = 2;
+            return result;
         }
 
         // 현재 날짜
@@ -251,21 +246,20 @@ public class CampaignService {
         System.out.println(startDate + "스타트 데이트");
         // 마감일 형변환 String =>  LocalDateTime
         String getEndDate = campaignDTO.getEndDate();
+        getEndDate.replaceAll(",","");
+        System.out.println(getEndDate);
         LocalDateTime endDate = LocalDateTime.parse(getEndDate + "T23:59:59", formatter);
         if (endDate.isBefore(startDate)) {
-            return -1;
+            result = -1;
+            return result;
         }
 
 
         // 변환된 LocalDateTime을 Entity에 매핑
         CampaignDescription campaignEntity = modelMapper.map(campaign, CampaignDescription.class);
-
-
         campaignEntity.endDate(endDate).builder();
 
-
         // update를 위한 엔티티 값 수정
-
         campaign = campaign.campaignTitle(campaignDTO.getCampaignTitle())
                 .campaignContent(campaignDTO.getCampaignContent())
                 .endDate(LocalDateTime.parse(campaignDTO.getEndDate() + "T23:59:59"))
@@ -275,42 +269,36 @@ public class CampaignService {
                 .orgDescription(campaignDTO.getOrgDescription())
                 .orgTel(campaignDTO.getOrgTel()).builder();
 
-        if (imageFile != null) {
-            CampaignDescFileDTO campaignFile = new CampaignDescFileDTO();
-
-            String fileOriginName = imageFile.getOriginalFilename();
-            String fileExtension = fileOriginName.substring(fileOriginName.lastIndexOf("."));
-            String fileSaveName = UUID.randomUUID().toString().replaceAll("-", "") + fileExtension;
-
-            // 파일 정보 세팅
-            campaignFile.setFileOriginName(fileOriginName);
-            campaignFile.setFileOriginPath("이놈 필요함?수정");
-            campaignFile.setFileSaveName(fileSaveName);
-            campaignFile.setFileSavePath(IMAGE_URL);
-            campaignFile.setFileExtension(fileExtension);
-            campaignFile.setCampaignCode(campaign.getCampaignCode());
-            System.out.println(campaignFile + " 이놈 수정 dto");
-            // 바뀐 값 저장
-            //oriImage = modelMapper.map(campaignFile, CampaignDescFile.class);
-            //campaign.campaignDescfile(oriImage).builder();
-
-            //campaignFileRepository.save(oriImage);
-            System.out.println(campaign + "마지막 수정");
-            //campaignDescFile.setFileOriginPath("이게 필요할라나?");
-            //campaignFileRepository.save(campaignDescFile);
-
-        } else {
-
-            //이미지 변경 없을 시
-            //campaign = campaign.campaignDescfileList(oriImage);
-            System.out.println(campaign + "얜 수정 캠펜");
-        }
         return 0;
     }
 
-    public List<Donation> findDonationList(int campaignCode) {
-        List<Donation> donationList = donationRepository1.findByCampaignDescription_CampaignCode(campaignCode);
-        System.out.println(donationList + "도네");
-        return donationList;
+    public List<Pay> findparticipationList(int campaignCode) {
+        List<Pay> payList = participationRepository.findByDonationByCampaignCode(campaignCode);
+        System.out.println(payList + "도네");
+        return payList;
+    }
+
+    public List<TodayDonationsDTO> getTodayDonations() {
+        List<Object[]> today = participationRepository.findByTodayDonation();
+        System.out.println(today+ "이거 확인좀");
+
+        List<TodayDonationsDTO> list = new ArrayList<>();
+        for (Object[] objects : today) {
+            int payCode = ((Number) objects[0]).intValue();
+            int payAmount = ((Number) objects[1]).intValue();
+            String donationDate = (String) objects[2];
+            int donationCount = ((Number) objects[3]).intValue();
+            int totalDonation = ((Number) objects[4]).intValue();
+
+            TodayDonationsDTO todayDTO = new TodayDonationsDTO();
+            todayDTO.setPayCode(payCode);
+            todayDTO.setPayAmount(payAmount);
+            todayDTO.setDonationDate(donationDate);
+            todayDTO.setDonationCount(donationCount);
+            todayDTO.setTotalDonation(totalDonation);
+            System.out.println(todayDTO + "화긴");
+            TodayDonationsDTO apply = todayDTO;
+            list.add(apply);
+        } return list;
     }
 }

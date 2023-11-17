@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,15 +36,16 @@ public class ExchangeController {
     @PostMapping("exchanges")
     public ResponseEntity<?> insertExchange (@RequestPart(value="title") String title,
                                              @RequestPart(value="file") MultipartFile pointFile,
-                                             @RequestPart(value = "memberCode") String memberCode){
+                                             @RequestPart(value = "memberCode") String memberCode) throws UnsupportedEncodingException {
 
-        log.info("제목 넘어왔나요?" + title);
+        String title1 = title.substring(1, title.length()-1); //인코딩 문제로 blob으로 넘겨주면서 생긴 앞뒤 "" 자름
+        log.info("제목 넘어왔나요?" + title1);
         log.info("코드 넘어왔나요?" + memberCode);
 
         if(title != null && pointFile != null) {
             ExchangeDTO newExchange = new ExchangeDTO();
             newExchange.setExchangeDate(new Date());
-            newExchange.setTitle(title);
+            newExchange.setTitle(title1);
             newExchange.setMemberCode(Integer.parseInt(memberCode));
 
             log.info("DTO 확인 " + newExchange);
@@ -60,13 +62,13 @@ public class ExchangeController {
                 Path rootPath;
                 if (FileSystems.getDefault().getSeparator().equals("/")) {
                     // Unix-like system (MacOS, Linux)
-                    Path filePath1 = Paths.get("/REPLANET_ReactAPI/public/exchangeFiles").toAbsolutePath();
+                    Path filePath1 = Paths.get("/REPLANET_React/public/exchangeFiles").toAbsolutePath();
                     rootPath = Paths.get("/User").toAbsolutePath();
                     Path relativePath = rootPath.relativize(filePath1);
                     FILE_DIR = String.valueOf(relativePath);
                 } else {
                     // Windows
-                    Path filePath2 = Paths.get("/dev/metaint/REPLANET_ReactAPI/public/exchangeFiles").toAbsolutePath();
+                    Path filePath2 = Paths.get("/dev/metaint/REPLANET_React/public/exchangeFiles").toAbsolutePath();
                     rootPath = Paths.get("C:\\").toAbsolutePath();
                     Path relativePath = rootPath.resolve(filePath2);
                     FILE_DIR = String.valueOf(relativePath);
@@ -143,21 +145,40 @@ public class ExchangeController {
         return ResponseEntity.status(HttpStatus.OK).body(exchangeDetailU);
     }
 
+    @Transactional
     @PutMapping("exchanges/{exchangeCode}")
     public ResponseEntity<?> updateExchangeStatus(@PathVariable int exchangeCode,
                                                   @RequestBody ExchangeDTO exchangeDTO){
 
         int result = 0;
         log.info("excjangeDTO 확인 : " + exchangeDTO);
-        if(exchangeDTO.getStatus() == "승인"){
+        log.info("상태 확인 : " + exchangeDTO.getStatus());
+        System.out.println(exchangeDTO.getStatus());
+        if("승인".equals(exchangeDTO.getStatus())){
+            log.info(exchangeDTO.getStatus());
             result = exchangeService.exchangeApproval(exchangeDTO);
-        } else if(exchangeDTO.getStatus() == "반려"){
+            if(result == 1){
+                return ResponseEntity.status(HttpStatus.OK).body("신청 처리 완료");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("신청 처리 중 오류 발생");
+            }
+        } else if("반려".equals(exchangeDTO.getStatus())){
+            log.info(exchangeDTO.getStatus());
             result = exchangeService.exchangeRejection(exchangeDTO);
+            if(result == 1){
+                return ResponseEntity.status(HttpStatus.OK).body("신청 처리 완료");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("신청 처리 중 오류 발생");
+            }
         }
-        if(result == 1){
-            return ResponseEntity.status(HttpStatus.OK).body("신청 처리 완료");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청 처리 중 오류 발생");
-        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("신청 처리 중 오류 발생");
+    }
+
+    @GetMapping("users/{memberCode}/points")
+    public ResponseEntity<?> selectMemberPoints(@PathVariable int memberCode){
+
+        log.info("멤버코드 확인 : " + memberCode);
+        List<Map<String, Object>> pointHistory = exchangeService.selectMemberPoints(memberCode);
+        return ResponseEntity.status(HttpStatus.OK).body(pointHistory);
     }
 }

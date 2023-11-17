@@ -72,5 +72,5 @@ public class ReviewFile {
     public ReviewFile build() {
         return new ReviewFile(fileSaveName);
     }
-    
+
 }

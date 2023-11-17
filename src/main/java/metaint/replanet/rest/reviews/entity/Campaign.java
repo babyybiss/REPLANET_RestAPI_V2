@@ -37,7 +37,7 @@ public class Campaign {
     private LocalDateTime startDate;
 
     @Column(name = "end_date")
-   // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd/HH:mm")
     private LocalDateTime endDate;
 

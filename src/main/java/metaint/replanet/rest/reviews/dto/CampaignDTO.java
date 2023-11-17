@@ -23,7 +23,4 @@ public class CampaignDTO {
     private String orgName;
     private String orgDescription;
     private String orgTel;
-
-
-
 }

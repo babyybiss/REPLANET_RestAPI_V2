@@ -12,6 +12,7 @@ import metaint.replanet.rest.reviews.repository.ReviewFileRepository;
 import metaint.replanet.rest.reviews.repository.ReviewRepository;
 import metaint.replanet.rest.util.FileUploadUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,8 +63,7 @@ public class ReviewService {
     //Path relativePath =  currentPath.relativize(filePath);
 
     // Resolve the relative path against the current working directory
-   // Path fullPath = currentPath.resolve(relativePathString);
-
+    // Path fullPath = currentPath.resolve(relativePathString);
 
 
     public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ReviewCommentRepository reviewCommentRepository, ModelMapper modelMapper) {
@@ -85,11 +85,11 @@ public class ReviewService {
     }
 
 
-    public CombineReviewDTO findCampaignByCampaignCode(Long campaignCode) {
-        Campaign campaign = campaignReviewRepository.findById(campaignCode).orElseThrow(IllegalArgumentException::new);
+    public CombineReviewDTO findReviewByReviewCode(Long reviewCode) {
 
-        return modelMapper.map(campaign, CombineReviewDTO.class);
+        Review review = reviewRepository.findById(reviewCode).orElseThrow(IllegalArgumentException::new);
 
+        return modelMapper.map(review, CombineReviewDTO.class);
 
     }
 
@@ -200,7 +200,7 @@ public class ReviewService {
 
             List<ReviewFile> reviewFileList = review.getReviewFileList();
 
-            if(!reviewFileList.isEmpty()) {
+            if (!reviewFileList.isEmpty()) {
                 String fileOriginpath = reviewFileList.get(0).getFileOriginPath();
 
                 System.out.println("FileOriginpath: " + fileOriginpath);
@@ -209,7 +209,7 @@ public class ReviewService {
                         .reviewTitle(reviewDTO.getReviewTitle())
                         .description(reviewDTO.getDescription()).build();
 
-                if(imageFile != null) {
+                if (imageFile != null) {
 
                     Path filePath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
                     Path rootPath;
@@ -306,7 +306,7 @@ public class ReviewService {
 
         // 현재 날짜
         LocalDateTime date = LocalDateTime.now();
-       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         reviewCommentDTO.setRevCommentDate(date);
 
         ReviewComment comment = modelMapper.map(reviewCommentDTO, ReviewComment.class);
@@ -315,20 +315,29 @@ public class ReviewService {
         log.info("hihihihi:" + reviewCode + reviewCommentDTO);
     }
 
+    public CombineReviewDTO findAllCommentsByReviewCode(Long reviewCode, CombineReviewDTO details) {
+
+        List<ReviewComment> reviewComment = reviewCommentRepository.findAllByReviewCode(reviewCode);
 
 
-    /*public String uploadFiles(MultipartFile file) {
+        if (!reviewComment.isEmpty()) {
+            details.setReviewCommentList(modelMapper.map(reviewComment, new TypeToken<List<ReviewComment>>() {
+            }.getType()));
+            return details;
+        } else {
+            return details;
+        }
+    }
 
-        ReviewFileDTO reviewFileDTO = new ReviewFileDTO();
-        reviewFileDTO.setFileOriginName("http://localhost:3000/public/reviewImgs/" + file.getOriginalFilename());
-        reviewFileDTO.setFileOriginPath("somePath");
-        reviewFileDTO.setFileSaveName(file.getOriginalFilename());
-        reviewFileDTO.setFileSavePath("http://localhost:3000/public/reviewImgs/" + file.getOriginalFilename());
-        reviewFileDTO.setFileExtension(file.getContentType());
+    @Transactional
+    public void deleteReviewComment(Long revCommentCode) {
 
-        ReviewFile insertReview = modelMapper.map(reviewFileDTO, ReviewFile.class);
-        reviewFileRepository.save(insertReview);
-
-        return insertReview.getFileSavePath();
-    }*/
+        try {
+            reviewCommentRepository.deleteById(revCommentCode);
+            log.info("[Review Service] deleteReviewComment : 리뷰 댓글 삭제 성공!");
+        } catch (Exception e) {
+            log.info("[Review Service] deleteReviewComment : 리뷰 댓글 삭제 실패!");
+            e.printStackTrace();
+        }
+    }
 }

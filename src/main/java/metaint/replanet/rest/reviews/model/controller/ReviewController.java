@@ -47,11 +47,13 @@ public class ReviewController {
         return  ResponseEntity.ok(details);
     }
 
-    @GetMapping("/{campaignCode}")
-    public ResponseEntity<CombineReviewDTO> getSpecificReview(@PathVariable Long campaignCode) {
-        log.info("(ReviewController) getSpecificReview code : " + campaignCode);
+    @GetMapping("/{reviewCode}")
+    public ResponseEntity<CombineReviewDTO> getSpecificReview(@PathVariable Long reviewCode) {
+        log.info("(ReviewController) getSpecificReview code : " + reviewCode);
 
-        CombineReviewDTO details = reviewService.findCampaignByCampaignCode(campaignCode);
+        CombineReviewDTO details = reviewService.findReviewByReviewCode(reviewCode);
+
+        details = reviewService.findAllCommentsByReviewCode(reviewCode, details);
 
         log.info("(review controller): 가져온 총 결과 : " +details);
         return ResponseEntity.ok(details);
@@ -161,12 +163,15 @@ public class ReviewController {
         return ResponseEntity.ok("신규 댓글 등록 성공!");
     }
 
+    @DeleteMapping("/{reviewCode}/comments/{revCommentCode}")
+    public ResponseEntity<?> deleteSpecificReviewComment(@PathVariable Long reviewCode, @PathVariable Long revCommentCode) {
+        log.info("[Review Controller] deleteSpecificReviewComment reviewCode : " + reviewCode);
+        log.info("[Review Controller] deleteSpecificReviewComment revCommentCode : " + revCommentCode);
 
-/*    @GetMapping("{reviewCode}/comments")
-    public ResponseEntity<ReviewCommentsDTO> getCommentsForSpecificReview(@PathVariable Long reviewCode) {
-        return ResponseEntity.ok(details);
-    }*/
+        reviewService.deleteReviewComment(revCommentCode);
 
+        return ResponseEntity.ok("리뷰 댓글 삭제 성공!");
+    }
 
 
 

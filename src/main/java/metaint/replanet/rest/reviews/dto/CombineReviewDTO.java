@@ -1,6 +1,7 @@
 package metaint.replanet.rest.reviews.dto;
 
 import lombok.*;
+import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 
 import java.time.LocalDateTime;
@@ -17,22 +18,19 @@ public class CombineReviewDTO {
     private Long campaignCode;
     private String campaignTitle;
     private String campaignContent;
-    private String startDate;
-    private String endDate;
+    private String campaignStartDate;
+    private String campaignEndDate;
     private String campaignCategory;
-    private Integer currentBudget;
-    private Integer goalBudget;
-    private String orgName;
-    private String orgDescription;
-    private String orgTel;
+    private Integer campaignCurrentBudget;
+    private Integer campaignGoalBudget;
+    private String campaignOrgName;
+    private String campaignOrgDescription;
+    private String campaignOrgTel;
     private Long reviewCode;
     private String reviewTitle;
     private String reviewDescription;
     private Long reviewCampaignCode;
     private List<ReviewFile> reviewFileList;
-}/*    private Long revFileCode;
-    private String fileOriginName;
-    private String fileOriginPath;
-    private String fileSaveName;
-    private String fileSavePath;
-    private String fileExtension;*/
+    private List<ReviewComment> reviewCommentList;
+
+}

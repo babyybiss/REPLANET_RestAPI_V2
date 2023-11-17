@@ -1,29 +1,32 @@
 package metaint.replanet.rest.chart.dto;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class CountAndSumByMonthlyDTO {
 
-    private String monthly;
+    private Date monthly;
     private int campaigns; // 캠페인 수 카운트
     private int sumCurrentBudget;
     private int sumGoalBudget;
+    private int sumExpectBudget;
 
     public CountAndSumByMonthlyDTO() {
     }
 
-    public CountAndSumByMonthlyDTO(String monthly, int campaigns, int sumCurrentBudget, int sumGoalBudget) {
+    public CountAndSumByMonthlyDTO(Date monthly, int campaigns, int sumCurrentBudget, int sumGoalBudget, int sumExpectBudget) {
         this.monthly = monthly;
         this.campaigns = campaigns;
         this.sumCurrentBudget = sumCurrentBudget;
         this.sumGoalBudget = sumGoalBudget;
+        this.sumExpectBudget = sumExpectBudget;
     }
 
-    public String getMonthly() {
+    public Date getMonthly() {
         return monthly;
     }
 
-    public void setMonthly(String monthly) {
+    public void setMonthly(Date monthly) {
         this.monthly = monthly;
     }
 
@@ -51,13 +54,22 @@ public class CountAndSumByMonthlyDTO {
         this.sumGoalBudget = sumGoalBudget;
     }
 
+    public int getSumExpectBudget() {
+        return sumExpectBudget;
+    }
+
+    public void setSumExpectBudget(int sumExpectBudget) {
+        this.sumExpectBudget = sumExpectBudget;
+    }
+
     @Override
     public String toString() {
         return "CountAndSumByMonthlyDTO{" +
-                "monthly='" + monthly + '\'' +
+                "monthly=" + monthly +
                 ", campaigns=" + campaigns +
                 ", sumCurrentBudget=" + sumCurrentBudget +
                 ", sumGoalBudget=" + sumGoalBudget +
+                ", sumExpectBudget=" + sumExpectBudget +
                 '}';
     }
 }

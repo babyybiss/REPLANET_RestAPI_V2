@@ -11,6 +11,7 @@ import java.util.List;
 @SpringBootTest
 public class ChartRepositoryTest {
 
+    @Autowired
     private ChartRepository chartRepository;
 
     @DisplayName("JpaRepository 인터페이스 제공 메서드 사용 테스트")
@@ -66,7 +67,7 @@ public class ChartRepositoryTest {
                 System.out.print(col + ":::");
             }
             System.out.println();
-        }); */
+        });*/
     }
 
     @DisplayName("당해 월별 캠페인 통계 조회 네이티브 쿼리 테스트")
@@ -76,12 +77,12 @@ public class ChartRepositoryTest {
         List<Object[]> countByCurrentyear = chartRepository.countAndSumByCurrentyear();
         //then
         Assertions.assertNotNull(countByCurrentyear);
-        /* countByCurrentyear.forEach( row -> {
+         countByCurrentyear.forEach( row -> {
             for(Object col : row) {
                 System.out.print(col + ":::");
             }
             System.out.println();
-        }); */
+        });
     }
 
     @DisplayName("전해 월별 캠페인 통계 조회 네이티브 쿼리 테스트")

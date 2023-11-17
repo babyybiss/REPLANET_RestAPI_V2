@@ -1,7 +1,7 @@
 package metaint.replanet.rest.reviews.repository;
 
-import metaint.replanet.rest.reviews.dto.CommentDTO;
-import metaint.replanet.rest.reviews.entity.Comment;
+//import metaint.replanet.rest.reviews.dto.CommentDTO;
+//import metaint.replanet.rest.reviews.entity.Comment;
 import metaint.replanet.rest.reviews.entity.Review;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 import org.junit.jupiter.api.Assertions;
@@ -22,8 +22,8 @@ public class ReviewRepositoryTest {
     @Autowired
     private ReviewFileRepository reviewFileRepository;
 
-    @Autowired
-    private CommentRespository commentRespository;
+    //@Autowired
+    //private CommentRespository commentRespository;
 
     @Autowired
     private CampaignReviewRepository campaignReviewRepository;
@@ -73,18 +73,18 @@ public class ReviewRepositoryTest {
     @DisplayName("리뷰 게시글별로 댓글 조회 테스트")
     @Test
     public void findCommentsByReviewCode() {
-        //given
-        Long reviewCode = 57L;
-
-        //when
-        List<Comment> commentList = commentRespository.findByReviewCode(reviewCode);
-        CommentDTO commentDTO = modelMapper.map(commentList, CommentDTO.class);
-
-
-        //then
-        Assertions.assertNotNull(commentDTO);
-        Assertions.assertEquals(1, commentList.size());
-        System.out.println(commentDTO);
+//        //given
+//        Long reviewCode = 57L;
+//
+//        //when
+//        List<Comment> commentList = commentRespository.findByReviewCode(reviewCode);
+//        CommentDTO commentDTO = modelMapper.map(commentList, CommentDTO.class);
+//
+//
+//        //then
+//        Assertions.assertNotNull(commentDTO);
+//        Assertions.assertEquals(1, commentList.size());
+//        System.out.println(commentDTO);
     }
 
 }

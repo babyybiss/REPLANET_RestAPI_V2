@@ -43,7 +43,7 @@ public class ChartServiceTest {
         List<CountAndSumByMonthlyDTO> resultList = chartService.countAndSumByCurrentyear();
         //then
         Assertions.assertNotNull(resultList);
-        // resultList.forEach(System.out::println);
+        resultList.forEach(System.out::println);
     }
     @DisplayName("전해 등록된 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계, 목표까지 남은모금액 합계 조회 테스트 ")
     @Test
@@ -53,6 +53,6 @@ public class ChartServiceTest {
         //then
         Assertions.assertNotNull(resultList);
         Assertions.assertTrue(resultList.isEmpty());
-        // resultList.forEach(System.out::println);
+        resultList.forEach(System.out::println);
     }
 }

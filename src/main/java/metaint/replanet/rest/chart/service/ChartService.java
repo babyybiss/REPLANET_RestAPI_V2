@@ -8,6 +8,7 @@ import metaint.replanet.rest.chart.repository.ChartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,7 @@ public class ChartService {
 
         return resultList.stream()
                 .map(row -> {
-                    String monthly = (String) row[0];
+                    Date monthly = (Date) row[0];
                     int campaigns = ((Number) row[1]).intValue();
                     int sumCurrentBudget = ((Number) row[2]).intValue();
                     int sumGoalBudget = ((Number) row[3]).intValue();
@@ -94,7 +95,7 @@ public class ChartService {
 
         return resultList.stream()
                 .map(row -> {
-                    String monthly = (String) row[0];
+                    Date monthly = (Date) row[0];
                     int campaigns = ((Number) row[1]).intValue();
                     int sumCurrentBudget = ((Number) row[2]).intValue();
                     int sumGoalBudget = ((Number) row[3]).intValue();

@@ -11,8 +11,6 @@ import java.util.List;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<CampaignDescription, Integer> {
-    List<CampaignDescription> findByEndDateAfter(LocalDateTime currentDate);
-    List<CampaignDescription> findByEndDateBefore(LocalDateTime currentDate);
 
     @Query(value = "SELECT * FROM tbl_campaign_description WHERE end_date >= current_date ORDER BY end_date desc", nativeQuery = true)
     List<CampaignDescription> findCampaignSort(Date currentDate);

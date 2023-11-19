@@ -1,12 +1,11 @@
-/*
 package metaint.replanet.rest.reviews.service;
 
-import metaint.replanet.rest.reviews.dto.CommentDTO;
+import metaint.replanet.rest.reviews.dto.ReviewCommentDTO;
 import metaint.replanet.rest.reviews.dto.ReviewDTO;
 import metaint.replanet.rest.reviews.dto.ReviewFileDTO;
 import metaint.replanet.rest.reviews.entity.Campaign;
-import metaint.replanet.rest.reviews.entity.Comment;
 import metaint.replanet.rest.reviews.entity.Review;
+import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
 import metaint.replanet.rest.reviews.repository.CampaignReviewRepository;
@@ -199,18 +198,18 @@ public class ReviewServiceTest {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalDateTime currentDateTime = LocalDateTime.now();
 
-        CommentDTO commentDTO = new CommentDTO();
+        ReviewCommentDTO reviewCommentDTO = new ReviewCommentDTO();
 
-        commentDTO.setCommentContext("댓글 테스트입니다!");
-        commentDTO.setCommentWriter("user01");
-        commentDTO.setCommentDate(String.valueOf(LocalDateTime.now()));
-        commentDTO.setReviewCode(57L);
+        reviewCommentDTO.setRevCommentContent("댓글 테스트입니다!");
+        reviewCommentDTO.setMemberCode("user01");
+        reviewCommentDTO.setRevCommentDate(LocalDateTime.now());
+        reviewCommentDTO.setReviewCode(57L);
 
         //when
-        Comment comment = modelMapper.map(commentDTO, Comment.class);
+        ReviewComment comment = modelMapper.map(reviewCommentDTO, ReviewComment.class);
         reviewCommentRepository.save(comment);
 
-        List<Comment> commentList = reviewCommentRepository.findAll();
+        List<ReviewComment> commentList = reviewCommentRepository.findAll();
         //then
         Assertions.assertNotNull(comment);
         Assertions.assertNotNull(commentList);
@@ -221,4 +220,3 @@ public class ReviewServiceTest {
 
 }
 
-*/

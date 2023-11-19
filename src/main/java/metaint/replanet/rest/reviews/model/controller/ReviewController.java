@@ -173,6 +173,24 @@ public class ReviewController {
         return ResponseEntity.ok("리뷰 댓글 삭제 성공!");
     }
 
+    @PutMapping("/{reviewCode}/comments/{revCommentCode}")
+    public ResponseEntity<?> modifySpecificComment(@PathVariable Long reviewCode, @PathVariable Long revCommentCode, @ModelAttribute ReviewCommentDTO reviewCommentDTO) {
+        log.info("[Review Controller] modifySpecificComment reviewCode : " + reviewCode);
+        log.info("[Review Controller] modifySpecificComment revCommentCode : " + revCommentCode);
+        log.info("[Review Controller] modifySpecificComment form : " + reviewCommentDTO);
 
+        reviewService.modifyReviewComment(reviewCommentDTO);
+
+        return ResponseEntity.ok("[Review Controller] modifySpecificComment : " + revCommentCode + "번 코드 리뷰 댓글 수정 완료!");
+    }
+
+    @PutMapping("/{reviewCode}/monitoredComment/{revCommentCode}")
+    public ResponseEntity<?> monitorComment(@PathVariable Long revCommentCode) {
+        reviewService.monitorComment(revCommentCode);
+
+        return ResponseEntity.ok("[Review Controller] modifySpecificComment : " + revCommentCode + "번 코드 리뷰 댓글 숨김 모드 완료!");
+
+
+    }
 
 }

@@ -11,4 +11,6 @@ public interface ReviewCommentRepository extends JpaRepository<ReviewComment, Lo
     List<ReviewComment> findByReviewCode(Long reviewCode);
 
     List<ReviewComment> findAllByReviewCode(Long reviewCode);
+
+    void deleteByReviewCode(Long reviewCode);
 }

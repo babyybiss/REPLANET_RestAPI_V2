@@ -75,7 +75,7 @@ public class ReviewService {
     }
 
     public List<CombineReviewDTO> findAllReviews() {
-        List<Campaign> reviewList = campaignReviewRepository.findAllOrderedByCampaignCodeDesc();
+        List<Review> reviewList = reviewRepository.findAllOrderedByReviewCodeDesc();
 
         log.info("findAllReviews: " + reviewList);
 
@@ -118,7 +118,7 @@ public class ReviewService {
         Path rootPath;
         String IMAGE_DIR = null;
         if (FileSystems.getDefault().getSeparator().equals("/")) {
-            Path MACPath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
+            Path MACPath = Paths.get("/REPLANET_React/public/reviewImgs").toAbsolutePath();
             // Unix-like system (MacOS, Linux)
             rootPath = Paths.get("/User").toAbsolutePath();
             Path relativePath = rootPath.relativize(MACPath);
@@ -296,6 +296,7 @@ public class ReviewService {
         try {
             reviewRepository.deleteByReviewCode(reviewCode);
             reviewFileRepository.deleteByRevFileCode(revFileCode);
+            reviewCommentRepository.deleteByReviewCode(reviewCode);
         } catch (Exception e) {
             System.out.println("Error occurred during review deletion!");
             e.printStackTrace();
@@ -339,5 +340,27 @@ public class ReviewService {
             log.info("[Review Service] deleteReviewComment : 리뷰 댓글 삭제 실패!");
             e.printStackTrace();
         }
+    }
+
+    @Transactional
+    public void modifyReviewComment(ReviewCommentDTO reviewCommentDTO) {
+
+        ReviewComment reviewComment = reviewCommentRepository.findById(reviewCommentDTO.getRevCommentCode()).get();
+
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        // use builder for modifying!!!!  reviewCommentRepository.
+        reviewComment = reviewComment.reviewCommentCode(reviewCommentDTO.getRevCommentCode())
+                .revCommentContent(reviewCommentDTO.getRevCommentContent())
+                .memberCode(reviewCommentDTO.getMemberCode())
+                .revCommentDate(date)
+                .reviewCode(reviewCommentDTO.getReviewCode())
+                .build();
+
+        reviewCommentRepository.save(reviewComment);
+    }
+
+    public void monitorComment(Long revCommentCode) {
     }
 }

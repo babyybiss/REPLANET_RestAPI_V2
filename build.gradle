@@ -36,9 +36,19 @@ dependencies {
 
 
     implementation 'org.modelmapper:modelmapper:3.1.1'
-    implementation 'net.nurigo:sdk:4.2.7'
+    //implementation 'net.nurigo:sdk:4.2.7'
+    // https://mvnrepository.com/artifact/net.nurigo/javaSDK
+    implementation 'net.nurigo:javaSDK:2.2'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+    implementation 'com.twilio.sdk:twilio:9.9.1'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
 }
 
 tasks.named('test') {

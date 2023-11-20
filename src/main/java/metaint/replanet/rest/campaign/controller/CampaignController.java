@@ -1,5 +1,6 @@
 package metaint.replanet.rest.campaign.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import metaint.replanet.rest.campaign.dto.CampaignDescFileDTO;
 import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
 import metaint.replanet.rest.campaign.dto.TodayDonationsDTO;
@@ -65,7 +66,7 @@ public class CampaignController {
 
     // 카테고리별 조회
     @GetMapping("/category")
-    public List<CampaignDescription> findCategoryByCampaignList (@PathVariable String category){
+    public List<CampaignDescription> findCategoryByCampaignList (@Parameter String category){
         System.out.println("카테고리 잘 받아옴?");
         return campaignService.findCategoryByCampaignList(category);
     }
@@ -104,17 +105,13 @@ public class CampaignController {
     @DeleteMapping("campaigns/{campaignCode}")
     public ResponseEntity<?> campaignDelete(@PathVariable int campaignCode) {
 
-        System.out.println(campaignCode + "시작 캠펜");
         CampaignAndFile campaign = campaignService.findCampaign(campaignCode);
 
-        System.out.println(campaign + " 여기 지나갑니다");
         int currentBudget = campaign.getCurrentBudget();
         if (currentBudget > 0) {
-            System.out.println("모금액 있어서 삭제 안됨");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("모금액 있어서 삭제 안됨");
         } else {
             campaignService.deleteCampaign(campaignCode);
-            System.out.println("삭제됨");
             return ResponseEntity.status(HttpStatus.OK).body("삭제됨");
         }
     }
@@ -133,6 +130,7 @@ public class CampaignController {
         LocalDateTime endDate = campaign.getEndDate();
         LocalDateTime currentDate = LocalDateTime.now();
 
+        System.out.println(currentBudget);
         if ((currentBudget > 0) && (endDate.isAfter(currentDate))) {
             System.out.println("모금액 있어서 수정 안됨");
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("모금액 있거나 마감일이 지나서 수정 안됨");
@@ -163,6 +161,12 @@ public class CampaignController {
         return campaignService.getTodayDonations();
     }
 
+    // 북마크 등록
+    @PostMapping("bookmarks")
+    public boolean addBookmark(@PathVariable int campaignCode){
+        System.out.println(campaignCode +"들어너?" );
+        return true;
+    }
 
 
 

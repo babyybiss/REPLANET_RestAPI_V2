@@ -28,7 +28,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
             , nativeQuery = true)
     List<Object[]> countAndSumByCategory();
 
-    @Query(value = "SELECT(start_date) AS monthly, COUNT(*) AS campaigns, " +
+    @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns, " +
             "SUM(current_budget) AS sum_current_budget, " +
             "SUM(goal_budget) AS sum_goal_budget, " +
             "SUM(goal_budget-current_budget) AS sum_expect_budget " +
@@ -38,7 +38,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
             , nativeQuery = true)
     List<Object[]> countAndSumByCurrentyear();
 
-    @Query(value = "SELECT(start_date) AS monthly, COUNT(*) AS campaigns, " +
+    @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns, " +
             "SUM(current_budget) AS sum_current_budget, " +
             "SUM(goal_budget) AS sum_goal_budget, " +
             "SUM(goal_budget-current_budget) AS sum_expect_budget " +

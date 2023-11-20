@@ -21,5 +21,5 @@ public class ReviewCommentDTO {
 
     private Long reviewCode;
 
-    //private String revCommentMonitorized;
+    private String revCommentMonitorized;
 }

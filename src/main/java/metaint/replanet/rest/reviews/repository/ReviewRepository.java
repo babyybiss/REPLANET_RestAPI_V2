@@ -1,6 +1,5 @@
 package metaint.replanet.rest.reviews.repository;
 
-import metaint.replanet.rest.reviews.entity.Campaign;
 import metaint.replanet.rest.reviews.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,4 +28,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT r FROM reviewPkg_entityReview r ORDER BY r.reviewCode ASC")
     List<Review> findAllOrderedByReviewCodeDesc();
+
 }

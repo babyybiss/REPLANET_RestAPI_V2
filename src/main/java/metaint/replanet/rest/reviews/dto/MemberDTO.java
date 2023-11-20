@@ -11,8 +11,8 @@ import java.util.Date;
 @Setter
 @ToString
 public class MemberDTO {
-    private int memberCode;
-    private String memberId;
+    private Long memberCode;
+    private String memberEmail;
     private String memberName;
     private String password;
     private String phone;

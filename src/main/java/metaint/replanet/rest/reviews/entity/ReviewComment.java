@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,6 +34,9 @@ public class ReviewComment {
     @Column(name = "review_code")
     private Long reviewCode;
 
+    @Column(name = "rev_comment_monitorized", insertable = false)
+    private String revCommentMonitorized = "N";
+
     public ReviewComment reviewCommentCode(Long revCommentCode) {
         this.revCommentCode = revCommentCode;
         return this;
@@ -58,8 +62,13 @@ public class ReviewComment {
         return this;
     }
 
+
+    public ReviewComment revCommentMonitorized(String revCommentMonitorized) {
+        this.revCommentMonitorized = revCommentMonitorized;
+        return this;
+    }
     public ReviewComment build() {
-        return new ReviewComment(revCommentCode, revCommentContent, memberCode, revCommentDate, reviewCode);
+        return new ReviewComment(revCommentCode, revCommentContent, memberCode, revCommentDate, reviewCode, revCommentMonitorized);
     }
 
 

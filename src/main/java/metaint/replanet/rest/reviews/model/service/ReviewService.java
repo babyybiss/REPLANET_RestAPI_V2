@@ -2,14 +2,8 @@ package metaint.replanet.rest.reviews.model.service;
 
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.reviews.dto.*;
-import metaint.replanet.rest.reviews.entity.Campaign;
-import metaint.replanet.rest.reviews.entity.Review;
-import metaint.replanet.rest.reviews.entity.ReviewComment;
-import metaint.replanet.rest.reviews.entity.ReviewFile;
-import metaint.replanet.rest.reviews.repository.CampaignReviewRepository;
-import metaint.replanet.rest.reviews.repository.ReviewCommentRepository;
-import metaint.replanet.rest.reviews.repository.ReviewFileRepository;
-import metaint.replanet.rest.reviews.repository.ReviewRepository;
+import metaint.replanet.rest.reviews.entity.*;
+import metaint.replanet.rest.reviews.repository.*;
 import metaint.replanet.rest.util.FileUploadUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -38,6 +32,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewFileRepository reviewFileRepository;
     private final ReviewCommentRepository reviewCommentRepository;
+    private final ReviewMemberRepository reviewMemberRepository;
     private final ModelMapper modelMapper;
 
     private WebMvcConfigurer corsConfigurer;
@@ -66,11 +61,12 @@ public class ReviewService {
     // Path fullPath = currentPath.resolve(relativePathString);
 
 
-    public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ReviewCommentRepository reviewCommentRepository, ModelMapper modelMapper) {
+    public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ReviewCommentRepository reviewCommentRepository, ReviewMemberRepository reviewMemberRepository, ModelMapper modelMapper) {
         this.campaignReviewRepository = campaignReviewRepository;
         this.reviewRepository = reviewRepository;
         this.reviewFileRepository = reviewFileRepository;
         this.reviewCommentRepository = reviewCommentRepository;
+        this.reviewMemberRepository = reviewMemberRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -362,5 +358,14 @@ public class ReviewService {
     }
 
     public void monitorComment(Long revCommentCode) {
+        reviewCommentRepository.updateRevCommentMonitorized(revCommentCode);
+
+    }
+
+    public String getMemberEmailByMemberCode(Long memberCode) {
+
+        log.info("[Review Service] getMemberEmail memberCode : " + memberCode);
+        return reviewMemberRepository.findEmailByMemberCode(memberCode);
+        //return modelMapper.map(memberEmail, MemberDTO.class);
     }
 }

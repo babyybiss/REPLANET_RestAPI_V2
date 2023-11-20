@@ -20,4 +20,6 @@ public class ReviewCommentDTO {
     private LocalDateTime revCommentDate;
 
     private Long reviewCode;
+
+    private String revCommentMonitorized;
 }

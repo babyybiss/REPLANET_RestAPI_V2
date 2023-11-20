@@ -2,14 +2,8 @@ package metaint.replanet.rest.reviews.model.service;
 
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.reviews.dto.*;
-import metaint.replanet.rest.reviews.entity.Campaign;
-import metaint.replanet.rest.reviews.entity.Review;
-import metaint.replanet.rest.reviews.entity.ReviewComment;
-import metaint.replanet.rest.reviews.entity.ReviewFile;
-import metaint.replanet.rest.reviews.repository.CampaignReviewRepository;
-import metaint.replanet.rest.reviews.repository.ReviewCommentRepository;
-import metaint.replanet.rest.reviews.repository.ReviewFileRepository;
-import metaint.replanet.rest.reviews.repository.ReviewRepository;
+import metaint.replanet.rest.reviews.entity.*;
+import metaint.replanet.rest.reviews.repository.*;
 import metaint.replanet.rest.util.FileUploadUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -38,6 +32,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewFileRepository reviewFileRepository;
     private final ReviewCommentRepository reviewCommentRepository;
+    private final ReviewMemberRepository reviewMemberRepository;
     private final ModelMapper modelMapper;
 
     private WebMvcConfigurer corsConfigurer;
@@ -66,16 +61,17 @@ public class ReviewService {
     // Path fullPath = currentPath.resolve(relativePathString);
 
 
-    public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ReviewCommentRepository reviewCommentRepository, ModelMapper modelMapper) {
+    public ReviewService(CampaignReviewRepository campaignReviewRepository, ReviewRepository reviewRepository, ReviewFileRepository reviewFileRepository, ReviewCommentRepository reviewCommentRepository, ReviewMemberRepository reviewMemberRepository, ModelMapper modelMapper) {
         this.campaignReviewRepository = campaignReviewRepository;
         this.reviewRepository = reviewRepository;
         this.reviewFileRepository = reviewFileRepository;
         this.reviewCommentRepository = reviewCommentRepository;
+        this.reviewMemberRepository = reviewMemberRepository;
         this.modelMapper = modelMapper;
     }
 
     public List<CombineReviewDTO> findAllReviews() {
-        List<Campaign> reviewList = campaignReviewRepository.findAllOrderedByCampaignCodeDesc();
+        List<Review> reviewList = reviewRepository.findAllOrderedByReviewCodeDesc();
 
         log.info("findAllReviews: " + reviewList);
 
@@ -118,7 +114,7 @@ public class ReviewService {
         Path rootPath;
         String IMAGE_DIR = null;
         if (FileSystems.getDefault().getSeparator().equals("/")) {
-            Path MACPath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
+            Path MACPath = Paths.get("/REPLANET_React/public/reviewImgs").toAbsolutePath();
             // Unix-like system (MacOS, Linux)
             rootPath = Paths.get("/User").toAbsolutePath();
             Path relativePath = rootPath.relativize(MACPath);
@@ -296,6 +292,7 @@ public class ReviewService {
         try {
             reviewRepository.deleteByReviewCode(reviewCode);
             reviewFileRepository.deleteByRevFileCode(revFileCode);
+            reviewCommentRepository.deleteByReviewCode(reviewCode);
         } catch (Exception e) {
             System.out.println("Error occurred during review deletion!");
             e.printStackTrace();
@@ -339,5 +336,36 @@ public class ReviewService {
             log.info("[Review Service] deleteReviewComment : 리뷰 댓글 삭제 실패!");
             e.printStackTrace();
         }
+    }
+
+    @Transactional
+    public void modifyReviewComment(ReviewCommentDTO reviewCommentDTO) {
+
+        ReviewComment reviewComment = reviewCommentRepository.findById(reviewCommentDTO.getRevCommentCode()).get();
+
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        // use builder for modifying!!!!  reviewCommentRepository.
+        reviewComment = reviewComment.reviewCommentCode(reviewCommentDTO.getRevCommentCode())
+                .revCommentContent(reviewCommentDTO.getRevCommentContent())
+                .memberCode(reviewCommentDTO.getMemberCode())
+                .revCommentDate(date)
+                .reviewCode(reviewCommentDTO.getReviewCode())
+                .build();
+
+        reviewCommentRepository.save(reviewComment);
+    }
+
+    public void monitorComment(Long revCommentCode) {
+        reviewCommentRepository.updateRevCommentMonitorized(revCommentCode);
+
+    }
+
+    public String getMemberEmailByMemberCode(Long memberCode) {
+
+        log.info("[Review Service] getMemberEmail memberCode : " + memberCode);
+        return reviewMemberRepository.findEmailByMemberCode(memberCode);
+        //return modelMapper.map(memberEmail, MemberDTO.class);
     }
 }

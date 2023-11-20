@@ -28,7 +28,6 @@ public class ChartController {
         this.chartService = chartService;
     }
 
-
     @ApiOperation(value = "통계 조회 요청", notes = "현재 등록된 캠페인을 기준으로 통계를 조회합니다.", tags = {"통계 리스트 조회"})
     @GetMapping("/series")
     public ResponseEntity<ResponseMessageDTO> selectChartResult() {
@@ -37,9 +36,10 @@ public class ChartController {
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("카테고리별 통계 조회", chartService.countAndSumByCampaignCategory());
-        responseMap.put("당해 통계 조회" , chartService.countAndSumByCurrentyear());
-        responseMap.put("전해 통계 조회", chartService.countAndSumByPreviousyear());
+        responseMap.put("categoryData", chartService.countAndSumByCampaignCategory());
+        responseMap.put("currentYearData" , chartService.countAndSumByCurrentyear());
+        responseMap.put("previousYearData", chartService.countAndSumByPreviousyear());
+        responseMap.put("donationByTimeData", chartService.selectDonationByTime());
 
         ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);
 

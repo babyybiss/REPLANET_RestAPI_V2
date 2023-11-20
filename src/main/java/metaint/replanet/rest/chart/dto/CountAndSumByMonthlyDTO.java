@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class CountAndSumByMonthlyDTO {
 
-    private Date monthly;
+    private String monthly;
     private int campaigns; // 캠페인 수 카운트
     private int sumCurrentBudget;
     private int sumGoalBudget;
@@ -14,7 +14,7 @@ public class CountAndSumByMonthlyDTO {
     public CountAndSumByMonthlyDTO() {
     }
 
-    public CountAndSumByMonthlyDTO(Date monthly, int campaigns, int sumCurrentBudget, int sumGoalBudget, int sumExpectBudget) {
+    public CountAndSumByMonthlyDTO(String monthly, int campaigns, int sumCurrentBudget, int sumGoalBudget, int sumExpectBudget) {
         this.monthly = monthly;
         this.campaigns = campaigns;
         this.sumCurrentBudget = sumCurrentBudget;
@@ -22,11 +22,11 @@ public class CountAndSumByMonthlyDTO {
         this.sumExpectBudget = sumExpectBudget;
     }
 
-    public Date getMonthly() {
+    public String getMonthly() {
         return monthly;
     }
 
-    public void setMonthly(Date monthly) {
+    public void setMonthly(String monthly) {
         this.monthly = monthly;
     }
 
@@ -65,7 +65,7 @@ public class CountAndSumByMonthlyDTO {
     @Override
     public String toString() {
         return "CountAndSumByMonthlyDTO{" +
-                "monthly=" + monthly +
+                "monthly='" + monthly + '\'' +
                 ", campaigns=" + campaigns +
                 ", sumCurrentBudget=" + sumCurrentBudget +
                 ", sumGoalBudget=" + sumGoalBudget +

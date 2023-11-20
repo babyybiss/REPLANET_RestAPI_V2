@@ -36,10 +36,10 @@ public class ChartController {
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("카테고리별 통계 조회", chartService.countAndSumByCampaignCategory());
-        responseMap.put("당해 통계 조회" , chartService.countAndSumByCurrentyear());
-        responseMap.put("전해 통계 조회", chartService.countAndSumByPreviousyear());
-        responseMap.put("시간별 모금 통계 조회", chartService.selectDonationByTime());
+        responseMap.put("categoryData", chartService.countAndSumByCampaignCategory());
+        responseMap.put("currentYearData" , chartService.countAndSumByCurrentyear());
+        responseMap.put("previousYearData", chartService.countAndSumByPreviousyear());
+        responseMap.put("donationByTimeData", chartService.selectDonationByTime());
 
         ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);
 

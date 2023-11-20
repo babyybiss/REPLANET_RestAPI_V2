@@ -16,10 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -107,19 +104,27 @@ public class ExchangeController {
     public List<ExchangeDTO> selectAllExchanges(){
 
         List<ExchangeDTO> exchangeList = exchangeService.selectAllExchanges();
+        log.info("exchangeList 확인 : " + exchangeList);
         return exchangeList;
 //        return ResponseEntity.status(HttpStatus.OK).body(exchangeList);
     }
 
-//    @GetMapping("/{status}")
-//    public List<ExchangeDTO> selectMemberAllExchange(@RequestParam(name = "status") String status){
-//
-//        List<ExchangeDTO> listByStatus = exchangeService.selectExchangesByStatus(status);
-//
-//        return listByStatus;
-//    }
+    @GetMapping("/exchanges/{status}")
+    public ResponseEntity<List<ExchangeDTO>> selectMemberAllExchange(@PathVariable String status){
 
-    @GetMapping("exchanges/{exchangeCode}")
+        log.info("status 확인 : " + status);
+        List<ExchangeDTO> listByStatus = new ArrayList<>();
+        if(status.equals("전체")){
+            listByStatus = exchangeService.selectAllExchanges();
+        } else {
+            listByStatus = exchangeService.selectExchangesByStatus(status);
+        }
+        log.info("list 확인 : " + listByStatus);
+
+        return ResponseEntity.status(HttpStatus.OK).body(listByStatus);
+    }
+
+    @GetMapping("exchanges/{exchangeCode}/detail")
     public ResponseEntity<Map<String, Object>> selectExchangeDetail(@PathVariable int exchangeCode){
 
         log.info("전환 신청 코드 " + exchangeCode);

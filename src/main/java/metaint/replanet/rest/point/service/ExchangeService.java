@@ -79,6 +79,9 @@ public class ExchangeService {
     public List<ExchangeDTO> selectExchangesByStatus(String status) {
         List<Exchange> listByStatus = exchangeRepository.findByStatus(status);
 
+        listByStatus.sort(Comparator.comparingInt((Exchange::getExchangeCode)));
+        Collections.reverse(listByStatus);
+
         return listByStatus.stream()
                 .map(list -> modelMapper.map(list, ExchangeDTO.class))
                 .collect(Collectors.toList());

@@ -190,6 +190,12 @@ public class CampaignService {
         return findCampaign;
     }
 
+    // 카테고리별 리스트 조회
+    public List<CampaignDescription> findCategoryByCampaignList(String category) {
+        System.out.println(category + "카테고리 확인 1111");
+        List<CampaignDescription> findCategoryByCampaignList = campaignRepository.findByCampaignCategory(category);
+        return findCategoryByCampaignList;
+    }
     // 종료 임박 순 조회 성공
     public List<CampaignDescription> findCampaignSort(Date currentDate) {
         List<CampaignDescription> findCampaignSort = campaignRepository.findCampaignSort(currentDate);
@@ -227,7 +233,6 @@ public class CampaignService {
         CampaignAndFile campaign = campaignAndFileRepository.findById(campaignCode).get();
 
         //List<CampaignDescFile> file = campaignFileRepository.findByCampaignCodeCampaignCode(campaignCode);
-        System.out.println(campaign + "캠펜 확인");
         // 목표금액 , 제거
         String goalBudger = campaignDTO.getGoalBudget().replaceAll(",", "");
         campaignDTO.setGoalBudget(goalBudger);
@@ -274,10 +279,10 @@ public class CampaignService {
 
     public List<Pay> findparticipationList(int campaignCode) {
         List<Pay> payList = participationRepository.findByDonationByCampaignCode(campaignCode);
-        System.out.println(payList + "도네");
         return payList;
     }
 
+    // 일일 모금현황 조회
     public List<TodayDonationsDTO> getTodayDonations() {
         List<Object[]> today = participationRepository.findByTodayDonation();
         System.out.println(today+ "이거 확인좀");
@@ -301,4 +306,6 @@ public class CampaignService {
             list.add(apply);
         } return list;
     }
+
+
 }

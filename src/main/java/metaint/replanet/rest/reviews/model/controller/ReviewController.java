@@ -5,7 +5,7 @@ import metaint.replanet.rest.auth.jwt.TokenProvider;
 import metaint.replanet.rest.reviews.dto.*;
 import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
-import org.apache.coyote.Response;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -173,6 +173,33 @@ public class ReviewController {
         return ResponseEntity.ok("리뷰 댓글 삭제 성공!");
     }
 
+    @PutMapping("/{reviewCode}/comments/{revCommentCode}")
+    public ResponseEntity<?> modifySpecificComment(@PathVariable Long reviewCode, @PathVariable Long revCommentCode, @ModelAttribute ReviewCommentDTO reviewCommentDTO) {
+        log.info("[Review Controller] modifySpecificComment reviewCode : " + reviewCode);
+        log.info("[Review Controller] modifySpecificComment revCommentCode : " + revCommentCode);
+        log.info("[Review Controller] modifySpecificComment form : " + reviewCommentDTO);
 
+        reviewService.modifyReviewComment(reviewCommentDTO);
+
+        return ResponseEntity.ok("[Review Controller] modifySpecificComment : " + revCommentCode + "번 코드 리뷰 댓글 수정 완료!");
+    }
+
+    @PutMapping("/{reviewCode}/monitoredComment/{revCommentCode}")
+    public ResponseEntity<?> monitorComment(@PathVariable Long revCommentCode) {
+        reviewService.monitorComment(revCommentCode);
+
+        return ResponseEntity.ok("[Review Controller] modifySpecificComment : " + revCommentCode + "번 코드 리뷰 댓글 숨김 모드 완료!");
+    }
+
+    @GetMapping("/getEmailByMemberCode/{memberCode}")
+    public ResponseEntity<?> getMemberEmail(@PathVariable Long memberCode) {
+        log.info("[Review Controller] getMemberEmail memberCode : " + memberCode);
+
+        String email = reviewService.getMemberEmailByMemberCode(memberCode);
+
+        //String email = getEmail.getMemberEmail();
+        log.info("[Review Controller] getMemberEmail received Email : " + email);
+        return ResponseEntity.ok(email);
+    }
 
 }

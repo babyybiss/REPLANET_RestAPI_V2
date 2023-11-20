@@ -27,7 +27,7 @@ public class Review {
     @Column(name = "description")
     private String description;
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @OneToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "campaign_code", referencedColumnName = "campaign_code")
     private Campaign campaign;
 

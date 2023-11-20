@@ -3,6 +3,7 @@ package metaint.replanet.rest.reviews.model.controller;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.jwt.TokenProvider;
 import metaint.replanet.rest.reviews.dto.*;
+import metaint.replanet.rest.reviews.entity.Campaign;
 import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.model.service.ReviewService;
 import okhttp3.Response;
@@ -202,4 +203,13 @@ public class ReviewController {
         return ResponseEntity.ok(email);
     }
 
+    @GetMapping("/nonExisting")
+    public ResponseEntity<List<Campaign>> getNonExistingReviewCampaigns() {
+        List<Campaign> unassociatedCampaigns = reviewService.findUnassociatedCampaigns();
+
+        return ResponseEntity.ok(unassociatedCampaigns);
+    }
+
+
 }
+

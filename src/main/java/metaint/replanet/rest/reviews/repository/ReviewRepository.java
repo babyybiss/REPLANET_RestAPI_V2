@@ -15,9 +15,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "where review_title like %:searchFilter%", nativeQuery = true)
     List<Review> findFilteredReviews(@Param("searchFilter") String searchFilter);
 
-    @Query(value = "select review_code from tbl_review " +
-            "where campaign_code = :campaignCode", nativeQuery = true)
-    Long findByCampaignCode(@Param("campaignCode") Long campaignCode);
+    @Query("SELECT r.reviewCode FROM reviewPkg_entityReview r WHERE r.campaign.campaignCode = :campaignCode")
+    Long findReviewCodeByCampaignCode(@Param("campaignCode") Long campaignCode);
+
 
     @Query(value = "select * from tbl_campaign_rev_file where review_code = :reviewCode", nativeQuery = true)
     List<Object> findByReviewCode(@Param("reviewCode")Long reviewCode);

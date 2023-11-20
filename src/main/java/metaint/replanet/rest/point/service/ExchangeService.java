@@ -183,14 +183,14 @@ public class ExchangeService {
         String sql = "SELECT changeDate, content, changePoint, remainingPoint, status, code FROM ( " +
                 "SELECT e.processing_date AS changeDate, e.title AS content, e.points AS changePoint, m.current_point AS remainingPoint, e.status AS status, e.exchange_code AS code " +
                 "FROM tbl_member m " +
-                "LEFT JOIN tbl_point_exchange e ON m.member_code = e.member_code AND e.points > 0 " +
-                "WHERE m.member_code = ?1 " +
+                "LEFT JOIN tbl_point_exchange e ON m.member_code = e.member_code " +
+                "WHERE m.member_code = ?1 AND e.points > 0 " +
                 "UNION " +
                 "SELECT d.donation_date_time AS changeDate, c.campaign_title AS content, d.donation_point AS changePoint, m.current_point AS remainingPoint, c.campaign_category AS status, c.campaign_code AS code " +
                 "FROM tbl_member m " +
-                "LEFT JOIN tbl_donation d ON m.member_code = d.member_code AND d.donation_point > 0 " +
+                "LEFT JOIN tbl_donation d ON m.member_code = d.member_code " +
                 "LEFT JOIN tbl_campaign_description c ON d.campaign_code = c.campaign_code " +
-                "WHERE m.member_code = ?1 " +
+                "WHERE m.member_code = ?1 AND d.donation_point > 0 " +
                 ") AS pointHistory " +
                 "ORDER BY changeDate DESC";
 

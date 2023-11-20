@@ -15,4 +15,6 @@ public interface CampaignRepository extends JpaRepository<CampaignDescription, I
     @Query(value = "SELECT * FROM tbl_campaign_description WHERE end_date >= current_date ORDER BY end_date desc", nativeQuery = true)
     List<CampaignDescription> findCampaignSort(Date currentDate);
 
+    List<CampaignDescription> findByCampaignCategory(String category);
+
 }

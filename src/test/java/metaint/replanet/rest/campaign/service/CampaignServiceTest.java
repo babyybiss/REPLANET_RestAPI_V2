@@ -113,7 +113,7 @@ public class CampaignServiceTest {
 
     private static Stream<Arguments> createTestData() {
         return Stream.of(
-                Arguments.of("원본파일명", "저장파일명","저장경로", "확장자", 0)
+                Arguments.of("원본파일명", "저장파일명", "저장경로", "확장자", 0)
         );
     }
 
@@ -166,12 +166,13 @@ public class CampaignServiceTest {
         //when
         //then
         Assertions.assertDoesNotThrow(
-                () -> campaignService.registImage(mFile,code)
+                () -> campaignService.registImage(mFile, code)
         );
     }
+
     @DisplayName("캠페인 삭제 테스트")
     @Test
-    void campaignDeleteTest(){
+    void campaignDeleteTest() {
         //given
         int campaignCode = 11;
         //when
@@ -183,7 +184,7 @@ public class CampaignServiceTest {
 
     @DisplayName("캠페인 수정 테스트")
     @Test
-    void campaignModifyTest(){
+    void campaignModifyTest() {
         //given
         MultipartFile mFile = new MultipartFile() {
             @Override
@@ -241,13 +242,13 @@ public class CampaignServiceTest {
         //when
         //then
         Assertions.assertDoesNotThrow(
-                () -> campaignService.modifyCampaign(campaign,1,mFile)
+                () -> campaignService.modifyCampaign(campaign, 1, mFile)
         );
     }
 
     @DisplayName("기부내역 조회 테스트")
     @Test
-    void donationFindAllByCampaignTest(){
+    void donationFindAllByCampaignTest() {
         //given
         int code = 1;
         //when
@@ -256,5 +257,20 @@ public class CampaignServiceTest {
         Assertions.assertNotNull(donationList);
         donationList.forEach(System.out::println);
     }
+    
+    @DisplayName("카테고리별 조회 테스트")
+    @Test
+    void campaignSearchByCategory(){
+        //given
+        String category = "기타";
+        //when
+        List<CampaignDescription> campaignList = campaignService.findCategoryByCampaignList(category);
+        //then
+        Assertions.assertNotNull(campaignList);
+        campaignList.forEach(System.out::println);
+
     }
+
+
+}
 

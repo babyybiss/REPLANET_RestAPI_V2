@@ -63,6 +63,13 @@ public class CampaignController {
         return campaignService.findparticipationList(campaignCode);
     }
 
+    // 카테고리별 조회
+    @GetMapping("/category")
+    public List<CampaignDescription> findCategoryByCampaignList (@PathVariable String category){
+        System.out.println("카테고리 잘 받아옴?");
+        return campaignService.findCategoryByCampaignList(category);
+    }
+
 
     // 캠페인 등록
     @PostMapping(name = "campaigns", consumes = MediaType.ALL_VALUE)

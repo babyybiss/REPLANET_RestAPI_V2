@@ -101,9 +101,12 @@ public class ReviewService {
         reviewRepository.flush();
 
         ///////////////////////////////////////////////////////////////////////////////////
-        Long reviewCode = reviewRepository.findByCampaignCode(reviewDTO.getCampaignCode());
+        log.info("what is the campaignCode : " + reviewDTO.getCampaignCode());
+        Long campaignCode = reviewDTO.getCampaignCode();
+        Long reviewCode = reviewRepository.findReviewCodeByCampaignCode(campaignCode);
+        log.info("what is the fucking result??" + reviewCode);
 
-        //System.out.println("what is the fucking reviewCode??" + reviewCode);
+        log.info("what is the fucking reviewCode??" + reviewCode);
         ReviewFileDTO reviewFileDTO = new ReviewFileDTO();
 
         String imageName = UUID.randomUUID().toString().replace("-", "");
@@ -207,7 +210,7 @@ public class ReviewService {
 
                 if (imageFile != null) {
 
-                    Path filePath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
+                    Path filePath = Paths.get("/REPLANET_React/public/reviewImgs").toAbsolutePath();
                     Path rootPath;
                     String IMAGE_DIR = null;
 
@@ -367,5 +370,10 @@ public class ReviewService {
         log.info("[Review Service] getMemberEmail memberCode : " + memberCode);
         return reviewMemberRepository.findEmailByMemberCode(memberCode);
         //return modelMapper.map(memberEmail, MemberDTO.class);
+    }
+
+    public List<Campaign> findUnassociatedCampaigns() {
+
+        return campaignReviewRepository.findUnassociatedCampaigns();
     }
 }

@@ -388,15 +388,22 @@ public class ReviewService {
                 throw new IllegalArgumentException("Empty file");
             }
 
-            // Specify the destination folder
-            String filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React/public/reviewImgs/" + file.getOriginalFilename();
+            // Generate a random UUID for the file name
+            String randomFileName = UUID.randomUUID().toString();
 
+            // Get the original file extension
+            String originalFileName = file.getOriginalFilename();
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+
+            // Specify the destination folder with the random file name and original file extension
+            String filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React/public/reviewImgs/" + randomFileName + fileExtension;
+            String fileName = randomFileName + fileExtension;
             // Save the file
             file.transferTo(new File(filePath));
 
             // Respond with the file path or any other relevant information
             log.info("File uploaded successfully. Path: " + filePath);
-            return filePath;
+            return fileName;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Internal Server Error", e);

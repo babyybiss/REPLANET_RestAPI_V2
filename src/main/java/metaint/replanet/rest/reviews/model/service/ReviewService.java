@@ -380,12 +380,12 @@ public class ReviewService {
     }
 
     public String uploadImage(MultipartFile file) {
-
         try {
             // Validate the file if needed
             log.info("my file>?!!?: " + file);
-            if (file.isEmpty()) {
-                log.info("NO file");
+            if (file.getSize() == 0) {
+                log.info("Empty file");
+                throw new IllegalArgumentException("Empty file");
             }
 
             // Specify the destination folder
@@ -396,10 +396,10 @@ public class ReviewService {
 
             // Respond with the file path or any other relevant information
             log.info("File uploaded successfully. Path: " + filePath);
-            return file.getOriginalFilename();
+            return filePath;
         } catch (IOException e) {
             e.printStackTrace();
-            return "Internal Server Error";
+            throw new RuntimeException("Internal Server Error", e);
         }
     }
 }

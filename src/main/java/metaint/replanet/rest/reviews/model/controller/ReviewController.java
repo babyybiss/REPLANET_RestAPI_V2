@@ -234,7 +234,8 @@ public class ReviewController {
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonResponse = objectMapper.writeValueAsString(response);
 
-            return ResponseEntity.ok("{ 'location' : '/reviewImgs/image.png' }");
+            return ResponseEntity.ok("{ 'imageUrl': 'http://localhost:8001/reviews/image/" + file.getOriginalFilename() + "' }");
+
             //return ResponseEntity.ok(jsonResponse);
         } catch (Exception e) {
             // Create a failure response
@@ -249,7 +250,8 @@ public class ReviewController {
                 jsonResponse = "{\"status\":false,\"message\":\"Error processing response\"}";
             }
 
-            return ResponseEntity.ok("{ 'location' : '/reviewImgs/image.png' }");
+            return ResponseEntity.ok("{ 'imageUrl': 'http://localhost:8001/reviews/image/" + file.getOriginalFilename() + "' }");
+
         }
     }
 

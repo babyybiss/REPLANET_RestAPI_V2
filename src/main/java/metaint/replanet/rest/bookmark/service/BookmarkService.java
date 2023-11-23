@@ -73,10 +73,10 @@ public class BookmarkService {
 
     // 북마크 전체삭제
     @Transactional
-    public Boolean bookmarkDeleteAll(List<Object> campaignCode) {
+    public Boolean bookmarkDeleteAll(List<Integer> campaignCode) {
         int result = 0;
         try {
-            //result = bookmarkRepository.deleteAllById(campaignCode);
+            result = bookmarkRepository.deleteAllByIds(campaignCode);
             System.out.println(result+ "이게 안되나?");
         } catch (Exception e) {
             e.printStackTrace();

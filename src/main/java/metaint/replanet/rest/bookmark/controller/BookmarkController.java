@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Objects;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -55,9 +56,7 @@ public class BookmarkController {
     // 북마크 등록
     @PostMapping("bookmarks")
     public boolean addBookmark(@RequestBody BookmarkDTO bookmarkDTO){
-        System.out.println(bookmarkDTO +"들어너?" );
         boolean check = bookmarkService.addBookmark(bookmarkDTO);
-        System.out.println(check+ "체크좀");
         return check;
     }
 
@@ -72,11 +71,9 @@ public class BookmarkController {
 
     // 북마크 전체 삭제
     @PutMapping("AllBookmarks")
-    public ResponseEntity<String> deleteBookmarks(@RequestBody List<Long> bookmarkCode){
+    public ResponseEntity<String> deleteBookmarks(@RequestBody List<Object> bookmarkCode){
         System.out.println(bookmarkCode +"들어너?" );
+        bookmarkService.bookmarkDeleteAll(bookmarkCode);
         return null;
     }
-
-
-
 }

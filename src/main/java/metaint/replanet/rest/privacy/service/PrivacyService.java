@@ -66,4 +66,11 @@ public class PrivacyService {
         }
         return 0;
     }
+
+    public char selectPrivacyStatus(int memberCode) {
+        System.out.println("service로 오는 것 확인");
+        Member memberStatus = privacyRepository.findById(memberCode).get();
+        System.out.println("memberStatus 확인 : " + memberStatus);
+        return memberStatus.getPrivacyStatus();
+    }
 }

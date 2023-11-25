@@ -1,4 +1,4 @@
-package metaint.replanet.rest.reviews.model.service;
+package metaint.replanet.rest.reviews.service;
 
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.reviews.dto.*;

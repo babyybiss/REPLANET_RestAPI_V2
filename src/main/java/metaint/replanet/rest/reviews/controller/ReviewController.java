@@ -1,4 +1,4 @@
-package metaint.replanet.rest.reviews.model.controller;
+package metaint.replanet.rest.reviews.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.jwt.TokenProvider;
 import metaint.replanet.rest.reviews.dto.*;
 import metaint.replanet.rest.reviews.entity.Campaign;
-import metaint.replanet.rest.reviews.model.service.ReviewService;
+import metaint.replanet.rest.reviews.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import static java.lang.Long.parseLong;
@@ -203,6 +202,7 @@ public class ReviewController {
         return ResponseEntity.ok(email);
     }
 
+    
     @GetMapping("/nonExisting")
     public ResponseEntity<List<Campaign>> getNonExistingReviewCampaigns() {
         List<Campaign> unassociatedCampaigns = reviewService.findUnassociatedCampaigns();

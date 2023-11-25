@@ -7,7 +7,6 @@ import metaint.replanet.rest.reviews.entity.Campaign;
 import metaint.replanet.rest.reviews.entity.Review;
 import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
-import metaint.replanet.rest.reviews.model.service.ReviewService;
 import metaint.replanet.rest.reviews.repository.CampaignReviewRepository;
 import metaint.replanet.rest.reviews.repository.ReviewCommentRepository;
 import metaint.replanet.rest.reviews.repository.ReviewFileRepository;

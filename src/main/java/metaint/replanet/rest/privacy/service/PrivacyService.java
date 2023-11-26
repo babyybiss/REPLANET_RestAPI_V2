@@ -55,7 +55,7 @@ public class PrivacyService {
 
         if(withdrawPrivacy != null){
             withdrawPrivacy = withdrawPrivacy.privacyStatus(memberDTO.getPrivacyStatus())
-                    .residentNum("0")
+                    .residentNum(null)
                     .builder();
             privacyRepository.save(withdrawPrivacy);
 

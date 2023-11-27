@@ -1,4 +1,4 @@
-package metaint.replanet.rest.reviews.model.service;
+package metaint.replanet.rest.reviews.service;
 
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.reviews.dto.*;
@@ -396,8 +396,17 @@ public class ReviewService {
             String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
 
             // Specify the destination folder with the random file name and original file extension
-            String filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React/public/reviewImgs/" + randomFileName + fileExtension;
             String fileName = randomFileName + fileExtension;
+
+            String filePath;
+
+            if (FileSystems.getDefault().getSeparator().equals("/")) {
+                filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React/public/reviewImgs/" + randomFileName + fileExtension;
+            } else {
+                // Windows
+                filePath = "C:\\dev\\metaint\\REPLANET_React\\public\\reviewImgs";
+            }
+
             // Save the file
             file.transferTo(new File(filePath));
 

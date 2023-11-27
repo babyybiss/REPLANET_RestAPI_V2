@@ -2,6 +2,21 @@ server:
   port: 8001
 
 spring:
+  redis:
+    host: localhost
+    port: 8001
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: projectdasi2023@gmail.com
+    password: vnwl zyjg akyi uhpb
+    auth-code-expiration-millis: 1800000
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   jpa:
     hibernate:
       ddl-auto: none

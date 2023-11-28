@@ -37,10 +37,9 @@ public class SmsController {
 
     }
 
-    @PostMapping("/users/smscheck")
-    public boolean checkSMS (@RequestBody String cerNum, @RequestBody String verificationCode, HttpServletRequest request) {
-        log.info((String)request.getAttribute(verificationCode));
-        if (cerNum == request.getAttribute(verificationCode)) {return true;}
+    @PostMapping("/users/smscheck/{verificationCode}")
+    public boolean checkSMS (@RequestBody String cerNum, @RequestBody String verificationCode) {
+        if (cerNum == verificationCode) {return true;}
         else return false;
     }
 

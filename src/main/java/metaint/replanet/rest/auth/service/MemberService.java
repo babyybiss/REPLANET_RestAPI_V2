@@ -1,5 +1,6 @@
 package metaint.replanet.rest.auth.service;
 
+import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.dto.MemberResponseDto;
 import metaint.replanet.rest.auth.entity.Member;
 import metaint.replanet.rest.auth.repository.MemberRepository;
@@ -8,8 +9,10 @@ import metaint.replanet.rest.auth.util.SecurityUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
@@ -34,6 +37,7 @@ public class MemberService {
 
     @Transactional
     public boolean existsByEmail(String email) {
+        log.info(email);
         return memberRepository.existsByEmail(email);
 
     }

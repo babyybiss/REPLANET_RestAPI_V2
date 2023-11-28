@@ -74,8 +74,9 @@ public class ReviewService {
 
     public List<CombineReviewDTO> findAllReviews() {
         List<Review> reviewList = reviewRepository.findAllOrderedByReviewCodeDesc();
-
-        log.info("findAllReviews: " + reviewList);
+       // CampaignDTO campaignDTO = modelMapper.map(reviewList.get(0).getCampaign(), CampaignDTO.class);
+        //log.info("campaign? :" + campaignDTO);
+       // log.info("findAllReviews: " + reviewList.get(0).getCampaign().getOrganization());
 
         return reviewList.stream()
                 .map(review -> modelMapper.map(review, CombineReviewDTO.class))
@@ -86,7 +87,7 @@ public class ReviewService {
     public CombineReviewDTO findReviewByReviewCode(Long reviewCode) {
 
         Review review = reviewRepository.findById(reviewCode).orElseThrow(IllegalArgumentException::new);
-
+        log.info("review ? : " + review);
         return modelMapper.map(review, CombineReviewDTO.class);
 
     }
@@ -119,7 +120,7 @@ public class ReviewService {
         Path rootPath;
         String IMAGE_DIR = null;
         if (FileSystems.getDefault().getSeparator().equals("/")) {
-            Path MACPath = Paths.get("/REPLANET_React/public/reviewImgs").toAbsolutePath();
+            Path MACPath = Paths.get("/REPLANET_React_V2/public/reviewImgs").toAbsolutePath();
             // Unix-like system (MacOS, Linux)
             rootPath = Paths.get("/User").toAbsolutePath();
             Path relativePath = rootPath.relativize(MACPath);
@@ -128,7 +129,7 @@ public class ReviewService {
 
         } else {
             // Windows
-            Path WinPath = Paths.get("/dev/metaint/REPLANET_React/public/reviewImgs").toAbsolutePath();
+            Path WinPath = Paths.get("/dev/metaint/REPLANET_React_V2/public/reviewImgs").toAbsolutePath();
             rootPath = Paths.get("C:\\").toAbsolutePath();
             Path relativePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(relativePath);
@@ -401,10 +402,10 @@ public class ReviewService {
             String filePath;
 
             if (FileSystems.getDefault().getSeparator().equals("/")) {
-                filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React/public/reviewImgs/" + randomFileName + fileExtension;
+                filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React_V2/public/reviewImgs/" + randomFileName + fileExtension;
             } else {
                 // Windows
-                filePath = "C:\\dev\\metaint\\REPLANET_React\\public\\reviewImgs";
+                filePath = "C:\\dev\\metaint\\REPLANET_React_V2\\public\\reviewImgs";
             }
 
             // Save the file
@@ -418,4 +419,12 @@ public class ReviewService {
             throw new RuntimeException("Internal Server Error", e);
         }
     }
+
+    public String getOrgName(Long orgCode) {
+        return reviewMemberRepository.findMemberNameByMemberCode(orgCode);
+    }
+
+ /*   public String getOrgDescription(Long orgCode) {
+        return reviewOrganizationRespository.findOrgDescriptionByOrgCode(orgCode);
+    }*/
 }

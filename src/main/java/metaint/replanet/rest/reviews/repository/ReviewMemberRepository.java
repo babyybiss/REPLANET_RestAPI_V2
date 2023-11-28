@@ -9,4 +9,7 @@ public interface ReviewMemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m.memberEmail FROM review_member m WHERE m.memberCode = :memberCode")
     String findEmailByMemberCode(@Param("memberCode") Long memberCode);
+
+    @Query("SELECT m.memberName FROM review_member m WHERE m.memberCode = :memberCode")
+    String findMemberNameByMemberCode(@Param("memberCode") Long orgCode);
 }

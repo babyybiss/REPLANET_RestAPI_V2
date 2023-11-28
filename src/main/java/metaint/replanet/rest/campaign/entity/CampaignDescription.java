@@ -35,10 +35,10 @@ public class CampaignDescription {
     private int currentBudget; // 현재 모금액
     @Column(name = "goal_budget")
     private int goalBudget; // 목표 모금액
-    @Column(name = "org_name")
-    private String orgName; // 단체명
-    @Column(name = "org_description")
-    private String orgDescription; //단체 소개
+   // @Column(name = "org_name")
+    // private String orgName; // 단체명
+    //@Column(name = "org_description")
+    //private String orgDescription; //단체 소개
     @Column(name = "org_tel")
     private String orgTel; // 단체 연락처
 
@@ -59,8 +59,8 @@ public class CampaignDescription {
         this.campaignCategory = campaignCategory;
         this.currentBudget = currentBudget;
         this.goalBudget = goalBudget;
-        this.orgName = orgName;
-        this.orgDescription = orgDescription;
+       // this.orgName = orgName;
+       // this.orgDescription = orgDescription;
         this.orgTel = orgTel;
     }
 
@@ -73,6 +73,6 @@ public class CampaignDescription {
         return new CampaignDescription(
                 campaignCode,campaignTitle,campaignContent,
                 startDate,endDate,campaignCategory,currentBudget,
-                goalBudget,orgName,orgDescription,orgTel);
+                goalBudget,orgTel);
     }
 }

@@ -1,34 +1,54 @@
 package metaint.replanet.rest.org.service;
 
-import metaint.replanet.rest.auth.entity.Member;
+
+import lombok.extern.slf4j.Slf4j;
+import metaint.replanet.rest.auth.entity.MemberRole;
+
+//import metaint.replanet.rest.auth.entity.Member;
 import metaint.replanet.rest.auth.repository.MemberRepository;
 import metaint.replanet.rest.auth.util.SecurityUtil;
+
 import metaint.replanet.rest.org.dto.OrgRequestDTO;
 import metaint.replanet.rest.org.entity.Organization;
+import metaint.replanet.rest.org.repository.OrgMemberRepository;
 import metaint.replanet.rest.org.repository.OrgRepository;
+
+import metaint.replanet.rest.pay.entity.Member;
+
 import metaint.replanet.rest.privacy.dto.MemberDTO;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+@Slf4j
 @Service
 public class OrgService {
 
+
+    private final OrgRepository orgRepository;
+
+    private final OrgMemberRepository orgMemberRepository;
+
     private final MemberRepository memberRepository;
-    private OrgRepository orgRepository;
+
+
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public OrgService(OrgRepository orgRepository, ModelMapper modelMapper,PasswordEncoder passwordEncoder, MemberRepository memberRepository){
+    public OrgService(OrgRepository orgRepository, OrgMemberRepository orgMemberRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, MemberRepository memberRepository){
         this.orgRepository = orgRepository;
+        this.orgMemberRepository = orgMemberRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.memberRepository = memberRepository;
@@ -54,6 +74,20 @@ public class OrgService {
 
 
     }
+
+
+    public List<Member> getOrgList() {
+        log.info("[getOrgList()] =============================================");
+
+        MemberRole memberRole = MemberRole.ROLE_ORG;
+
+        List<Member> orgList = orgMemberRepository.findAllByMemberRole(memberRole);
+
+        log.info("[getOrgList() orgList] : " + orgList);
+
+        return orgList;
+}
+
     public List<Map<String, Object>> selectOrgInformation(int memberCode) {
         System.out.println("service 왔습니다~ 재단 기존 정보 가져가세요~");
 
@@ -95,5 +129,6 @@ public class OrgService {
 
         }
          return;
+
     }
 }

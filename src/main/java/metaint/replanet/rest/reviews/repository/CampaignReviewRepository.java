@@ -15,8 +15,9 @@ public interface CampaignReviewRepository extends JpaRepository<Campaign, Long> 
     @Query("SELECT c FROM reviewPkg_entityCampaign c ORDER BY c.campaignCode DESC")
     List<Campaign> findAllOrderedByCampaignCodeDesc();
 
-    @Query(value = "SELECT c.* " +
+    @Query(value = "SELECT c.*, o.* " +
             "FROM tbl_campaign_description c " +
+            "LEFT JOIN tbl_org o ON c.org_code = o.org_code " +
             "WHERE c.campaign_code NOT IN ( " +
             "    SELECT r.campaign_code " +
             "    FROM tbl_review r " +

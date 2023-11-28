@@ -22,11 +22,13 @@ public class DonationChartRepositoryTest {
 
         //then
         Assertions.assertNotNull(foundDonationByTime);
+
         foundDonationByTime.forEach(row -> {
             for(Object col : row) {
                 System.out.print(col + ":::");
             }
             System.out.println();
         });
+
     }
 }

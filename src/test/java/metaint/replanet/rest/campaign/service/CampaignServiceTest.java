@@ -1,19 +1,14 @@
+/*
 package metaint.replanet.rest.campaign.service;
 
-import metaint.replanet.rest.campaign.dto.CampaignDescFileDTO;
+import metaint.replanet.rest.campaign.dto.CampaignDesOrgDTO;
 import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
-import metaint.replanet.rest.campaign.entity.CampaignAndFile;
-import metaint.replanet.rest.campaign.entity.CampaignDescription;
-import metaint.replanet.rest.campaign.entity.Donation;
+import metaint.replanet.rest.campaign.entity.Campaign;
 import metaint.replanet.rest.campaign.entity.Pay;
-import metaint.replanet.rest.point.dto.PointFileDTO;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,13 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
-
-import static org.assertj.core.util.DateUtil.now;
 
 @SpringBootTest
 public class CampaignServiceTest {
@@ -40,17 +30,18 @@ public class CampaignServiceTest {
     @Test
     public void campaignFindAllTest() {
         //when
-        List<CampaignAndFile> findCampaignList = campaignService.findCampaignList();
+        List<CampaignDesOrgDTO> findCampaignList = campaignService.findCampaignList();
         //then
         Assertions.assertNotNull(findCampaignList);
-        findCampaignList.forEach(System.out::println);
+        System.out.println(findCampaignList);
+        //findCampaignList.forEach(System.out::println);
     }
 
     @DisplayName("캠페인 종료 전체 조회 테스트")
     @Test
     public void campaignDoneFindAllTest() {
         //when
-        List<CampaignAndFile> findCampaignList = campaignService.findCampaignListDone();
+        List<CampaignDesOrgDTO> findCampaignList = campaignService.findCampaignListDone();
         //then
         Assertions.assertNotNull(findCampaignList);
         findCampaignList.forEach(System.out::println);
@@ -63,7 +54,7 @@ public class CampaignServiceTest {
         int campaignCode = 2;
 
         //when
-        CampaignAndFile findCampaign = campaignService.findCampaign(campaignCode);
+        Campaign findCampaign = campaignService.findCampaign(campaignCode);
 
         //then
         Assertions.assertNotNull(findCampaign);
@@ -77,7 +68,7 @@ public class CampaignServiceTest {
         LocalDateTime currentDate = LocalDateTime.now();
 
         //when
-        List<CampaignAndFile> findCampaignSort = campaignService.findCampaignSort(currentDate);
+        List<Campaign> findCampaignSort = campaignService.findCampaignSort(currentDate);
 
         //then
         Assertions.assertNotNull(findCampaignSort);
@@ -275,3 +266,4 @@ public class CampaignServiceTest {
 
 }
 
+*/

@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 
 @SpringBootTest
 public class CampaignControllerTest {
@@ -83,7 +84,7 @@ public class CampaignControllerTest {
                 6,
                 "진행중",
                 "도와주세요~섬바리헤업미",
-                "2021-12-05",
+                //LocalDateTime.of(2023, 1, 31, 12, 30, 0),
                 "지구촌",
                 "0",
                 "200,000",
@@ -96,6 +97,17 @@ public class CampaignControllerTest {
         Assertions.assertDoesNotThrow(
                 () -> campaignController.campaignModify(campaign,mFile)
         );
+    }
+    
+    @DisplayName("캠페인 전체 조회")
+    @Test
+    public void campaignListTest(){
+        //given
+        String status = "done";
+        //when
+        campaignController.main(status);
+        //then
+
     }
 }
 */

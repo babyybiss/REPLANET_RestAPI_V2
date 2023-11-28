@@ -30,7 +30,7 @@ CREATE TABLE `tbl_campaign_description`
     `campaign_category`    VARCHAR(255) NOT NULL COMMENT '캠페인카테고리',
     `current_budget`    INTEGER DEFAULT 0 NOT NULL COMMENT '캠페인현재모금액',
     `goal_budget`    INTEGER NOT NULL COMMENT '캠페인목표액',
-    `org_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '기부처코드',
+    `org_code`    INTEGER NOT NULL COMMENT '기부처코드',
     PRIMARY KEY ( `campaign_code` )
 ) COMMENT = '캠페인상세내용';
 
@@ -186,20 +186,19 @@ CREATE TABLE `tbl_refresh_token`
 
 CREATE TABLE `tbl_org`
 (
-    `org_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '기부처코드',
+    `org_code`    INTEGER NOT NULL COMMENT '기부처코드(회원코드)',
     `file_origin_name`    VARCHAR(255) COMMENT '원본파일명',
     `file_save_name`    VARCHAR(255) COMMENT '저장파일명',
     `file_save_path`    VARCHAR(255) COMMENT '파일확장자',
     `file_extension`    VARCHAR(255) COMMENT '저장경로',
     `org_description`    VARCHAR(1000) COMMENT '기부처소개',
-    `member_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '회원코드',
     PRIMARY KEY ( `org_code` )
 ) COMMENT = '기부처정보';
 
 -- FK 설정
 
 -- 기부처정보(멤버코드 FK)
-ALTER TABLE tbl_org ADD FOREIGN KEY (member_code) REFERENCES tbl_member(member_code);
+ALTER TABLE tbl_org ADD FOREIGN KEY (org_code) REFERENCES tbl_member(member_code);
 
 -- 캠페인상세내용(기부처코드 FK)
 ALTER TABLE tbl_campaign_description ADD FOREIGN KEY (org_code) REFERENCES tbl_org(org_code);

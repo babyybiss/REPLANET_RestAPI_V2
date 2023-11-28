@@ -24,16 +24,14 @@ public class MemberController {
     }
 
 
-    @PostMapping("/emailcheck")
-    public ResponseEntity<?> checkEmailDuplication(@RequestBody MemberRequestDto memberRequestDto, String email) throws Exception {
+    @PostMapping("/emailcheck/{email}")
+    public ResponseEntity<?> checkEmailDuplication(@PathVariable String email) throws Exception {
         System.out.println(email);
 
         if (memberService.existsByEmail(email) == true) {
-            log.info(memberRequestDto.getEmail());
             log.info(email + "은(는) 이미 사용 중인 이메일입니다.");
             throw new Exception("이미 사용 중인 이메일입니다.");
         } else {
-            log.info(memberRequestDto.getEmail());
             return ResponseEntity.ok(email + "은(는) 사용 가능한 이메일입니다.");
         }
     }

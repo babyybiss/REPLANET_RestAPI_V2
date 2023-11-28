@@ -14,7 +14,7 @@ import javax.mail.MessagingException;
 public class MailService {
     @Autowired
     MailHandler mailHandler;
-    private static final String FROM_ADDRESS = "SMTP 이메일";
+    private static final String FROM_ADDRESS = "projectdasi2023@gmail.com";
 
     public void mailSend(MailDto mailDto) throws MessagingException {
         mailHandler.setFrom(FROM_ADDRESS);

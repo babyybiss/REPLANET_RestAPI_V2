@@ -7,14 +7,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 @ToString
 @AllArgsConstructor
 @Getter
-@Entity(name = "campaignAndFile")
+@Entity(name = "campaign")
 @Table(name = "tbl_campaign_description")
-public class CampaignAndFile {
+public class Campaign {
     @Id
     @Column(name = "campaign_code")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,64 +34,65 @@ public class CampaignAndFile {
     private int currentBudget; // 현재 모금액
     @Column(name = "goal_budget")
     private int goalBudget; // 목표 모금액
-    @Column(name = "org_name")
-    private String orgName; // 단체명
-    @Column(name = "org_description")
-    private String orgDescription; //단체 소개
-    @Column(name = "org_tel")
-    private String orgTel; // 단체 연락처
+//    @Column(name = "org_name")
+//    private String orgName; // 단체명
+//    @Column(name = "org_description")
+//    private String orgDescription; //단체 소개
+//    @Column(name = "org_tel")
+//    private String orgTel; // 단체 연락처
     //@OneToMany(mappedBy = "campaignCode", cascade = CascadeType.ALL)
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "campaign_code")
     //private CampaignDescFile campaignDescfile; // 파일 정보
     private List<CampaignDescFile> campaignDescfileList; // 파일 정보
+    @ManyToOne
+    @JoinColumn(name = "org_code")
+    private Organization organization; // 기부처 코드
 
-    protected CampaignAndFile() {}
-    public CampaignAndFile campaignTitle(String val){
+
+
+    protected Campaign() {}
+    public Campaign campaignTitle(String val){
         this.campaignTitle = val;
         return this;
     }
-    public CampaignAndFile campaignContent(String val){
+    public Campaign campaignContent(String val){
         this.campaignContent = val;
         return this;
     }
-    public CampaignAndFile endDate(LocalDateTime val){
+    public Campaign endDate(LocalDateTime val){
         this.endDate = val;
         return this;
     }
-    public CampaignAndFile campaignCategory(String val){
+    public Campaign campaignCategory(String val){
         this.campaignCategory = val;
         return this;
     }
-    public CampaignAndFile goalBudget(int val){
+    public Campaign goalBudget(int val){
         this.goalBudget = val;
         return this;
     }
-    public CampaignAndFile orgName(String val){
-        this.orgName = val;
-        return this;
-    }
-    public CampaignAndFile orgDescription(String val){
-        this.orgDescription = val;
-        return this;
-    }
-    public CampaignAndFile orgTel(String val){
-        this.orgTel = val;
-        return this;
-    }
-//    public CampaignAndFile campaignDescfile(CampaignDescFile val){
-//        this.campaignDescfile = val;
+//    public CampaignAndFile orgName(String val){
+//        this.orgName = val;
 //        return this;
 //    }
-        public CampaignAndFile campaignDescfileList(List<CampaignDescFile> val){
+//    public CampaignAndFile orgDescription(String val){
+//        this.orgDescription = val;
+//        return this;
+//    }
+//    public CampaignAndFile orgTel(String val){
+//        this.orgTel = val;
+//        return this;
+//    }
+        public Campaign campaignDescfileList(List<CampaignDescFile> val){
         this.campaignDescfileList = val;
         return this;
     }
 
-    public CampaignAndFile builder(){
-        return new CampaignAndFile(
+    public Campaign builder(){
+        return new Campaign(
                 campaignCode,campaignTitle,campaignContent,
                 startDate,endDate,campaignCategory,currentBudget,
-                goalBudget,orgName,orgDescription,orgTel,campaignDescfileList);
+                goalBudget,campaignDescfileList, organization);
     }
 }

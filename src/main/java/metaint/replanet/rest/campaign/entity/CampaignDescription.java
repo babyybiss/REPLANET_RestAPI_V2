@@ -35,15 +35,6 @@ public class CampaignDescription {
     private int currentBudget; // 현재 모금액
     @Column(name = "goal_budget")
     private int goalBudget; // 목표 모금액
-    @Column(name = "org_name")
-    private String orgName; // 단체명
-    @Column(name = "org_description")
-    private String orgDescription; //단체 소개
-    @Column(name = "org_tel")
-    private String orgTel; // 단체 연락처
-
-//    @OneToMany(mappedBy = "charityDescription")
-//    private List<CampaignDescFile> campaignDescfileList; // 파일 정보
 
     protected CampaignDescription() {}
 
@@ -51,7 +42,7 @@ public class CampaignDescription {
         this.campaignCode = campaignCode;
     }
 
-    public CampaignDescription(String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget, String orgName, String orgDescription, String orgTel) {
+    public CampaignDescription(String campaignTitle, String campaignContent, LocalDateTime startDate, LocalDateTime endDate, String campaignCategory, int currentBudget, int goalBudget) {
         this.campaignTitle = campaignTitle;
         this.campaignContent = campaignContent;
         this.startDate = startDate;
@@ -59,9 +50,7 @@ public class CampaignDescription {
         this.campaignCategory = campaignCategory;
         this.currentBudget = currentBudget;
         this.goalBudget = goalBudget;
-        this.orgName = orgName;
-        this.orgDescription = orgDescription;
-        this.orgTel = orgTel;
+
     }
 
     public CampaignDescription endDate(LocalDateTime val){
@@ -73,6 +62,6 @@ public class CampaignDescription {
         return new CampaignDescription(
                 campaignCode,campaignTitle,campaignContent,
                 startDate,endDate,campaignCategory,currentBudget,
-                goalBudget,orgName,orgDescription,orgTel);
+                goalBudget);
     }
 }

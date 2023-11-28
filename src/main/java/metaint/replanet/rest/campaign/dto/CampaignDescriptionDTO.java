@@ -16,7 +16,7 @@ public class CampaignDescriptionDTO {
     private String campaignTitle; // 모금 제목
     private String campaignContent; // 모금 내용
     private LocalDateTime startDate; // 모금 시작 일자
-    private String endDate; // 모금 마감 일자
+    private LocalDateTime endDate; // 모금 마감 일자
     private String campaignCategory; // 모금 카테고리
     private String currentBudget; // 현재 모금액
     private String goalBudget; // 목표 모금액
@@ -24,25 +24,11 @@ public class CampaignDescriptionDTO {
     private String orgDescription; //단체 소개
     private String orgTel; // 단체 연락처
 
-    public CampaignDescriptionDTO(String campaignTitle, String campaignContent, String endDate, String campaignCategory, String currentBudget, String goalBudget, String orgName, String orgDescription, String orgTel) {
-        this.campaignTitle = campaignTitle;
-        this.campaignContent = campaignContent;
-        this.endDate = endDate;
-        this.campaignCategory = campaignCategory;
-        this.currentBudget = currentBudget;
-        this.goalBudget = goalBudget;
-        this.orgName = orgName;
-        this.orgDescription = orgDescription;
-        this.orgTel = orgTel;
-    }
 
-    public CampaignDescriptionDTO(int campaignCode, String campaignTitle, String campaignContent, String endDate, String campaignCategory, String currentBudget, String goalBudget, String orgName, String orgDescription, String orgTel) {
-        this.campaignCode = campaignCode;
+    public CampaignDescriptionDTO(String campaignTitle, String campaignContent, String campaignCategory, String goalBudget, String orgName, String orgDescription, String orgTel) {
         this.campaignTitle = campaignTitle;
         this.campaignContent = campaignContent;
-        this.endDate = endDate;
         this.campaignCategory = campaignCategory;
-        this.currentBudget = currentBudget;
         this.goalBudget = goalBudget;
         this.orgName = orgName;
         this.orgDescription = orgDescription;

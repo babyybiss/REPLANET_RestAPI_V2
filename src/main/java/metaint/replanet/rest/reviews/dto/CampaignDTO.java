@@ -20,7 +20,5 @@ public class CampaignDTO {
     private String campaignCategory;
     private Integer currentBudget;
     private Integer goalBudget;
-    private String orgName;
-    private String orgDescription;
-    private String orgTel;
+    private OrganizationDTO organization;
 }

@@ -50,7 +50,6 @@ public class CampaignDescription {
         this.campaignCategory = campaignCategory;
         this.currentBudget = currentBudget;
         this.goalBudget = goalBudget;
-
     }
 
     public CampaignDescription endDate(LocalDateTime val){

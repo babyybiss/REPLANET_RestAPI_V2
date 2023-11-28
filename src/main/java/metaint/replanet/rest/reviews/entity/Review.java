@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "tbl_review")
 @NoArgsConstructor
 @Getter
-//@ToString
+@ToString
 public class Review {
 
     @Id

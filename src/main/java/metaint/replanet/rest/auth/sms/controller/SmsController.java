@@ -1,5 +1,6 @@
 package metaint.replanet.rest.auth.sms.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.sms.service.SmsService;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Random;
 
@@ -16,6 +18,7 @@ import java.util.Random;
 public class SmsController {
     @Autowired
     private SmsService smsService;
+    private SmsService smsCheckService;
 
     @PostMapping("/users/sms")
     public String sendSMS (@RequestBody String u_phone) throws JsonProcessingException {
@@ -35,12 +38,10 @@ public class SmsController {
     }
 
     @PostMapping("/users/smscheck")
-    public boolean checkSMS (HttpSession httpSession, @RequestBody String cerNum) {
-        httpSession.getAttribute(cerNum);
-        String enteredVerificationCode = "";
-        if (cerNum == enteredVerificationCode) {
-            return true;
-        } else return false;
+    public boolean checkSMS (@RequestBody String cerNum, @RequestBody String verificationCode, HttpServletRequest request) {
+        log.info((String)request.getAttribute(verificationCode));
+        if (cerNum == request.getAttribute(verificationCode)) {return true;}
+        else return false;
     }
 
 }

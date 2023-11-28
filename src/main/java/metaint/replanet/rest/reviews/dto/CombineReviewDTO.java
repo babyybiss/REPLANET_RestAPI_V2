@@ -1,6 +1,7 @@
 package metaint.replanet.rest.reviews.dto;
 
 import lombok.*;
+import metaint.replanet.rest.reviews.entity.Organization;
 import metaint.replanet.rest.reviews.entity.ReviewComment;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 
@@ -15,22 +16,14 @@ import java.util.List;
 @ToString
 public class CombineReviewDTO {
 
-    private Long campaignCode;
-    private String campaignTitle;
-    private String campaignContent;
-    private String campaignStartDate;
-    private String campaignEndDate;
-    private String campaignCategory;
-    private Integer campaignCurrentBudget;
-    private Integer campaignGoalBudget;
-    private String campaignOrgName;
-    private String campaignOrgDescription;
-    private String campaignOrgTel;
     private Long reviewCode;
     private String reviewTitle;
     private String reviewDescription;
     private Long reviewCampaignCode;
-    private List<ReviewFile> reviewFileList;
+
+    private CampaignDTO campaign;
+
+    private List<ReviewFileDTO> reviewFileList;
     private List<ReviewComment> reviewCommentList;
 
 }

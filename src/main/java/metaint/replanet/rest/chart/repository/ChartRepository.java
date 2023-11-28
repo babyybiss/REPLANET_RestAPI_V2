@@ -19,12 +19,18 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
             , nativeQuery = true)
     List<Object[]> findAllCampaingCategory();
 
-    @Query(value = "SELECT c.campaign_category, COUNT(*) AS campaigns, " +
+    @Query(value = "SELECT cc.campaign_category, cc.campaigns, cc.sum_current_budget, cc.sum_goal_budget, " +
+            "CASE WHEN cc.sum_current_budget > cc.sum_goal_budget THEN cc.sum_goal_budget " +
+            "ELSE cc.sum_current_budget " +
+            "END AS display_sum_current_budget " +
+            "FROM ( " +
+            "SELECT c.campaign_category, " +
+            "COUNT(*) AS campaigns, " +
             "SUM(current_budget) AS sum_current_budget, " +
-            "SUM(goal_budget) AS sum_goal_budget, " +
-            "SUM(goal_budget-current_budget) AS sum_expect_budget " +
+            "SUM(goal_budget) AS sum_goal_budget " +
             "FROM tbl_campaign_description c " +
-            "GROUP BY campaign_category"
+            "GROUP BY campaign_category " +
+            ") cc"
             , nativeQuery = true)
     List<Object[]> countAndSumByCategory();
 

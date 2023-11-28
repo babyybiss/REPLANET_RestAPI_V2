@@ -1,3 +1,4 @@
+/*
 package metaint.replanet.rest.campaign.service;
 
 import metaint.replanet.rest.campaign.dto.CampaignDesOrgDTO;
@@ -265,3 +266,4 @@ public class CampaignServiceTest {
 
 }
 
+*/

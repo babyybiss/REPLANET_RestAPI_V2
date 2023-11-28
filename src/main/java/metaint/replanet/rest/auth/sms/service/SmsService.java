@@ -7,7 +7,9 @@ import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,4 +45,9 @@ public class SmsService {
             System.out.println(e.getCode());
         }
     }
+
+    public String smsCheckService (@RequestBody String cerNum) {
+        return cerNum;
+    }
+
 }

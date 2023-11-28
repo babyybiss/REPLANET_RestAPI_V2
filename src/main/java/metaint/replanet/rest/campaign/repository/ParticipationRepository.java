@@ -1,3 +1,4 @@
+/*
 package metaint.replanet.rest.campaign.repository;
 
 import metaint.replanet.rest.campaign.entity.Donation;
@@ -33,7 +34,6 @@ public interface ParticipationRepository extends JpaRepository<Pay, Integer> {
             "ORDER BY d.donation_date_time DESC "
             , nativeQuery = true)
     List<Pay> findByDonationByCampaignCode(int campaignCode);
-
     @Query(value = "SELECT " +
             "p.pay_code, " +
             "p.pay_amount, " +
@@ -57,3 +57,4 @@ public interface ParticipationRepository extends JpaRepository<Pay, Integer> {
             nativeQuery = true)
     List<Object[]>findByTodayDonation();
 }
+*/

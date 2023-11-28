@@ -1,3 +1,4 @@
+/*
 package metaint.replanet.rest.campaign.controller;
 
 import io.swagger.annotations.ApiOperation;
@@ -185,3 +186,4 @@ public class CampaignController {
 
 }
 
+*/

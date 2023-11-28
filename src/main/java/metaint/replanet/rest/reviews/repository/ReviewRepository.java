@@ -26,7 +26,18 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query(value = "delete from tbl_review where review_code = :reviewCode", nativeQuery = true)
     void deleteByReviewCode(@Param("reviewCode") Long reviewCode);
 
-    @Query("SELECT r FROM reviewPkg_entityReview r ORDER BY r.reviewCode desc")
+   @Query(value = "SELECT r.*, c.*, o.*\n" +
+            "FROM tbl_review r\n" +
+            "LEFT JOIN tbl_campaign_description c ON r.campaign_code = c.campaign_code\n" +
+            "LEFT JOIN tbl_org o ON c. org_code = o.org_code\n" +
+            "ORDER BY r.review_code DESC", nativeQuery = true)
     List<Review> findAllOrderedByReviewCodeDesc();
 
+    @Query(value = "SELECT r.*, c.*, o.*\n" +
+            "FROM tbl_review r\n" +
+            "LEFT JOIN tbl_campaign_description c ON r.campaign_code = c.campaign_code\n" +
+            "LEFT JOIN tbl_org o ON c. org_code = o.org_code\n" +
+            "WHERE o.org_code = :memberCode\n" +
+            "ORDER BY r.review_code DESC", nativeQuery = true)
+    List<Review> findAllReviewsByMemberCode(Long memberCode);
 }

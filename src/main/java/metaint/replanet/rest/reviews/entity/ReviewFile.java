@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(name="tbl_campaign_rev_file")
 @RequiredArgsConstructor
 @Getter
-@ToString
+//@ToString
 public class ReviewFile {
 
     @Id

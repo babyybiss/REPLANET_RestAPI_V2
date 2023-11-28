@@ -39,12 +39,13 @@ public class ReviewController {
     @GetMapping("/")
     public ResponseEntity<List<CombineReviewDTO>> getReviewList() {
 
-        log.info("(ReviewController) 들어옴");
+            log.info("(ReviewController) 들어옴");
 
-        List<CombineReviewDTO> details = reviewService.findAllReviews();
+            List<CombineReviewDTO> details = reviewService.findAllReviews();
+            log.info("(review controller): 가져온 총 결과 : " + details);
 
-        log.info("(review controller): 가져온 총 결과 : " +details);
-        return  ResponseEntity.ok(details);
+            return ResponseEntity.ok(details);
+
     }
 
     @GetMapping("/{reviewCode}")
@@ -202,7 +203,7 @@ public class ReviewController {
         return ResponseEntity.ok(email);
     }
 
-    
+
     @GetMapping("/nonExisting")
     public ResponseEntity<List<Campaign>> getNonExistingReviewCampaigns() {
         List<Campaign> unassociatedCampaigns = reviewService.findUnassociatedCampaigns();

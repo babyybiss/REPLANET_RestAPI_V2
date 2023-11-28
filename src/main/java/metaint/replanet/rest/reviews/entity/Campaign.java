@@ -1,6 +1,7 @@
 package metaint.replanet.rest.reviews.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Table(name = "tbl_campaign_description")
 @NoArgsConstructor
 @Getter
-@ToString
+//@ToString
 public class Campaign {
 
     @Id
@@ -50,14 +51,13 @@ public class Campaign {
     @Column(name = "goal_budget")
     private Integer goalBudget;
 
-    @Column(name = "org_name")
-    private String orgName;
+/*    @Column(name = "org_code")
+    private Long orgCode;*/
 
-    @Column(name = "org_description")
-    private String orgDescription;
-
-    @Column(name = "org_tel")
-    private String orgTel;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "org_code")
+    @JsonManagedReference
+    private Organization organization;
 
     @OneToOne(mappedBy = "campaign", optional = true, fetch = FetchType.LAZY)
     private Review review;

@@ -164,7 +164,7 @@ CREATE TABLE `tbl_point_file`
 CREATE TABLE `tbl_review_comment`
 (
     `rev_comment_code`    INTEGER ZEROFILL NOT NULL COMMENT '댓글코드',
-    `rev_comment_context`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
+    `rev_comment_content`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
     `member_code`    VARCHAR(255) NOT NULL COMMENT '작성자',
     `rev_comment_date`    DATETIME NOT NULL COMMENT '댓글작성일자',
     `review_code`    INTEGER NOT NULL COMMENT '후기코드',

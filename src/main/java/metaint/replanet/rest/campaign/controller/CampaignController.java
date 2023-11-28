@@ -1,3 +1,4 @@
+/*
 package metaint.replanet.rest.campaign.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -175,3 +176,4 @@ public class CampaignController {
 
 }
 
+*/

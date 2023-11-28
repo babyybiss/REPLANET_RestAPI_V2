@@ -1,3 +1,4 @@
+/*
 package metaint.replanet.rest.campaign.controller;
 
 import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
@@ -97,3 +98,4 @@ public class CampaignControllerTest {
         );
     }
 }
+*/

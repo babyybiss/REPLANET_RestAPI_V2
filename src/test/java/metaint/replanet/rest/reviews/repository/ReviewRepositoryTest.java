@@ -87,4 +87,17 @@ public class ReviewRepositoryTest {
 //        System.out.println(commentDTO);
     }
 
+    @DisplayName("재단별로 리뷰 조회")
+    @Test
+    public void findReviewsByOrganization() {
+        //given
+        Long memberCode = 1L;
+
+        //when
+        List<Review> reviewList = reviewRepository.findAllReviewsByMemberCode(memberCode);
+
+        //then
+        Assertions.assertEquals(2, reviewList.size());
+        System.out.println("result : " + reviewList);
+    }
 }

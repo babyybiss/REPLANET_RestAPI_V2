@@ -6,17 +6,17 @@ public class CountAndSumByCategoryDTO {
     private int campaigns; // 캠페인 수 카운트
     private int sumCurrentBudget;
     private int sumGoalBudget;
-    private int sumExpectBudget;
+    private int displaySumCurrentBudget;
 
     public CountAndSumByCategoryDTO() {
     }
 
-    public CountAndSumByCategoryDTO(String campaignCategory, int campaigns, int sumCurrentBudget, int sumGoalBudget, int sumExpectBudget) {
+    public CountAndSumByCategoryDTO(String campaignCategory, int campaigns, int sumCurrentBudget, int sumGoalBudget, int displaySumCurrentBudget) {
         this.campaignCategory = campaignCategory;
         this.campaigns = campaigns;
         this.sumCurrentBudget = sumCurrentBudget;
         this.sumGoalBudget = sumGoalBudget;
-        this.sumExpectBudget = sumExpectBudget;
+        this.displaySumCurrentBudget = displaySumCurrentBudget;
     }
 
     public String getCampaignCategory() {
@@ -51,12 +51,12 @@ public class CountAndSumByCategoryDTO {
         this.sumGoalBudget = sumGoalBudget;
     }
 
-    public int getSumExpectBudget() {
-        return sumExpectBudget;
+    public int getDisplaySumCurrentBudget() {
+        return displaySumCurrentBudget;
     }
 
-    public void setSumExpectBudget(int sumExpectBudget) {
-        this.sumExpectBudget = sumExpectBudget;
+    public void setDisplaySumCurrentBudget(int displaySumCurrentBudget) {
+        this.displaySumCurrentBudget = displaySumCurrentBudget;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CountAndSumByCategoryDTO {
                 ", campaigns=" + campaigns +
                 ", sumCurrentBudget=" + sumCurrentBudget +
                 ", sumGoalBudget=" + sumGoalBudget +
-                ", sumExpectBudget=" + sumExpectBudget +
+                ", displaySumCurrentBudget=" + displaySumCurrentBudget +
                 '}';
     }
 }

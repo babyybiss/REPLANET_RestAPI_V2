@@ -37,15 +37,6 @@ public class ChartService {
 
         List<Object[]> resultList = chartRepository.countAndSumByCategory();
 
-        /*
-        resultList.forEach( row -> {
-            for(Object item : row) {
-                System.out.print(item);
-            }
-            System.out.println();
-        });
-        */
-
         return resultList.stream()
                 .map(row -> {
                     String campaignCategory = (String) row[0];
@@ -53,6 +44,8 @@ public class ChartService {
                     int sumCurrentBudget = ((Number) row[2]).intValue();
                     int sumGoalBudget = ((Number) row[3]).intValue();
                     int displaySumCurrentBudget = ((Number) row[4]).intValue();
+                    int sumExpectBudget = ((Number) row[5]).intValue();
+                    double progress = ((Number) row[6]).doubleValue();
 
                     CountAndSumByCategoryDTO dto = new CountAndSumByCategoryDTO();
                     dto.setCampaignCategory(campaignCategory);
@@ -60,6 +53,8 @@ public class ChartService {
                     dto.setSumCurrentBudget(sumCurrentBudget);
                     dto.setSumGoalBudget(sumGoalBudget);
                     dto.setDisplaySumCurrentBudget(displaySumCurrentBudget);
+                    dto.setSumExpectBudget(sumExpectBudget);
+                    dto.setProgress(progress);
 
                     return dto;
                 })
@@ -122,13 +117,15 @@ public class ChartService {
                     Date donationDate = (Date) row[1];
                     int donationPoint = ((Number) row[2]).intValue();
                     int payAmount = ((Number) row[3]).intValue();
-                    String campaignCategory = (String) row[4];
+                    int donationAmount = ((Number) row[4]).intValue();
+                    String campaignCategory = (String) row[5];
 
                     DonationByTimeDTO dto = new DonationByTimeDTO();
                     dto.setCampaignCode(campaignCode);
                     dto.setDonationDate(donationDate);
                     dto.setDonationPoint(donationPoint);
                     dto.setPayAmount(payAmount);
+                    dto.setDonationAmount(donationAmount);
                     dto.setCampaignCategory(campaignCategory);
                     return dto;
                 })

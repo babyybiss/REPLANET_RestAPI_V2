@@ -28,7 +28,7 @@ public class ChartServiceTest {
         Assertions.assertEquals(expectResult, countResult);
     }
 
-    @DisplayName("카테고리별 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회 테스트")
+    @DisplayName("카테고리별 캠페인 수 카운트, 현재모금액, 목표모금액, 남은모금액 합계, 진행률 조회 테스트")
     @Test
     public void testCountAndSumByCampaignCategory() {
         //when

@@ -8,16 +8,18 @@ public class DonationByTimeDTO {
     private Date donationDate;
     private int donationPoint;
     private int payAmount;
+    private int donationAmount; // 사용포인트 + 결제금액
     private String campaignCategory;
 
     public DonationByTimeDTO() {
     }
 
-    public DonationByTimeDTO(int campaignCode, Date donationDate, int donationPoint, int payAmount, String campaignCategory) {
+    public DonationByTimeDTO(int campaignCode, Date donationDate, int donationPoint, int payAmount, int donationAmount, String campaignCategory) {
         this.campaignCode = campaignCode;
         this.donationDate = donationDate;
         this.donationPoint = donationPoint;
         this.payAmount = payAmount;
+        this.donationAmount = donationAmount;
         this.campaignCategory = campaignCategory;
     }
 
@@ -53,6 +55,14 @@ public class DonationByTimeDTO {
         this.payAmount = payAmount;
     }
 
+    public int getDonationAmount() {
+        return donationAmount;
+    }
+
+    public void setDonationAmount(int donationAmount) {
+        this.donationAmount = donationAmount;
+    }
+
     public String getCampaignCategory() {
         return campaignCategory;
     }
@@ -68,6 +78,7 @@ public class DonationByTimeDTO {
                 ", donationDate=" + donationDate +
                 ", donationPoint=" + donationPoint +
                 ", payAmount=" + payAmount +
+                ", donationAmount=" + donationAmount +
                 ", campaignCategory='" + campaignCategory + '\'' +
                 '}';
     }

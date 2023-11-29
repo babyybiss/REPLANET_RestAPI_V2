@@ -2,6 +2,7 @@ package metaint.replanet.rest.reviews.repository;
 
 //import metaint.replanet.rest.reviews.dto.CommentDTO;
 //import metaint.replanet.rest.reviews.entity.Comment;
+import metaint.replanet.rest.reviews.entity.Campaign;
 import metaint.replanet.rest.reviews.entity.Review;
 import metaint.replanet.rest.reviews.entity.ReviewFile;
 import org.junit.jupiter.api.Assertions;
@@ -94,10 +95,11 @@ public class ReviewRepositoryTest {
         Long memberCode = 1L;
 
         //when
-        List<Review> reviewList = reviewRepository.findAllReviewsByMemberCode(memberCode);
+        List<Review> reviewList = reviewRepository.findAllOrgReviewsByMemberCode(memberCode);
 
         //then
         Assertions.assertEquals(2, reviewList.size());
         System.out.println("result : " + reviewList);
     }
+
 }

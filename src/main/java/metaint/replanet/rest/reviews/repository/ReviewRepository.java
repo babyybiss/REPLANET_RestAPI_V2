@@ -39,5 +39,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "LEFT JOIN tbl_org o ON c. org_code = o.org_code\n" +
             "WHERE o.org_code = :memberCode\n" +
             "ORDER BY r.review_code DESC", nativeQuery = true)
-    List<Review> findAllReviewsByMemberCode(Long memberCode);
+    List<Review> findAllOrgReviewsByMemberCode(@Param("memberCode") Long memberCode);
+
+
 }

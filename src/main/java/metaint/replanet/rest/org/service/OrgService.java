@@ -6,14 +6,13 @@ import metaint.replanet.rest.auth.entity.MemberRole;
 
 
 import metaint.replanet.rest.auth.repository.MemberRepository;
-import metaint.replanet.rest.auth.util.SecurityUtil;
 
 import metaint.replanet.rest.org.dto.OrgRequestDTO;
 import metaint.replanet.rest.org.entity.Organization;
 import metaint.replanet.rest.org.repository.OrgMemberRepository;
 import metaint.replanet.rest.org.repository.OrgRepository;
 
-import metaint.replanet.rest.pay.entity.Member;
+//import metaint.replanet.rest.pay.entity.Member;
 
 import metaint.replanet.rest.privacy.dto.MemberDTO;
 
@@ -79,12 +78,12 @@ public class OrgService {
     }
 
 
-    public List<Member> getOrgList() {
+    public List<metaint.replanet.rest.pay.entity.Member> getOrgList() {
         log.info("[getOrgList()] =============================================");
 
         MemberRole memberRole = MemberRole.ROLE_ORG;
 
-        List<Member> orgList = orgMemberRepository.findAllByMemberRole(memberRole);
+        List<metaint.replanet.rest.pay.entity.Member> orgList = orgMemberRepository.findAllByMemberRole(memberRole);
 
         log.info("[getOrgList() orgList] : " + orgList);
 

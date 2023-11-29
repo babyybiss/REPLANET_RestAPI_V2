@@ -19,4 +19,9 @@ public class MailRestController {
     public void emailSend(@RequestBody MailDto email) throws MessagingException {
         mailService.mailSend(email);
     }
+
+    @PostMapping("/sendEmailToOrg")
+    public void emailSendToOrg(@RequestBody MailDto email) throws MessagingException {
+        mailService.mailSendToOrg(email);
+    }
 }

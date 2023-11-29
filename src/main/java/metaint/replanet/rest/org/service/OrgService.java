@@ -4,7 +4,6 @@ package metaint.replanet.rest.org.service;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.entity.MemberRole;
 
-
 import metaint.replanet.rest.auth.repository.MemberRepository;
 
 import metaint.replanet.rest.org.dto.OrgRequestDTO;
@@ -12,7 +11,8 @@ import metaint.replanet.rest.org.entity.Organization;
 import metaint.replanet.rest.org.repository.OrgMemberRepository;
 import metaint.replanet.rest.org.repository.OrgRepository;
 
-//import metaint.replanet.rest.pay.entity.Member;
+
+import metaint.replanet.rest.pay.entity.Member;
 
 import metaint.replanet.rest.privacy.dto.MemberDTO;
 
@@ -112,6 +112,7 @@ public class OrgService {
         System.out.println("service 왔습니다~ 비밀번호 맞는지 확인합시다~");
 
         Member member = orgMemberRepository.findById((long) memberCode).get();
+
         if(passwordEncoder.matches(orgPwd, member.getPassword())){
             return 1;
         } else {
@@ -149,8 +150,18 @@ public class OrgService {
                                         .orgDescription(orgRequestDTO.getOrgDescription())
                                         .build();
 
+          orgRepository.save(organizationM);
+          System.out.println("org 업데이트 확인 : " + organizationM);
+        }
     }
-        orgRepository.save(organizationM);
-        System.out.println("org 업데이트 확인 : " + organizationM);
-    }
-}
+
+    @Transactional
+    public int deleteOrgByMemberCode(Long memberCode) {
+        log.info("[deleteOrgByMemberCode()] ==================================== " + memberCode);
+        log.info("[deleteOrgByMemberCode() memberCode] : " + memberCode);
+
+        int result = orgMemberRepository.deleteOrgMemberByMemberCode(memberCode);
+        log.info("[deleteOrgByMemberCode() result] : " + result);
+
+        return result;
+  }

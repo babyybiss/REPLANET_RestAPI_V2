@@ -1,4 +1,3 @@
-/*
 package metaint.replanet.rest.campaign.service;
 
 import metaint.replanet.rest.campaign.dto.*;
@@ -293,4 +292,3 @@ public class CampaignService {
         return list;
     }
 }
-*/

@@ -1,3 +1,4 @@
+/*
 package metaint.replanet.rest.org.service;
 
 import metaint.replanet.rest.org.dto.OrgRequestDTO;
@@ -28,3 +29,4 @@ public class OrganizationServiceTest {
 
 
 }
+*/

@@ -2,6 +2,7 @@ package metaint.replanet.rest.reviews.repository;
 
 import metaint.replanet.rest.reviews.dto.CombineReviewDTO;
 import metaint.replanet.rest.reviews.entity.Campaign;
+import metaint.replanet.rest.reviews.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +26,9 @@ public interface CampaignReviewRepository extends JpaRepository<Campaign, Long> 
             ") " +
             "AND c.end_date < CURRENT_TIMESTAMP", nativeQuery = true)
     List<Campaign> findUnassociatedCampaigns();
+
+    @Query(value = "SELECT c.*, o.* FROM tbl_campaign_description c LEFT JOIN tbl_org o ON c.org_code = o.org_code WHERE c.org_code = :memberCode AND c.campaign_code NOT IN \n" +
+            "(SELECT r.campaign_code FROM tbl_review r WHERE r.campaign_code IS NOT NULL ) \n" +
+            "AND c.end_date < CURRENT_TIMESTAMP;", nativeQuery = true)
+    List<Campaign> findUnassociatedCampaignsByMemberCode(@Param("memberCode") Long memberCode);
 }

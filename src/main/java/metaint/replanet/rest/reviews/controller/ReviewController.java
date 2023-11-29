@@ -258,7 +258,29 @@ public class ReviewController {
         }
     }
 
+    @GetMapping("/org/{memberCode}")
+    public ResponseEntity<List<CombineReviewDTO>> getOrgReviewList(@PathVariable Long memberCode) {
 
+        log.info("(ReviewController) getOrgReviewList 들어옴");
+
+        List<CombineReviewDTO> details = reviewService.findAllOrgCampaignReviews(memberCode);
+        log.info("(review controller): 가져온 총 결과 : " + details);
+
+        return ResponseEntity.ok(details);
+
+    }
+
+    @GetMapping("/org/nonExisting/{memberCode}")
+    public ResponseEntity<List<CombineReviewDTO>> getOrgReviewNeededCampaignList(@PathVariable Long memberCode) {
+
+        log.info("(ReviewController) getOrgReviewList 들어옴");
+
+        List<CombineReviewDTO> details = reviewService.findAllOrgCampaignWithoutReview(memberCode);
+        log.info("(review controller): 가져온 총 결과 : " + details);
+
+        return ResponseEntity.ok(details);
+
+    }
 
 }
 

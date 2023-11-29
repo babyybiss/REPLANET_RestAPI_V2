@@ -424,7 +424,25 @@ public class ReviewService {
         return reviewMemberRepository.findMemberNameByMemberCode(orgCode);
     }
 
+    public List<CombineReviewDTO> findAllOrgCampaignReviews(Long memberCode) {
+        List<Review> reviewList = reviewRepository.findAllOrgReviewsByMemberCode(memberCode);
+
+        return reviewList.stream()
+                .map(review -> modelMapper.map(review, CombineReviewDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<CombineReviewDTO> findAllOrgCampaignWithoutReview(Long memberCode) {
+       List<Campaign> campaigns = campaignReviewRepository.findUnassociatedCampaignsByMemberCode(memberCode);
+
+       log.info("unassociated campaign: orgCode = " + memberCode + "result? : " + campaigns);
+
+       return campaigns.stream()
+               .map(campaign -> modelMapper.map(campaign, CombineReviewDTO.class))
+               .collect(Collectors.toList());
+    }
+}
+
  /*   public String getOrgDescription(Long orgCode) {
         return reviewOrganizationRespository.findOrgDescriptionByOrgCode(orgCode);
     }*/
-}

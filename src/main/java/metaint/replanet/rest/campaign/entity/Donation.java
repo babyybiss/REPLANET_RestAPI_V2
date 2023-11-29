@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder(toBuilder = true, access = AccessLevel.PUBLIC)
 public class Donation {
 
         @Id
@@ -25,15 +24,7 @@ public class Donation {
         @ManyToOne
         @JoinColumn(name = "member_code")
         private Member member;
-        @ManyToOne
-        @JoinColumn(name = "campaign_code")
-        private CampaignDescription campaignDescription;
+        @Column(name = "campaign_code")
+        private int campaignDescription;
 
-        public Donation(int donationCode, LocalDateTime donationDateTime, int donationPoint, Member member, CampaignDescription campaignDescription) {
-                this.donationCode = donationCode;
-                this.donationDateTime = LocalDateTime.now();
-                this.donationPoint = donationPoint;
-                this.member = member;
-                this.campaignDescription = campaignDescription;
-        }
 }

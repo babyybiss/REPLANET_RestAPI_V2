@@ -1,4 +1,3 @@
-/*
 package metaint.replanet.rest.campaign.repository;
 
 import metaint.replanet.rest.campaign.entity.Donation;
@@ -57,4 +56,3 @@ public interface ParticipationRepository extends JpaRepository<Pay, Integer> {
             nativeQuery = true)
     List<Object[]>findByTodayDonation();
 }
-*/

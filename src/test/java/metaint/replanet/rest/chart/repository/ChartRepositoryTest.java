@@ -62,7 +62,7 @@ public class ChartRepositoryTest {
         List<Object[]> countByCategory = chartRepository.countAndSumByCategory();
         //then
         Assertions.assertNotNull(countByCategory);
-        /* countByCategory.forEach(row -> {
+        /*countByCategory.forEach(row -> {
             for(Object col : row) {
                 System.out.print(col + ":::");
             }

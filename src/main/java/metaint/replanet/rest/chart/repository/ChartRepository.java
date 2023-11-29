@@ -19,22 +19,29 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
             , nativeQuery = true)
     List<Object[]> findAllCampaingCategory();
 
-    @Query(value = "SELECT cc.campaign_category, cc.campaigns, cc.sum_current_budget, cc.sum_goal_budget, " +
-            "CASE WHEN cc.sum_current_budget > cc.sum_goal_budget THEN cc.sum_goal_budget " +
-            "ELSE cc.sum_current_budget " +
+    @Query(value = "SELECT sub2.campaign_category, sub2.campaigns, " +
+            "sub2.sum_current_budget, " +
+            "sub2.sum_goal_budget, " +
+            "sub2.display_sum_current_budget, " +
+            "sub2.sum_goal_budget-sub2.display_sum_current_budget AS sum_expect_budget, " +
+            "ROUND(sub2.display_sum_current_budget/sub2.sum_goal_budget*100, 2) AS progress " +
+            "FROM ( " +
+            "SELECT sub1.campaign_category, " +
+            "sub1.campaigns, " +
+            "sub1.sum_current_budget, " +
+            "sub1.sum_goal_budget, " +
+            "CASE WHEN sub1.sum_current_budget > sub1.sum_goal_budget THEN sub1.sum_goal_budget ELSE sub1.sum_current_budget " +
             "END AS display_sum_current_budget " +
             "FROM ( " +
-            "SELECT c.campaign_category, " +
-            "COUNT(*) AS campaigns, " +
-            "SUM(current_budget) AS sum_current_budget, " +
-            "SUM(goal_budget) AS sum_goal_budget " +
+            "SELECT c.campaign_category, COUNT(*) AS campaigns, SUM(current_budget) AS sum_current_budget, SUM(goal_budget) AS sum_goal_budget " +
             "FROM tbl_campaign_description c " +
             "GROUP BY campaign_category " +
-            ") cc"
+            ") sub1 " +
+            ") sub2"
             , nativeQuery = true)
     List<Object[]> countAndSumByCategory();
 
-    @Query(value = "SELECT DATE_FORMAT(start_date, '%Y-%m') AS monthly, COUNT(*) AS campaigns, " +
+    @Query(value = "SELECT start_date AS monthly, COUNT(*) AS campaigns, " +
             "SUM(current_budget) AS sum_current_budget, " +
             "SUM(goal_budget) AS sum_goal_budget, " +
             "SUM(goal_budget-current_budget) AS sum_expect_budget " +

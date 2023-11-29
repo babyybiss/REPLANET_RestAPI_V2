@@ -7,16 +7,20 @@ public class CountAndSumByCategoryDTO {
     private int sumCurrentBudget;
     private int sumGoalBudget;
     private int displaySumCurrentBudget;
+    private int sumExpectBudget; // 목표 모금액까지 남은 액수
+    private double progress;
 
     public CountAndSumByCategoryDTO() {
     }
 
-    public CountAndSumByCategoryDTO(String campaignCategory, int campaigns, int sumCurrentBudget, int sumGoalBudget, int displaySumCurrentBudget) {
+    public CountAndSumByCategoryDTO(String campaignCategory, int campaigns, int sumCurrentBudget, int sumGoalBudget, int displaySumCurrentBudget, int sumExpectBudget, double progress) {
         this.campaignCategory = campaignCategory;
         this.campaigns = campaigns;
         this.sumCurrentBudget = sumCurrentBudget;
         this.sumGoalBudget = sumGoalBudget;
         this.displaySumCurrentBudget = displaySumCurrentBudget;
+        this.sumExpectBudget = sumExpectBudget;
+        this.progress = progress;
     }
 
     public String getCampaignCategory() {
@@ -59,6 +63,22 @@ public class CountAndSumByCategoryDTO {
         this.displaySumCurrentBudget = displaySumCurrentBudget;
     }
 
+    public int getSumExpectBudget() {
+        return sumExpectBudget;
+    }
+
+    public void setSumExpectBudget(int sumExpectBudget) {
+        this.sumExpectBudget = sumExpectBudget;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
+    }
+
     @Override
     public String toString() {
         return "CountAndSumByCategoryDTO{" +
@@ -67,6 +87,8 @@ public class CountAndSumByCategoryDTO {
                 ", sumCurrentBudget=" + sumCurrentBudget +
                 ", sumGoalBudget=" + sumGoalBudget +
                 ", displaySumCurrentBudget=" + displaySumCurrentBudget +
+                ", sumExpectBudget=" + sumExpectBudget +
+                ", progress=" + progress +
                 '}';
     }
 }

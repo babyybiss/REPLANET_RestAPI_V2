@@ -194,6 +194,8 @@ CREATE TABLE `tbl_org`
     `file_save_path`    VARCHAR(255) COMMENT '파일확장자',
     `file_extension`    VARCHAR(255) COMMENT '저장경로',
     `org_description`    VARCHAR(1000) COMMENT '기부처소개',
+    `withdraw_req_date`    DATETIME DEFAULT null COMMENT '탈퇴신청일자',
+    `withdraw_reason`    VARCHAR(1000) COMMENT '탈퇴사유',
     PRIMARY KEY ( `org_code` )
 ) COMMENT = '기부처정보';
 
@@ -218,3 +220,9 @@ ALTER TABLE tbl_campaign_desc_file ADD FOREIGN KEY (campaign_code) REFERENCES tb
 -- 북마크(회원코드 FK, 캠페인코드 FK)
 ALTER TABLE tbl_bookmark ADD FOREIGN KEY (member_code) REFERENCES tbl_member(member_code);
 ALTER TABLE tbl_bookmark ADD FOREIGN KEY (campaign_code) REFERENCES tbl_campaign_description(campaign_code);
+
+-- 포인트신청(회원코드 FK)
+ALTER TABLE tbl_point_exchange ADD FOREIGN KEY (member_code) REFERENCES tbl_member(member_code);
+
+-- 확인서첨부파일(신청코드 FK)
+ALTER TABLE tbl_point_file ADD FOREIGN KEY (application_code) REFERENCES tbl_point_exchange(exchange_code);

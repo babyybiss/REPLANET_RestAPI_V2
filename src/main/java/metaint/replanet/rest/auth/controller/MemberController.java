@@ -4,9 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.dto.ChangePasswordRequestDto;
 import metaint.replanet.rest.auth.dto.MemberRequestDto;
 import metaint.replanet.rest.auth.dto.MemberResponseDto;
+import metaint.replanet.rest.auth.exception.BadRequestException;
 import metaint.replanet.rest.auth.service.MemberService;
 import metaint.replanet.rest.auth.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,15 +27,24 @@ public class MemberController {
 
 
     @PostMapping("/emailcheck/{email}")
-    public ResponseEntity<?> checkEmailDuplication(@PathVariable String email) throws Exception {
-        System.out.println(email);
+    public ResponseEntity<?> checkEmailDuplication(@PathVariable String email) throws BadRequestException {
+        System.out.println("test" + email);
 
-        if (memberService.existsByEmail(email) == true) {
-            log.info(email + "은(는) 이미 사용 중인 이메일입니다.");
-            throw new Exception("이미 사용 중인 이메일입니다.");
-        } else {
-            return ResponseEntity.ok(email + "은(는) 사용 가능한 이메일입니다.");
+        try {
+            if (!memberService.existsByEmail(email)) {
+                return ResponseEntity.ok(email + "은(는) 사용 가능한 이메일입니다.");
+
+            } else {
+                return new ResponseEntity(
+                        "이미 사용 중인 이메일입니다.",
+                        HttpStatus.BAD_REQUEST);
+            }
+        } catch(Exception e) {
+            return new ResponseEntity(
+                    "API 오류",
+                    HttpStatus.MULTI_STATUS);
         }
+
     }
 
 }

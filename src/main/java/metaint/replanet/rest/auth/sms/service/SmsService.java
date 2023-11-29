@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 @Service
 public class SmsService {
-    public void smsService(String u_phone, String cerNum) throws JsonProcessingException {
+    public void smsService(String u_phone, String smsCode) throws JsonProcessingException {
         String api_key = "NCSCXEQPTW0K6AEB";
         String api_secret = "O6TTAGTY5UCH84C19UUL9W6QLWSHJ4KG";
         Message coolsms = new Message(api_key, api_secret);
@@ -32,7 +32,7 @@ public class SmsService {
         params.put("to", phone); // 수신전화번호
         params.put("from", "01046668627"); // 발신전화번호. 테스트시에는 발신,수신 둘다 본인 번호로 하면 됨
         params.put("type", "SMS");
-        params.put("text", "인증번호는" + "["+cerNum+"]" + "입니다.");
+        params.put("text", "인증번호는" + "["+smsCode+"]" + "입니다.");
         params.put("app_version", "test app 1.2"); // application name and version
 
         log.info("[smsService() params] : " + params);
@@ -46,8 +46,8 @@ public class SmsService {
         }
     }
 
-    public String smsCheckService (@RequestBody String cerNum) {
-        return cerNum;
+    public String smsCheckService (@RequestBody String smsCode) {
+        return smsCode;
     }
 
 }

@@ -30,6 +30,8 @@ public class MemberRequestDto {
     @NotEmpty(message = "필수 입력 항목입니다.")
     private String phone;
 
+    private String memberRole;
+
 
     public Member toMember(PasswordEncoder passwordEncoder) {
         return Member.builder()
@@ -38,6 +40,16 @@ public class MemberRequestDto {
                 .memberName(memberName)
                 .phone(phone)
                 .memberRole(MemberRole.ROLE_USER)
+                .build();
+    }
+
+    public Member toOrgMember(PasswordEncoder passwordEncoder) {
+        return Member.builder()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .memberName(memberName)
+                .phone(phone)
+                .memberRole(MemberRole.ROLE_ORG)
                 .build();
     }
 

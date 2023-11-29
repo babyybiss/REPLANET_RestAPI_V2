@@ -4,7 +4,6 @@ package metaint.replanet.rest.org.service;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.entity.MemberRole;
 
-//import metaint.replanet.rest.auth.entity.Member;
 import metaint.replanet.rest.auth.repository.MemberRepository;
 import metaint.replanet.rest.auth.util.SecurityUtil;
 
@@ -13,7 +12,7 @@ import metaint.replanet.rest.org.entity.Organization;
 import metaint.replanet.rest.org.repository.OrgMemberRepository;
 import metaint.replanet.rest.org.repository.OrgRepository;
 
-import metaint.replanet.rest.pay.entity.Member;
+import metaint.replanet.rest.auth.entity.Member;
 
 import metaint.replanet.rest.privacy.dto.MemberDTO;
 
@@ -76,12 +75,12 @@ public class OrgService {
     }
 
 
-    public List<Member> getOrgList() {
+    public List<metaint.replanet.rest.pay.entity.Member> getOrgList() {
         log.info("[getOrgList()] =============================================");
 
         MemberRole memberRole = MemberRole.ROLE_ORG;
 
-        List<Member> orgList = orgMemberRepository.findAllByMemberRole(memberRole);
+        List<metaint.replanet.rest.pay.entity.Member> orgList = orgMemberRepository.findAllByMemberRole(memberRole);
 
         log.info("[getOrgList() orgList] : " + orgList);
 
@@ -108,7 +107,7 @@ public class OrgService {
     public int verifyPassword(int memberCode, String orgPwd) {
         System.out.println("service 왔습니다~ 비밀번호 맞는지 확인합시다~");
 
-        Member member = memberRepository.findById(Long.valueOf(memberCode)).get();
+        metaint.replanet.rest.auth.entity.Member member = memberRepository.findById(Long.valueOf(memberCode)).get();
         if(passwordEncoder.matches(orgPwd, member.getPassword())){
             return 1;
         } else {
@@ -119,7 +118,7 @@ public class OrgService {
     public void updateOrgInformation(MemberDTO memberDTO, String orgDescription) {
         System.out.println("service 왔습니다~ 재단 정보 수정합시다~");
 
-        Member memberM = memberRepository.findById((long) memberDTO.getMemberCode()).get();
+        metaint.replanet.rest.auth.entity.Member memberM = memberRepository.findById((long) memberDTO.getMemberCode()).get();
         metaint.replanet.rest.privacy.entity.Organization organizationM = orgRepository.findById(memberDTO.getMemberCode()).get();
 
         if(organizationM != null && memberM != null){
@@ -130,5 +129,16 @@ public class OrgService {
         }
          return;
 
+    }
+
+    @Transactional
+    public int deleteOrgByMemberCode(Long memberCode) {
+        log.info("[deleteOrgByMemberCode()] ==================================== " + memberCode);
+        log.info("[deleteOrgByMemberCode() memberCode] : " + memberCode);
+
+        int result = orgMemberRepository.deleteOrgMemberByMemberCode(memberCode);
+        log.info("[deleteOrgByMemberCode() result] : " + result);
+
+        return result;
     }
 }

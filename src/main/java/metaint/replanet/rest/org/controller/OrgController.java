@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.privacy.dto.MemberDTO;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +89,29 @@ public class OrgController {
         orgService.updateOrgInformation(memberDTO, orgDescription);
 
         return null;
+    }
+
+    @PutMapping("/withdrawOrg")
+    public void putWithdrawOrg(@RequestBody MemberDTO memberDTO, HttpServletResponse response){
+        log.info("[/withdrawOrg] ==================================== ");
+
+        Long memberCode = (long) memberDTO.getMemberCode();
+        log.info("[/withdrawOrg 받아온 memberCode] : " + memberCode);
+
+        if (memberCode > 0) {
+            int result = orgService.deleteOrgByMemberCode(memberCode);
+
+            if (result > 0) {
+                log.info("[/withdrawOrg] 기부처 삭제 성공 ====================");
+                response.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                log.error("[/withdrawOrg] 기부처 삭제 실패 ====================");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            }
+        } else {
+            log.error("[/withdrawOrg] 유효한 memberCode가 아닙니다. ====================");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
     }
 
 

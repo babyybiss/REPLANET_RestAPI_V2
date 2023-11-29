@@ -62,6 +62,7 @@ public class OrgController {
 
     }
 
+
     @GetMapping("orgInfo/{memberCode}")
     public ResponseEntity<?> selectOrgInformation(@PathVariable int memberCode,
                                                   @RequestParam String orgPwd){
@@ -86,6 +87,7 @@ public class OrgController {
                                                   @RequestPart(value = "memberName") String memberName, @RequestPart(value = "phone") String phone){
 
         log.info("기부처 코드 확인 : " + memberCode);
+
         log.info("기부처 소개 넘어왔는지 확인 : " + orgDescription);
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setMemberId(memberEmail);
@@ -163,5 +165,6 @@ public class OrgController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("처리 중 오류");
             }
         }
+
     }
 }

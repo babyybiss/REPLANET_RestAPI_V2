@@ -149,7 +149,8 @@ public class OrgService {
             organizationM = organizationM.toBuilder()
                                         .orgDescription(orgRequestDTO.getOrgDescription())
                                         .build();
-        }
+
+    }
         orgRepository.save(organizationM);
         System.out.println("org 업데이트 확인 : " + organizationM);
     }

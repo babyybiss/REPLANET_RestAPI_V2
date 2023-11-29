@@ -1,10 +1,9 @@
-/*
 package metaint.replanet.rest.campaign.service;
 
 import metaint.replanet.rest.campaign.dto.CampaignDesOrgDTO;
-import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
+import metaint.replanet.rest.campaign.dto.RequestCampaignDTO;
+import metaint.replanet.rest.campaign.dto.ParticipationDTO;
 import metaint.replanet.rest.campaign.entity.Campaign;
-import metaint.replanet.rest.campaign.entity.Pay;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ public class CampaignServiceTest {
         int campaignCode = 2;
 
         //when
-        Campaign findCampaign = campaignService.findCampaign(campaignCode);
+        CampaignDesOrgDTO findCampaign = campaignService.findCampaign(campaignCode);
 
         //then
         Assertions.assertNotNull(findCampaign);
@@ -81,16 +80,13 @@ public class CampaignServiceTest {
     @Test
     void campaignRegistTest() {
         //given
-        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
+        RequestCampaignDTO campaign = new RequestCampaignDTO(
                 "진행중",
                 "도와주세요~섬바리헤업미",
-                "2021-12-05",
+                "날짜",
+                //LocalDateTime.of(2023, 1, 31, 12, 30, 0),
                 "지구촌",
-                "0",
-                "200,000",
-                "하이미디어",
-                "안녕 매체",
-                "02-121-5678"
+                "200,000"
         );
 
         //when
@@ -219,17 +215,14 @@ public class CampaignServiceTest {
 
             }
         };
-        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
-                6,
+        RequestCampaignDTO campaign = new RequestCampaignDTO(
                 "수정 진행중",
                 "수정 도와주세요~섬바리헤업미2",
-                "2021-12-05",
+                "날짜",
+                //LocalDateTime.of(2023, 1, 31, 12, 30, 0),
                 "지구촌",
-                "0",
-                "200,000",
-                " 수정하이미디어",
-                "안녕 매체",
-                "02-121-5678"
+                "200,000"
+
         );
         //when
         //then
@@ -244,7 +237,7 @@ public class CampaignServiceTest {
         //given
         int code = 1;
         //when
-        List<Pay> donationList = campaignService.findparticipationList(code);
+        List<ParticipationDTO> donationList = campaignService.findparticipationList(code);
         //then
         Assertions.assertNotNull(donationList);
         donationList.forEach(System.out::println);
@@ -266,4 +259,3 @@ public class CampaignServiceTest {
 
 }
 
-*/

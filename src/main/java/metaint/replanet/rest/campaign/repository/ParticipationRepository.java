@@ -51,8 +51,8 @@ public interface ParticipationRepository extends JpaRepository<Pay, Integer> {
             "tbl_member m " +
             "on d.member_code = m.member_code " +
             "where DATE_FORMAT(d.donation_date_time, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') " +
-            "GROUP BY " +
-            "p.pay_code ",
+            "GROUP BY p.pay_code"
+            ,
             nativeQuery = true)
     List<Object[]>findByTodayDonation();
 }

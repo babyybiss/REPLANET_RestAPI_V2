@@ -116,6 +116,8 @@ CREATE TABLE `tbl_member`
     `current_point`    INTEGER DEFAULT 0 NOT NULL COMMENT '보유포인트',
     `privacy_status`    CHAR DEFAULT 'N' NOT NULL COMMENT '개인정보동의여부',
     `resident_num`    VARCHAR(255) COMMENT '주민등록번호',
+    `provider` varchar(255) NOT NULL DEFAULT 'REPLANET' COMMENT '가입플랫폼',
+    `provider_id` varchar(255) NOT NULL DEFAULT 'REPLANET' COMMENT '가입플랫폼ID',
     PRIMARY KEY ( `member_code` )
 ) COMMENT = '회원정보';
 # 개인정보동의여부, 주민등록번호 추가됨 231124

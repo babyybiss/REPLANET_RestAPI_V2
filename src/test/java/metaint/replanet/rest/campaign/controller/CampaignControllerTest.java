@@ -1,7 +1,6 @@
-/*
 package metaint.replanet.rest.campaign.controller;
 
-import metaint.replanet.rest.campaign.dto.CampaignDescriptionDTO;
+import metaint.replanet.rest.campaign.dto.RequestCampaignDTO;
 import metaint.replanet.rest.campaign.service.CampaignService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -80,17 +79,14 @@ public class CampaignControllerTest {
 
             }
         };
-        CampaignDescriptionDTO campaign = new CampaignDescriptionDTO(
-                6,
+        RequestCampaignDTO campaign = new RequestCampaignDTO(
                 "진행중",
                 "도와주세요~섬바리헤업미",
+                "날짜",
                 //LocalDateTime.of(2023, 1, 31, 12, 30, 0),
                 "지구촌",
-                "0",
-                "200,000",
-                "하이미디어",
-                "안녕 매체",
-                "02-121-5678"
+                "200,000"
+
         );
         //when
         //campaignController.campaignDelete(campaignCode);
@@ -110,4 +106,3 @@ public class CampaignControllerTest {
 
     }
 }
-*/

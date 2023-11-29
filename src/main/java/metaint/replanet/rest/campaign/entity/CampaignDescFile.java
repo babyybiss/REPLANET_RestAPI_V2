@@ -29,7 +29,6 @@ public class CampaignDescFile {
     private String fileExtension; // 확장자
     @ManyToOne
     @JoinColumn(name = "campaign_code")
-    @ToString.Exclude
     private CampaignDescription campaignCode; // 모금 코드
 
     protected CampaignDescFile() {}

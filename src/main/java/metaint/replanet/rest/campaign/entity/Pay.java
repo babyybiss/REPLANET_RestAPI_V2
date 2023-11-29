@@ -1,6 +1,5 @@
 package metaint.replanet.rest.campaign.entity;
 import lombok.*;
-import metaint.replanet.rest.pay.entity.Donation;
 
 import javax.persistence.*;
 
@@ -20,5 +19,5 @@ public class Pay {
     private int payAmount;
     @ManyToOne
     @JoinColumn(name = "donation_code")
-    private Donation Donation;
+    private Donation donation;
 }

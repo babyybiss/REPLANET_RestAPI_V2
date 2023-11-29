@@ -24,10 +24,10 @@ public class CampaignDescription {
     @Column(name = "campaign_content")
     private String campaignContent; // 모금 내용
     @Column(name = "start_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate; // 모금 시작 일자
     @Column(name = "end_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate; // 모금 마감 일자
     @Column(name = "campaign_category")
     private String campaignCategory; // 모금 카테고리
@@ -35,6 +35,8 @@ public class CampaignDescription {
     private int currentBudget; // 현재 모금액
     @Column(name = "goal_budget")
     private int goalBudget; // 목표 모금액
+    @Column(name = "org_code")
+    private int orgCode;
 
     protected CampaignDescription() {}
 
@@ -61,6 +63,6 @@ public class CampaignDescription {
         return new CampaignDescription(
                 campaignCode,campaignTitle,campaignContent,
                 startDate,endDate,campaignCategory,currentBudget,
-                goalBudget);
+                goalBudget,orgCode);
     }
 }

@@ -11,9 +11,6 @@ import java.util.List;
 
 @Repository
 public interface CampaignFileRepository extends JpaRepository<CampaignDescFile, Integer> {
-
-    List<CampaignDescFile> findByCampaignCodeCampaignCode(int campaignCode);
-
     void deleteByCampaignCodeCampaignCode(int campaignCode);
 
 }

@@ -105,7 +105,7 @@ public class OrgService {
         return orgInformation;
     }
 
-    public int verifyPassword(int memberCode, String orgPwd) {
+    /*public int verifyPassword(int memberCode, String orgPwd) {
         System.out.println("service 왔습니다~ 비밀번호 맞는지 확인합시다~");
 
         Member member = memberRepository.findById(Long.valueOf(memberCode)).get();
@@ -130,5 +130,5 @@ public class OrgService {
         }
          return;
 
-    }
+    }*/
 }

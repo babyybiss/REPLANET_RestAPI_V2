@@ -58,7 +58,7 @@ public class OrgController {
 
     }
 
-    @GetMapping("/orgInfo/{memberCode}")
+   /* @GetMapping("/orgInfo/{memberCode}")
     public ResponseEntity<?> selectOrgInformation(@PathVariable int memberCode,
                                                   @RequestParam String orgPwd){
 
@@ -74,7 +74,7 @@ public class OrgController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호가 일치하지 않습니다.");
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("처리 중 오류가 발생했습니다.");
-    }
+    }*/
 
     @PutMapping("/orgModify/{memberCode}")
     public ResponseEntity<?> updateOrgInformation(@PathVariable int memberCode,
@@ -85,7 +85,7 @@ public class OrgController {
         log.info("기부처 정보 넘어왔는지 확인1 : " + memberDTO);
         log.info("기부처 정보 넘어왔는지 확인2 : " + orgDescription);
 
-        orgService.updateOrgInformation(memberDTO, orgDescription);
+        //orgService.updateOrgInformation(memberDTO, orgDescription);
 
         return null;
     }

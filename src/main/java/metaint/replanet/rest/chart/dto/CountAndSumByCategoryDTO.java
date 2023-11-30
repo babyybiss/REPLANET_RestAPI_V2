@@ -4,16 +4,16 @@ public class CountAndSumByCategoryDTO {
 
     private String campaignCategory;
     private int campaigns; // 캠페인 수 카운트
-    private int sumCurrentBudget;
-    private int sumGoalBudget;
-    private int displaySumCurrentBudget;
-    private int sumExpectBudget; // 목표 모금액까지 남은 액수
+    private long sumCurrentBudget;
+    private long sumGoalBudget;
+    private long displaySumCurrentBudget;
+    private long sumExpectBudget; // 목표 모금액까지 남은 액수
     private double progress;
 
     public CountAndSumByCategoryDTO() {
     }
 
-    public CountAndSumByCategoryDTO(String campaignCategory, int campaigns, int sumCurrentBudget, int sumGoalBudget, int displaySumCurrentBudget, int sumExpectBudget, double progress) {
+    public CountAndSumByCategoryDTO(String campaignCategory, int campaigns, long sumCurrentBudget, long sumGoalBudget, long displaySumCurrentBudget, long sumExpectBudget, double progress) {
         this.campaignCategory = campaignCategory;
         this.campaigns = campaigns;
         this.sumCurrentBudget = sumCurrentBudget;
@@ -39,35 +39,35 @@ public class CountAndSumByCategoryDTO {
         this.campaigns = campaigns;
     }
 
-    public int getSumCurrentBudget() {
+    public long getSumCurrentBudget() {
         return sumCurrentBudget;
     }
 
-    public void setSumCurrentBudget(int sumCurrentBudget) {
+    public void setSumCurrentBudget(long sumCurrentBudget) {
         this.sumCurrentBudget = sumCurrentBudget;
     }
 
-    public int getSumGoalBudget() {
+    public long getSumGoalBudget() {
         return sumGoalBudget;
     }
 
-    public void setSumGoalBudget(int sumGoalBudget) {
+    public void setSumGoalBudget(long sumGoalBudget) {
         this.sumGoalBudget = sumGoalBudget;
     }
 
-    public int getDisplaySumCurrentBudget() {
+    public long getDisplaySumCurrentBudget() {
         return displaySumCurrentBudget;
     }
 
-    public void setDisplaySumCurrentBudget(int displaySumCurrentBudget) {
+    public void setDisplaySumCurrentBudget(long displaySumCurrentBudget) {
         this.displaySumCurrentBudget = displaySumCurrentBudget;
     }
 
-    public int getSumExpectBudget() {
+    public long getSumExpectBudget() {
         return sumExpectBudget;
     }
 
-    public void setSumExpectBudget(int sumExpectBudget) {
+    public void setSumExpectBudget(long sumExpectBudget) {
         this.sumExpectBudget = sumExpectBudget;
     }
 

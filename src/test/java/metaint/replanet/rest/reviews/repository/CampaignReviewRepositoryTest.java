@@ -23,7 +23,7 @@ public class CampaignReviewRepositoryTest {
         Long memberCode = 6L;
 
         //when
-        List<Campaign> campaign = campaignReviewRepository.findUnassociatedCampaignsByMemberCode(memberCode);
+        List<Campaign> campaign = campaignReviewRepository.findUnassociatedCampaignsByOrgCode(memberCode);
 
         //then
         Assertions.assertEquals(3, campaign.size());

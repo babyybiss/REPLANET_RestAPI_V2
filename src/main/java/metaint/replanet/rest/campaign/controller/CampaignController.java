@@ -78,20 +78,30 @@ public class CampaignController {
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
 
-    // 기부처별 리스트
-    @ApiOperation(value = "기부처 리스트 조회", notes = "기부처 리스트합니다", tags = {"기부처 리스트 조회"})
+    // 기부처별 진행& 종료 리스트 조회
+    @ApiOperation(value = "기부처 리스트 조회", notes = "기부처 리스트 조회 합니다", tags = {"기부처 리스트 조회"})
     @GetMapping("orgsList/{orgCode}")
-    public ResponseEntity<ResponseMessageDTO> campaignListByOrg(@PathVariable int orgCode) {
+    public ResponseEntity<ResponseMessageDTO> campaignListByOrg(@PathVariable int orgCode, @RequestParam String status) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> responseMap = new HashMap<>();
 
-        List<CampaignDesOrgDTO> campaign = campaignService.findCampaignByOrg(orgCode);
-        responseMap.put("campaignList", campaign);
+        if (status.equals("ing")) {
+            List<CampaignDesOrgDTO> campaign = campaignService.findCampaignByOrg(orgCode);
+            responseMap.put("campaignList", campaign);
 
-        // 성공 메시지
-        ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);
-        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+            // 성공 메시지
+            ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "진행중 조회성공!", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+        } else if (status.equals("done")) {
+            List<CampaignDesOrgDTO> campaign = campaignService.findCampaignByOrgDone(orgCode);
+            responseMap.put("campaignList", campaign);
+
+            // 성공 메시지
+            ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "종료 조회성공!", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+        }
+        return null;
     }
 
     // 참여내역 조회

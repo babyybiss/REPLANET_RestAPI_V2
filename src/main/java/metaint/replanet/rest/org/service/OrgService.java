@@ -78,13 +78,28 @@ public class OrgService {
     }
 
 
-    public List<metaint.replanet.rest.pay.entity.Member> getOrgList() {
+    public List<Map<String, Object>> getOrgList() {
         log.info("[getOrgList()] =============================================");
+        log.info("service 왔습니다~ org 리스트 가져가세요~");
 
         MemberRole memberRole = MemberRole.ROLE_ORG;
 
-        List<metaint.replanet.rest.pay.entity.Member> orgList = orgMemberRepository.findAllByMemberRole(memberRole);
+        List<Object[]> allOrgs = orgMemberRepository.findAllByMemberRole(memberRole);
+        List<Map<String, Object>> orgList = new ArrayList<>();
 
+        for(Object[] orgs : allOrgs){
+            Map<String, Object> orgListMap = new HashMap<>();
+            orgListMap.put("memberCode", orgs[0]);
+            orgListMap.put("memberEmail", orgs[1]);
+            orgListMap.put("memberName", orgs[2]);
+            orgListMap.put("joinDate", orgs[3]);
+            orgListMap.put("phone", orgs[4]);
+            orgListMap.put("withdrawDate", orgs[5]);
+            orgListMap.put("wReqDate", orgs[6]);
+            orgListMap.put("wReqReason", orgs[7]);
+
+            orgList.add(orgListMap);
+        }
         log.info("[getOrgList() orgList] : " + orgList);
 
         return orgList;
@@ -139,7 +154,7 @@ public class OrgService {
         Organization organizationM = orgRepository.findById(orgRequestDTO.getOrgCode()).get();
 
         if(orgRequestDTO.getFileOriginName() != null){
-                organizationM = organizationM.toBuilder().fileOriginName(orgRequestDTO.getFileOriginName())
+            organizationM = organizationM.toBuilder().fileOriginName(orgRequestDTO.getFileOriginName())
                         .fileExtension(orgRequestDTO.getFileExtension())
                         .fileSaveName(orgRequestDTO.getFileSaveName())
                         .fileSavePath(orgRequestDTO.getFileSavePath())
@@ -147,12 +162,11 @@ public class OrgService {
                         .build();
         } else {
             organizationM = organizationM.toBuilder()
-                                        .orgDescription(orgRequestDTO.getOrgDescription())
-                                        .build();
-
-          orgRepository.save(organizationM);
-          System.out.println("org 업데이트 확인 : " + organizationM);
+                    .orgDescription(orgRequestDTO.getOrgDescription())
+                    .build();
         }
+        orgRepository.save(organizationM);
+        System.out.println("org 업데이트 확인 : " + organizationM);
     }
 
     @Transactional
@@ -165,4 +179,19 @@ public class OrgService {
 
         return result;
   }
+
+    public void updateOrgWithdraw(OrgRequestDTO newRequest) {
+        System.out.println("service 왔습니다~ 탈퇴 신청 정보 업데이트 합시다~");
+
+        Organization organizationW = orgRepository.findById(newRequest.getOrgCode()).get();
+
+        organizationW = organizationW.toBuilder()
+                                    .withdrawReqDate(newRequest.getWithdrawReqDate())
+                                    .withdrawReason(newRequest.getWithdrawReason())
+                                    .build();
+
+        orgRepository.save(organizationW);
+
+        System.out.println("org 탈퇴 신청 확인 : " + organizationW);
+    }
 }

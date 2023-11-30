@@ -71,7 +71,7 @@ CREATE TABLE `tbl_review`
 (
     `review_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기코드',
     `review_title`    VARCHAR(500) NOT NULL COMMENT '후기제목',
-    `description`    BLOB NOT NULL COMMENT '후기내용',
+    `description`    LONGBLOB NOT NULL COMMENT '후기내용',
     `campaign_code`    INTEGER NOT NULL COMMENT '캠페인코드',
     PRIMARY KEY ( `review_code` )
 ) COMMENT = '후기게시글';
@@ -109,10 +109,10 @@ CREATE TABLE `tbl_member`
     `member_name`    VARCHAR(255) NOT NULL COMMENT '이름',
     `password`    VARCHAR(255) NOT NULL COMMENT '비밀번호',
     `phone`    VARCHAR(255) NOT NULL COMMENT '휴대폰번호',
-    `join_date`    DATETIME COMMENT '가입일자',
+    `join_date`    DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '가입일자',
     `member_role`    VARCHAR(255) DEFAULT 'ROLE_USER' NOT NULL COMMENT '유저권한',
     `withdraw`    CHAR DEFAULT 'N' NOT NULL COMMENT '탈퇴여부',
-    `withdraw_date`    DATETIME DEFAULT null COMMENT '탈퇴일자',
+    `withdraw_date`    DATETIME DEFAULT NULL COMMENT '탈퇴일자',
     `current_point`    INTEGER DEFAULT 0 NOT NULL COMMENT '보유포인트',
     `privacy_status`    CHAR DEFAULT 'N' NOT NULL COMMENT '개인정보동의여부',
     `resident_num`    VARCHAR(255) COMMENT '주민등록번호',
@@ -165,11 +165,12 @@ CREATE TABLE `tbl_point_file`
 
 CREATE TABLE `tbl_review_comment`
 (
-    `rev_comment_code`    INTEGER ZEROFILL NOT NULL COMMENT '댓글코드',
+    `rev_comment_code`    INTEGER ZEROFILL NOT NULL AUTO_INCREMENT COMMENT '댓글코드',
     `rev_comment_content`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
     `member_code`    VARCHAR(255) NOT NULL COMMENT '작성자',
     `rev_comment_date`    DATETIME NOT NULL COMMENT '댓글작성일자',
     `review_code`    INTEGER NOT NULL COMMENT '후기코드',
+    `rev_comment_monitorized` VARCHAR(45) NOT NULL DEFAULT 'N',
     PRIMARY KEY ( `rev_comment_code` )
 ) COMMENT = '후기댓글';
 

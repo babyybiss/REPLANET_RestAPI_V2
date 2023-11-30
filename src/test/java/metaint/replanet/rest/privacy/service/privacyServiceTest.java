@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -101,6 +102,21 @@ public class privacyServiceTest {
 
         //then
         Assertions.assertDoesNotThrow(() -> orgService.updateMemberInfo(memberDTO));
+    }
+
+    @Test
+    @DisplayName("org 탈퇴 신청 service 테스트")
+    void updateOrgWithdrawTest(){
+        //given
+
+        //when
+        OrgRequestDTO orgRequest = new OrgRequestDTO();
+        orgRequest.setOrgCode(9);
+        orgRequest.setWithdrawReqDate(new Date());
+        orgRequest.setWithdrawReason("withdrawReason");
+
+        //then
+        Assertions.assertDoesNotThrow(() -> orgService.updateOrgWithdraw(orgRequest));
     }
 
 }

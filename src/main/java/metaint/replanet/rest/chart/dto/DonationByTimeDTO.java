@@ -6,15 +6,15 @@ public class DonationByTimeDTO {
 
     private int campaignCode;
     private Date donationDate;
-    private int donationPoint;
-    private int payAmount;
-    private int donationAmount; // 사용포인트 + 결제금액
+    private long donationPoint;
+    private long payAmount;
+    private long donationAmount; // 사용포인트 + 결제금액
     private String campaignCategory;
 
     public DonationByTimeDTO() {
     }
 
-    public DonationByTimeDTO(int campaignCode, Date donationDate, int donationPoint, int payAmount, int donationAmount, String campaignCategory) {
+    public DonationByTimeDTO(int campaignCode, Date donationDate, long donationPoint, long payAmount, long donationAmount, String campaignCategory) {
         this.campaignCode = campaignCode;
         this.donationDate = donationDate;
         this.donationPoint = donationPoint;
@@ -39,27 +39,27 @@ public class DonationByTimeDTO {
         this.donationDate = donationDate;
     }
 
-    public int getDonationPoint() {
+    public long getDonationPoint() {
         return donationPoint;
     }
 
-    public void setDonationPoint(int donationPoint) {
+    public void setDonationPoint(long donationPoint) {
         this.donationPoint = donationPoint;
     }
 
-    public int getPayAmount() {
+    public long getPayAmount() {
         return payAmount;
     }
 
-    public void setPayAmount(int payAmount) {
+    public void setPayAmount(long payAmount) {
         this.payAmount = payAmount;
     }
 
-    public int getDonationAmount() {
+    public long getDonationAmount() {
         return donationAmount;
     }
 
-    public void setDonationAmount(int donationAmount) {
+    public void setDonationAmount(long donationAmount) {
         this.donationAmount = donationAmount;
     }
 

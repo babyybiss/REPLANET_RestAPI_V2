@@ -6,6 +6,7 @@ import metaint.replanet.rest.auth.entity.MemberRole;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity(name = "Organization")
 @Table(name = "tbl_org")
@@ -34,4 +35,9 @@ public class Organization {
     @Column(name = "org_description")
     private String orgDescription;
 
+    @Column(name = "withdraw_req_date")
+    private Date withdrawReqDate;
+
+    @Column(name = "withdraw_reason")
+    private String withdrawReason;
 }

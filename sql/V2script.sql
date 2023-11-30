@@ -71,7 +71,7 @@ CREATE TABLE `tbl_review`
 (
     `review_code`    INTEGER NOT NULL AUTO_INCREMENT COMMENT '후기코드',
     `review_title`    VARCHAR(500) NOT NULL COMMENT '후기제목',
-    `description`    BLOB NOT NULL COMMENT '후기내용',
+    `description`    LONGBLOB NOT NULL COMMENT '후기내용',
     `campaign_code`    INTEGER NOT NULL COMMENT '캠페인코드',
     PRIMARY KEY ( `review_code` )
 ) COMMENT = '후기게시글';
@@ -165,11 +165,12 @@ CREATE TABLE `tbl_point_file`
 
 CREATE TABLE `tbl_review_comment`
 (
-    `rev_comment_code`    INTEGER ZEROFILL NOT NULL COMMENT '댓글코드',
+    `rev_comment_code`    INTEGER ZEROFILL NOT NULL AUTO_INCREMENT COMMENT '댓글코드',
     `rev_comment_content`    VARCHAR(1000) NOT NULL COMMENT '댓글내용',
     `member_code`    VARCHAR(255) NOT NULL COMMENT '작성자',
     `rev_comment_date`    DATETIME NOT NULL COMMENT '댓글작성일자',
     `review_code`    INTEGER NOT NULL COMMENT '후기코드',
+    `rev_comment_monitorized` VARCHAR(45) NOT NULL DEFAULT 'N',
     PRIMARY KEY ( `rev_comment_code` )
 ) COMMENT = '후기댓글';
 

@@ -40,7 +40,7 @@ public class Organization {
     private List<Campaign> campaign;
 
     @OneToOne(optional = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "member_code", referencedColumnName = "member_code")
+    @JoinColumn(name = "org_code", referencedColumnName = "member_code")
     private Member member;
 
 

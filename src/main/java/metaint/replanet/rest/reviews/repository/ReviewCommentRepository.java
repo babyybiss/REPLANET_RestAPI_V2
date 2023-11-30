@@ -22,4 +22,6 @@ public interface ReviewCommentRepository extends JpaRepository<ReviewComment, Lo
     @Transactional
     @Query("UPDATE ReviewComment rc SET rc.revCommentMonitorized = 'Y' WHERE rc.revCommentCode = :revCommentCode")
     void updateRevCommentMonitorized(@Param("revCommentCode") Long revCommentCode);
+
+    List<ReviewComment> getCommentByReviewCode(Long reviewCode);
 }

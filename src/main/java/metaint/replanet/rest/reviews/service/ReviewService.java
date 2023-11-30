@@ -8,7 +8,6 @@ import metaint.replanet.rest.util.FileUploadUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -432,14 +431,23 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    public List<CombineReviewDTO> findAllOrgCampaignWithoutReview(Long memberCode) {
-       List<Campaign> campaigns = campaignReviewRepository.findUnassociatedCampaignsByMemberCode(memberCode);
+    public List<CombineReviewDTO> findAllOrgCampaignWithoutReview(Long orgCode) {
+       List<Campaign> campaigns = campaignReviewRepository.findUnassociatedCampaignsByOrgCode(orgCode);
 
-       log.info("unassociated campaign: orgCode = " + memberCode + "result? : " + campaigns);
+       log.info("unassociated campaign: orgCode = " + orgCode + "result? : " + campaigns);
 
        return campaigns.stream()
                .map(campaign -> modelMapper.map(campaign, CombineReviewDTO.class))
                .collect(Collectors.toList());
+    }
+
+    public List<ReviewCommentDTO> getComments(Long reviewCode) {
+
+        List<ReviewComment> comments = reviewCommentRepository.getCommentByReviewCode(reviewCode);
+
+        return comments.stream()
+                .map(comment -> modelMapper.map(comment, ReviewCommentDTO.class))
+                .collect(Collectors.toList());
     }
 }
 

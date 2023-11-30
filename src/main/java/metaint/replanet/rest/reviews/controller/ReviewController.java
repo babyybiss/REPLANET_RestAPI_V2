@@ -154,6 +154,13 @@ public class ReviewController {
         return null;
     }
 
+    @GetMapping("/{reviewCode}/comments")
+    public ResponseEntity<?> getComments(@PathVariable Long reviewCode){
+
+        log.info("[Review Controller] regist Comment : " + reviewCode);
+        List<ReviewCommentDTO> comments = reviewService.getComments(reviewCode);
+        return ResponseEntity.ok(comments);
+    }
 
     @PostMapping("/{reviewCode}/comments")
     public ResponseEntity<?> registNewComment(@PathVariable Long reviewCode, @ModelAttribute ReviewCommentDTO reviewCommentDTO){
@@ -274,8 +281,8 @@ public class ReviewController {
     public ResponseEntity<List<CombineReviewDTO>> getOrgReviewNeededCampaignList(@PathVariable Long memberCode) {
 
         log.info("(ReviewController) getOrgReviewList 들어옴");
-
-        List<CombineReviewDTO> details = reviewService.findAllOrgCampaignWithoutReview(memberCode);
+        Long orgCode = memberCode;
+        List<CombineReviewDTO> details = reviewService.findAllOrgCampaignWithoutReview(orgCode);
         log.info("(review controller): 가져온 총 결과 : " + details);
 
         return ResponseEntity.ok(details);

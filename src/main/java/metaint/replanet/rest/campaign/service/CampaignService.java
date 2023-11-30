@@ -79,10 +79,18 @@ public class CampaignService {
         return modelMapper.map(findCampaign, CampaignDesOrgDTO.class);
     }
 
-    // 기부처별 캠페인 리스트 조회
+    // 기부처별 캠페인 진행중 리스트 조회
     public List<CampaignDesOrgDTO> findCampaignByOrg(int orgCode) {
 
         List<Campaign> campaignEntityList = campaignRepository.findByOrgCode(orgCode);
+        return campaignEntityList.stream()
+                .map(campaignList -> modelMapper.map(campaignList, CampaignDesOrgDTO.class))
+                .collect(Collectors.toList());
+    }
+    // 기부처별 캠페인 종료 리스트 조회
+    public List<CampaignDesOrgDTO> findCampaignByOrgDone(int orgCode) {
+        List<Campaign> campaignEntityList = campaignRepository.findByOrgCodeDone(orgCode);
+
         return campaignEntityList.stream()
                 .map(campaignList -> modelMapper.map(campaignList, CampaignDesOrgDTO.class))
                 .collect(Collectors.toList());
@@ -308,6 +316,7 @@ public class CampaignService {
         }
         return list;
     }
+
 
     
 }

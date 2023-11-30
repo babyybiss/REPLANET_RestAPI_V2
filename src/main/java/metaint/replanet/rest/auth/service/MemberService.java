@@ -43,4 +43,11 @@ public class MemberService {
     }
 
 
+    @Transactional
+    public boolean existsByPhone(String phone) {
+        log.info(phone);
+        return memberRepository.existsByPhone(phone);
+
+    }
+
 }

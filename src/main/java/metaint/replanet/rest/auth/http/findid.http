@@ -1,0 +1,6 @@
+POST http://localhost:8001/auth/find/01046668627
+Content-Type: application/json
+
+{
+  "phone": "01046668627"
+}

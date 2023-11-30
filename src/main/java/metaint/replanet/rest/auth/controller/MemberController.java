@@ -47,4 +47,47 @@ public class MemberController {
 
     }
 
+    @PostMapping("/phonecheck/{phone}")
+    public ResponseEntity<?> checkPhoneDuplication(@PathVariable String phone) throws BadRequestException {
+        System.out.println("test" + phone);
+
+        try {
+            if (!memberService.existsByPhone(phone)) {
+                return ResponseEntity.ok(phone + "은(는) 사용 가능한 번호입니다.");
+
+            } else {
+                return new ResponseEntity(
+                        "이미 사용 중인 번호입니다.",
+                        HttpStatus.BAD_REQUEST);
+            }
+        } catch(Exception e) {
+            return new ResponseEntity(
+                    "API 오류",
+                    HttpStatus.MULTI_STATUS);
+        }
+
+    }
+
+    @PostMapping("/find/{phone}")
+    public ResponseEntity<?> findEmailByPhone(@PathVariable String phone, @RequestBody String email) throws BadRequestException {
+        System.out.println("test" + phone);
+
+        try {
+            if (!memberService.existsByPhone(phone)) {
+                return ResponseEntity.ok(email + "로 로그인하세요.");
+
+            } else {
+                return new ResponseEntity(
+                        "등록된 이메일이 없습니다.",
+                        HttpStatus.BAD_REQUEST);
+            }
+        } catch(Exception e) {
+            return new ResponseEntity(
+                    "API 오류",
+                    HttpStatus.MULTI_STATUS);
+        }
+
+    }
+
+
 }

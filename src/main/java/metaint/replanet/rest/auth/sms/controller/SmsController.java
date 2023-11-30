@@ -38,10 +38,13 @@ public class SmsController {
 
     }
 
-    @PostMapping("/users/sms/{smsCode}")
-    public String checkSMS (String smsCode) {
+
+    @PostMapping("/users/smscode")
+    public boolean checkSMS (@RequestBody String smsCode, HttpServletRequest request) {
         log.info(smsCode);
-        return smsCode;
+        String enteredSmsCode = (String) request.getAttribute(smsCode);
+        if (enteredSmsCode == smsCode) {return true;}
+        else {return false;}
     }
 
 }

@@ -2,9 +2,6 @@ server:
   port: 8001
 
 spring:
-  redis:
-    host: localhost
-    port: 8001
   mail:
     host: smtp.gmail.com
     port: 465

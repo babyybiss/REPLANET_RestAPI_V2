@@ -37,7 +37,7 @@ public class Member {
     private String password;
 
     @NotNull
-    @Column(name = "phone")
+    @Column(name = "phone", unique=true)
     private String phone;
 
     @NotNull

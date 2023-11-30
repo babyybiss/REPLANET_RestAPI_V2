@@ -50,4 +50,8 @@ public class MemberService {
 
     }
 
+    public Member findEmailByPhone(String phone) {
+        log.info(phone);
+        return memberRepository.findEmailByPhone(phone);
+    }
 }

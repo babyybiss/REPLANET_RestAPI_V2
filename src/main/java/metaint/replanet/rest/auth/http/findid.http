@@ -1,4 +1,4 @@
-POST http://localhost:8001/auth/find/01046668627
+POST http://localhost:8001/auth/emailfind/01046668627
 Content-Type: application/json
 
 {

@@ -16,4 +16,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     metaint.replanet.rest.pay.entity.Member findByProviderId(String kakaoTokenId);
 
 
+    Member findEmailByPhone(String phone);
 }

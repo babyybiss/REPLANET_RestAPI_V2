@@ -37,8 +37,8 @@ public class ChartController {
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("categoryData", chartService.countAndSumByCampaignCategory());
-        responseMap.put("currentYearData" , chartService.countAndSumByCurrentyear());
-        responseMap.put("previousYearData", chartService.countAndSumByPreviousyear());
+        responseMap.put("currentYearData" , chartService.countAndSumByCurrentYear());
+        responseMap.put("previousYearData", chartService.countAndSumByPreviousYear());
         responseMap.put("donationByTimeData", chartService.selectDonationByTime());
 
         ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);

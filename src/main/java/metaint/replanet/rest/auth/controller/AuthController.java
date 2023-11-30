@@ -9,12 +9,10 @@ import metaint.replanet.rest.auth.dto.TokenDto;
 import metaint.replanet.rest.auth.jwt.CustomUserDetails;
 import metaint.replanet.rest.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RestController
@@ -48,11 +46,5 @@ public class AuthController {
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto requestDto,
                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(authService.login(requestDto));
-    }
-
-    @PostMapping("/kakaologin")
-    public void kakaologin(HttpServletResponse response) {
-        log.info("[/kakaologin] ===============================");
-        log.info("[/kakaologin response] : " + response);
     }
 }

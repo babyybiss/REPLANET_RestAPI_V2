@@ -8,8 +8,10 @@ import metaint.replanet.rest.auth.dto.TokenDto;
 import metaint.replanet.rest.auth.entity.Member;
 
 import metaint.replanet.rest.auth.jwt.TokenProvider;
+import metaint.replanet.rest.auth.repository.AuthOrgRepository;
 import metaint.replanet.rest.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import metaint.replanet.rest.org.entity.Organization;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
     private final AuthenticationManagerBuilder managerBuilder;
     private final MemberRepository memberRepository;
+    private final AuthOrgRepository authOrgRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
@@ -43,7 +46,17 @@ public class AuthService {
             log.info("[signup()] 기부처 가입 진행 ======================");
 
             Member member = requestDto.toOrgMember(passwordEncoder);
-            return MemberResponseDto.of(memberRepository.save(member));
+            Member savedmember = memberRepository.save(member);
+
+            int memberCode = Math.toIntExact(savedmember.getMemberCode());
+            log.info("[signup()] memberCode : " + memberCode);
+
+            Organization organization = Organization.builder()
+                                                    .orgCode(memberCode)
+                                                    .build();
+            authOrgRepository.save(organization);
+
+            return MemberResponseDto.of(savedmember);
 
         }
 

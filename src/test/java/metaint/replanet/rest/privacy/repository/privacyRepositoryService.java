@@ -1,5 +1,6 @@
 package metaint.replanet.rest.privacy.repository;
 
+import metaint.replanet.rest.org.dto.OrgRequestDTO;
 import metaint.replanet.rest.org.entity.Organization;
 import metaint.replanet.rest.org.repository.OrgMemberRepository;
 import metaint.replanet.rest.org.repository.OrgRepository;
@@ -143,6 +144,27 @@ public class privacyRepositoryService {
 
         //then
         Assertions.assertEquals("memberName", memberM.getMemberName());
+        });
+    }
+
+    @Test
+    @DisplayName("org 탈퇴 신청 repository 테스트")
+    void updateOrgWithdrawTest(){
+        //given
+        int orgCode = 9;
+
+        //when
+        Optional<Organization> organizationOptional = orgRepository.findById(orgCode);
+
+        organizationOptional.ifPresent(organization -> {
+            organization = organization.toBuilder()
+                    .withdrawReqDate(new Date())
+                    .withdrawReason("withdrawReason")
+                    .build();
+            orgRepository.save(organization);
+
+        //then
+        Assertions.assertEquals("withdrawReason", organization.getWithdrawReason());
         });
     }
 }

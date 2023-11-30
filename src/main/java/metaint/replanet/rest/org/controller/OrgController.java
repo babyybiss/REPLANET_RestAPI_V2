@@ -55,9 +55,9 @@ public class OrgController {
 
 
     @GetMapping("/orgs")
-    public ResponseEntity<List<Member>> getOrgs() {
+    public ResponseEntity<List<Map<String, Object>>> getOrgs() {
         // 유효성 체크한다고 하면 현재 로그인한 놈의 ROLE_ADMIN인지 확인하는 정도 
-        List<Member> orgList = orgService.getOrgList();
+        List<Map<String, Object>> orgList = orgService.getOrgList();
 
         return new ResponseEntity<>(orgList, HttpStatus.OK);
 
@@ -79,7 +79,7 @@ public class OrgController {
         } else if(verify == 0){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호가 일치하지 않습니다.");
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("처리 중 오류가 발생했습니다.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("비밀번호를 검증하지 못했습니다.");
     }
 
     @PostMapping("orgModify/{memberCode}")
@@ -88,7 +88,6 @@ public class OrgController {
                                                   @RequestPart(value = "memberName") String memberName, @RequestPart(value = "phone") String phone){
 
         log.info("기부처 코드 확인 : " + memberCode);
-
         log.info("기부처 소개 넘어왔는지 확인 : " + orgDescription);
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setMemberId(memberEmail);
@@ -166,7 +165,6 @@ public class OrgController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("처리 중 오류");
             }
         }
-
     }
   
     @PutMapping("/withdrawOrg")
@@ -189,6 +187,27 @@ public class OrgController {
         } else {
             log.error("[/withdrawOrg] 유효한 memberCode가 아닙니다. ====================");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("orgWithdraw/{memberCode}")
+    public ResponseEntity<?> updateOrgWithdraw(@PathVariable int memberCode, @RequestBody String withdrawReason){
+
+        log.info("기부처코드 확인 : " + memberCode);
+        log.info("사유 확인1 : " + withdrawReason);
+        System.out.println("사유 확인2 : " + withdrawReason);
+
+        OrgRequestDTO newRequest = new OrgRequestDTO();
+        newRequest.setOrgCode(memberCode);
+        newRequest.setWithdrawReqDate(new Date());
+        newRequest.setWithdrawReason(withdrawReason);
+
+        try{
+            orgService.updateOrgWithdraw(newRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("탈퇴 신청 완료");
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업데이트 처리 중 오류");
         }
     }
 }

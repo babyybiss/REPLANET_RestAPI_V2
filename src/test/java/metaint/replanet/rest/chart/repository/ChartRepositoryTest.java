@@ -74,7 +74,7 @@ public class ChartRepositoryTest {
     @Test
     public void testSelectCampaignByCurrentyear() {
         //when
-        List<Object[]> countByCurrentyear = chartRepository.countAndSumByCurrentyear();
+        List<Object[]> countByCurrentyear = chartRepository.countAndSumByCurrentYear();
         //then
         Assertions.assertNotNull(countByCurrentyear);
          countByCurrentyear.forEach( row -> {
@@ -89,7 +89,7 @@ public class ChartRepositoryTest {
     @Test
     public void testSelectCampaignByPreviousyear() {
         //when
-        List<Object[]> countByPreviousyear = chartRepository.countAndSumByPreviousyear();
+        List<Object[]> countByPreviousyear = chartRepository.countAndSumByPreviousYear();
         //then
         Assertions.assertNotNull(countByPreviousyear);
         /* countByPreviousyear.forEach(row -> {

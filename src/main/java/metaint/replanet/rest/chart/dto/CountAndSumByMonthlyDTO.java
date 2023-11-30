@@ -1,32 +1,43 @@
 package metaint.replanet.rest.chart.dto;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 public class CountAndSumByMonthlyDTO {
 
-    private String monthly;
-    private int campaigns; // 캠페인 수 카운트
-    private int sumCurrentBudget;
-    private int sumGoalBudget;
-    private int sumExpectBudget;
+    private int fullYear;
+    private int monthly;
+    private int campaigns;
+    private long sumCurrentBudget;
+    private long sumGoalBudget;
+    private long displaySumCurrentBudget;
+    private long sumExpectBudget;
+    private double progress;
 
     public CountAndSumByMonthlyDTO() {
     }
 
-    public CountAndSumByMonthlyDTO(String monthly, int campaigns, int sumCurrentBudget, int sumGoalBudget, int sumExpectBudget) {
+    public CountAndSumByMonthlyDTO(int fullYear, int monthly, int campaigns, long sumCurrentBudget, long sumGoalBudget, long displaySumCurrentBudget, long sumExpectBudget, double progress) {
+        this.fullYear = fullYear;
         this.monthly = monthly;
         this.campaigns = campaigns;
         this.sumCurrentBudget = sumCurrentBudget;
         this.sumGoalBudget = sumGoalBudget;
+        this.displaySumCurrentBudget = displaySumCurrentBudget;
         this.sumExpectBudget = sumExpectBudget;
+        this.progress = progress;
     }
 
-    public String getMonthly() {
+    public int getFullYear() {
+        return fullYear;
+    }
+
+    public void setFullYear(int fullYear) {
+        this.fullYear = fullYear;
+    }
+
+    public int getMonthly() {
         return monthly;
     }
 
-    public void setMonthly(String monthly) {
+    public void setMonthly(int monthly) {
         this.monthly = monthly;
     }
 
@@ -38,38 +49,57 @@ public class CountAndSumByMonthlyDTO {
         this.campaigns = campaigns;
     }
 
-    public int getSumCurrentBudget() {
+    public long getSumCurrentBudget() {
         return sumCurrentBudget;
     }
 
-    public void setSumCurrentBudget(int sumCurrentBudget) {
+    public void setSumCurrentBudget(long sumCurrentBudget) {
         this.sumCurrentBudget = sumCurrentBudget;
     }
 
-    public int getSumGoalBudget() {
+    public long getSumGoalBudget() {
         return sumGoalBudget;
     }
 
-    public void setSumGoalBudget(int sumGoalBudget) {
+    public void setSumGoalBudget(long sumGoalBudget) {
         this.sumGoalBudget = sumGoalBudget;
     }
 
-    public int getSumExpectBudget() {
+    public long getDisplaySumCurrentBudget() {
+        return displaySumCurrentBudget;
+    }
+
+    public void setDisplaySumCurrentBudget(long displaySumCurrentBudget) {
+        this.displaySumCurrentBudget = displaySumCurrentBudget;
+    }
+
+    public long getSumExpectBudget() {
         return sumExpectBudget;
     }
 
-    public void setSumExpectBudget(int sumExpectBudget) {
+    public void setSumExpectBudget(long sumExpectBudget) {
         this.sumExpectBudget = sumExpectBudget;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 
     @Override
     public String toString() {
         return "CountAndSumByMonthlyDTO{" +
-                "monthly='" + monthly + '\'' +
+                "fullYear=" + fullYear +
+                ", monthly=" + monthly +
                 ", campaigns=" + campaigns +
                 ", sumCurrentBudget=" + sumCurrentBudget +
                 ", sumGoalBudget=" + sumGoalBudget +
+                ", displaySumCurrentBudget=" + displaySumCurrentBudget +
                 ", sumExpectBudget=" + sumExpectBudget +
+                ", progress=" + progress +
                 '}';
     }
 }

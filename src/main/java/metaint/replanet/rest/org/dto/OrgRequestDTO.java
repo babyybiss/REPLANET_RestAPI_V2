@@ -10,6 +10,8 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -23,5 +25,6 @@ public class OrgRequestDTO {
     private String fileSavePath;
     private String fileExtension;
     private String orgDescription;
-
+    private Date withdrawReqDate;
+    private String withdrawReason;
 }

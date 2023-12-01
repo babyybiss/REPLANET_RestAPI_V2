@@ -26,8 +26,6 @@ public class OrganizationDTO  {
 
     private String orgDescription;
 
-    private Member memberCode;
-
     private MemberDTO member;
 
 }

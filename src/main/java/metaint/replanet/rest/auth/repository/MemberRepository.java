@@ -13,7 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
 
-    metaint.replanet.rest.pay.entity.Member findByProviderId(String kakaoTokenId);
+    Member findByProviderId(String kakaoTokenId);
 
 
 }

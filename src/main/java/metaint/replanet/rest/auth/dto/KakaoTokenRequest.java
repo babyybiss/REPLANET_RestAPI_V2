@@ -7,8 +7,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class KakaoTokenResponse {
+public class KakaoTokenRequest {
     private String access_token;
-    private String refresh_token;
     private long expires_in;
+    private String refresh_token;
+    private long refresh_token_expires_in;
+    private String scope;
+    private String token_type;
 }

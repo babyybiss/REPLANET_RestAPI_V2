@@ -26,6 +26,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        log.info("[loadUser()] ========================================");
         OAuth2User oAuth2User = super.loadUser(userRequest);
         log.info("getAttributes : {}", oAuth2User.getAttributes());
 
@@ -34,29 +35,17 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         String provider = userRequest.getClientRegistration().getRegistrationId();
 
         if(provider.equals("kakao")) {
-            log.info("카카오 로그인 요청");
-            oAuth2UserInfo = new KakaoUserInfo( (Map)oAuth2User.getAttributes() );
+            log.info("[loadUser()] ===== 카카오 로그인 요청 =====");
+            oAuth2UserInfo = new KakaoUserInfo( oAuth2User.getAttributes() );
         }
 
         String providerId = oAuth2UserInfo.getProviderId();
-
         String email = oAuth2UserInfo.getEmail();
+        log.info("[loadUser() providerId : ] : " + providerId);
+        log.info("[loadUser() email : ] : " + email);
 
+        Member optionalMember = memberRepository.findByProviderId(providerId);
 
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        Member member = null;
-
-        if(optionalMember.isEmpty()) {
-            member = Member.builder()
-                    .provider(provider)
-                    .providerId(providerId)
-                    .memberRole(MemberRole.ROLE_USER)
-                    .build();
-            memberRepository.save(member);
-        } else {
-            member = optionalMember.get();
-        }
-
-        return new PrincipalDetails(member, oAuth2User.getAttributes());
+        return new PrincipalDetails(optionalMember, oAuth2User.getAttributes());
     }
 }

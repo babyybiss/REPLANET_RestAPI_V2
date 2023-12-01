@@ -4,7 +4,12 @@ public class CountAndSumByMonthlyDTO {
 
     private int fullYear;
     private int monthly;
-    private int campaigns;
+    private int allCampaigns;
+    private int childCampaigns;
+    private int olderCampaigns;
+    private int etcCampaigns;
+    private int animalCampaigns;
+    private int natureCampaigns;
     private long sumCurrentBudget;
     private long sumGoalBudget;
     private long displaySumCurrentBudget;
@@ -14,10 +19,15 @@ public class CountAndSumByMonthlyDTO {
     public CountAndSumByMonthlyDTO() {
     }
 
-    public CountAndSumByMonthlyDTO(int fullYear, int monthly, int campaigns, long sumCurrentBudget, long sumGoalBudget, long displaySumCurrentBudget, long sumExpectBudget, double progress) {
+    public CountAndSumByMonthlyDTO(int fullYear, int monthly, int allCampaigns, int childCampaigns, int olderCampaigns, int etcCampaigns, int animalCampaigns, int natureCampaigns, long sumCurrentBudget, long sumGoalBudget, long displaySumCurrentBudget, long sumExpectBudget, double progress) {
         this.fullYear = fullYear;
         this.monthly = monthly;
-        this.campaigns = campaigns;
+        this.allCampaigns = allCampaigns;
+        this.childCampaigns = childCampaigns;
+        this.olderCampaigns = olderCampaigns;
+        this.etcCampaigns = etcCampaigns;
+        this.animalCampaigns = animalCampaigns;
+        this.natureCampaigns = natureCampaigns;
         this.sumCurrentBudget = sumCurrentBudget;
         this.sumGoalBudget = sumGoalBudget;
         this.displaySumCurrentBudget = displaySumCurrentBudget;
@@ -41,12 +51,52 @@ public class CountAndSumByMonthlyDTO {
         this.monthly = monthly;
     }
 
-    public int getCampaigns() {
-        return campaigns;
+    public int getAllCampaigns() {
+        return allCampaigns;
     }
 
-    public void setCampaigns(int campaigns) {
-        this.campaigns = campaigns;
+    public void setAllCampaigns(int allCampaigns) {
+        this.allCampaigns = allCampaigns;
+    }
+
+    public int getChildCampaigns() {
+        return childCampaigns;
+    }
+
+    public void setChildCampaigns(int childCampaigns) {
+        this.childCampaigns = childCampaigns;
+    }
+
+    public int getOlderCampaigns() {
+        return olderCampaigns;
+    }
+
+    public void setOlderCampaigns(int olderCampaigns) {
+        this.olderCampaigns = olderCampaigns;
+    }
+
+    public int getEtcCampaigns() {
+        return etcCampaigns;
+    }
+
+    public void setEtcCampaigns(int etcCampaigns) {
+        this.etcCampaigns = etcCampaigns;
+    }
+
+    public int getAnimalCampaigns() {
+        return animalCampaigns;
+    }
+
+    public void setAnimalCampaigns(int animalCampaigns) {
+        this.animalCampaigns = animalCampaigns;
+    }
+
+    public int getNatureCampaigns() {
+        return natureCampaigns;
+    }
+
+    public void setNatureCampaigns(int natureCampaigns) {
+        this.natureCampaigns = natureCampaigns;
     }
 
     public long getSumCurrentBudget() {
@@ -94,7 +144,12 @@ public class CountAndSumByMonthlyDTO {
         return "CountAndSumByMonthlyDTO{" +
                 "fullYear=" + fullYear +
                 ", monthly=" + monthly +
-                ", campaigns=" + campaigns +
+                ", allCampaigns=" + allCampaigns +
+                ", childCampaigns=" + childCampaigns +
+                ", olderCampaigns=" + olderCampaigns +
+                ", etcCampaigns=" + etcCampaigns +
+                ", animalCampaigns=" + animalCampaigns +
+                ", natureCampaigns=" + natureCampaigns +
                 ", sumCurrentBudget=" + sumCurrentBudget +
                 ", sumGoalBudget=" + sumGoalBudget +
                 ", displaySumCurrentBudget=" + displaySumCurrentBudget +

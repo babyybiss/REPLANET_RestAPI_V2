@@ -22,7 +22,6 @@ public class DonationChartRepositoryTest {
 
         //then
         Assertions.assertNotNull(foundDonationByTime);
-
         /*
         foundDonationByTime.forEach(row -> {
             for(Object col : row) {

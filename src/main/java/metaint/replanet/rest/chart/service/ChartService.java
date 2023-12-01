@@ -25,15 +25,7 @@ public class ChartService {
         this.donationChartRepository = donationChartRepository;
     }
 
-    // 캠페인 수 카운트 조회
-    public int countCampaign() {
-
-        int countResult = (int) chartRepository.count();
-
-        return countResult;
-    }
-
-    // 카테고리별 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    // 카테고리별 캠페인 통계 조회
     public List<CountAndSumByCategoryDTO> countAndSumByCampaignCategory() {
 
         List<Object[]> resultList = chartRepository.countAndSumByCategory();
@@ -62,7 +54,7 @@ public class ChartService {
                 .collect(Collectors.toList());
     }
 
-    // 당해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    // 당해 캠페인 통계 조회
     public List<CountAndSumByMonthlyDTO> countAndSumByCurrentYear() {
         List<Object[]> resultList = chartRepository.countAndSumByCurrentYear();
 
@@ -70,17 +62,27 @@ public class ChartService {
                 .map(row -> {
                     int fullYear = ((Number) row[0]).intValue();
                     int monthly = ((Number) row[1]).intValue();
-                    int campaigns = ((Number) row[2]).intValue();
-                    long sumCurrentBudget = ((Number) row[3]).longValue();
-                    long sumGoalBudget = ((Number) row[4]).longValue();
-                    long displaySumCurrentBudget = ((Number) row[5]).longValue();
-                    long sumExpectBudget = ((Number) row[6]).longValue();
-                    double progress = ((Number) row[7]).doubleValue();
+                    int allCampaigns = ((Number) row[2]).intValue();
+                    int childCampaigns = ((Number) row[3]).intValue();
+                    int olderCampaigns = ((Number) row[4]).intValue();
+                    int etcCampaigns = ((Number) row[5]).intValue();
+                    int animalCampaigns = ((Number) row[6]).intValue();
+                    int natureCampaigns = ((Number) row[7]).intValue();
+                    long sumCurrentBudget = ((Number) row[8]).longValue();
+                    long sumGoalBudget = ((Number) row[9]).longValue();
+                    long displaySumCurrentBudget = ((Number) row[10]).longValue();
+                    long sumExpectBudget = ((Number) row[11]).longValue();
+                    double progress = ((Number) row[12]).doubleValue();
 
                     CountAndSumByMonthlyDTO dto = new CountAndSumByMonthlyDTO();
                     dto.setFullYear(fullYear);
                     dto.setMonthly(monthly);
-                    dto.setCampaigns(campaigns);
+                    dto.setAllCampaigns(allCampaigns);
+                    dto.setChildCampaigns(childCampaigns);
+                    dto.setOlderCampaigns(olderCampaigns);
+                    dto.setEtcCampaigns(etcCampaigns);
+                    dto.setAnimalCampaigns(animalCampaigns);
+                    dto.setNatureCampaigns(natureCampaigns);
                     dto.setSumCurrentBudget(sumCurrentBudget);
                     dto.setSumGoalBudget(sumGoalBudget);
                     dto.setDisplaySumCurrentBudget(displaySumCurrentBudget);
@@ -93,7 +95,7 @@ public class ChartService {
     }
 
 
-    // 전해 캠페인 수 카운트, 현재모금액 합계, 목표모금액 합계 조회
+    // 전해 캠페인 통계 조회
     public List<CountAndSumByMonthlyDTO> countAndSumByPreviousYear() {
         List<Object[]> resultList = chartRepository.countAndSumByPreviousYear();
 
@@ -101,17 +103,27 @@ public class ChartService {
                 .map(row -> {
                     int fullYear = ((Number) row[0]).intValue();
                     int monthly = ((Number) row[1]).intValue();
-                    int campaigns = ((Number) row[2]).intValue();
-                    long sumCurrentBudget = ((Number) row[3]).longValue();
-                    long sumGoalBudget = ((Number) row[4]).longValue();
-                    long displaySumCurrentBudget = ((Number) row[5]).longValue();
-                    long sumExpectBudget = ((Number) row[6]).longValue();
-                    double progress = ((Number) row[7]).doubleValue();
+                    int allCampaigns = ((Number) row[2]).intValue();
+                    int childCampaigns = ((Number) row[3]).intValue();
+                    int olderCampaigns = ((Number) row[4]).intValue();
+                    int etcCampaigns = ((Number) row[5]).intValue();
+                    int animalCampaigns = ((Number) row[6]).intValue();
+                    int natureCampaigns = ((Number) row[7]).intValue();
+                    long sumCurrentBudget = ((Number) row[8]).longValue();
+                    long sumGoalBudget = ((Number) row[9]).longValue();
+                    long displaySumCurrentBudget = ((Number) row[10]).longValue();
+                    long sumExpectBudget = ((Number) row[11]).longValue();
+                    double progress = ((Number) row[12]).doubleValue();
 
                     CountAndSumByMonthlyDTO dto = new CountAndSumByMonthlyDTO();
                     dto.setFullYear(fullYear);
                     dto.setMonthly(monthly);
-                    dto.setCampaigns(campaigns);
+                    dto.setAllCampaigns(allCampaigns);
+                    dto.setChildCampaigns(childCampaigns);
+                    dto.setOlderCampaigns(olderCampaigns);
+                    dto.setEtcCampaigns(etcCampaigns);
+                    dto.setAnimalCampaigns(animalCampaigns);
+                    dto.setNatureCampaigns(natureCampaigns);
                     dto.setSumCurrentBudget(sumCurrentBudget);
                     dto.setSumGoalBudget(sumGoalBudget);
                     dto.setDisplaySumCurrentBudget(displaySumCurrentBudget);

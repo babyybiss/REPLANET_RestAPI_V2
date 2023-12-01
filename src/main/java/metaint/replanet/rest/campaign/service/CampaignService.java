@@ -95,7 +95,21 @@ public class CampaignService {
                 .map(campaignList -> modelMapper.map(campaignList, CampaignDesOrgDTO.class))
                 .collect(Collectors.toList());
     }
-    
+
+    // 기부처별 진행중 캠페인 갯수 조회
+    public int getCampaignCount(int orgCode) {
+        int campaignCount = campaignRepository.getCampaignCount(orgCode);
+        System.out.println(campaignCount+ "갯수");
+        return campaignCount;
+    }
+    // 기부처별 종료된 캠페인 갯수 조회
+    public int getCampaignCountDone(int orgCode) {
+        Integer campaignCount = campaignRepository.getCampaignCountDone(orgCode);
+        if (campaignCount == null){
+            return campaignCount = 0;
+        }
+        return campaignCount;
+    }
     
     // 참여 내역 조회 성공
     public List<ParticipationDTO> findparticipationList(int campaignCode) {
@@ -167,7 +181,6 @@ public class CampaignService {
             Path relativePath = rootPath.resolve(WinPath);
             IMAGE_DIR = String.valueOf(relativePath);
         }
-
 
         try {
             // 파일 정보 가져오기
@@ -318,5 +331,5 @@ public class CampaignService {
     }
 
 
-    
+
 }

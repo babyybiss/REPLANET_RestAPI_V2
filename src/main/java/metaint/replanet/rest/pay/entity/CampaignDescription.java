@@ -1,6 +1,7 @@
 package metaint.replanet.rest.pay.entity;
 
 import lombok.*;
+import metaint.replanet.rest.campaign.entity.Organization;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -30,11 +31,8 @@ public class CampaignDescription {
     private int currentBudget;
     @Column(name = "goal_budget")
     private int goalBudget;
-    @Column(name = "org_name")
-    private String orgName;
-    @Column(name = "org_description")
-    private String orgDescription;
-    @Column(name = "org_tel")
-    private String orgTel;
+    @ManyToOne
+    @JoinColumn(name = "org_code")
+    private Organization organization; // 기부처 코드
 
 }

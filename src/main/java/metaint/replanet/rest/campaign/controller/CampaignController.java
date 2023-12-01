@@ -2,7 +2,6 @@ package metaint.replanet.rest.campaign.controller;
 
 import io.swagger.annotations.ApiOperation;
 import metaint.replanet.rest.campaign.dto.*;
-import metaint.replanet.rest.campaign.entity.Campaign;
 import metaint.replanet.rest.campaign.service.CampaignService;
 import metaint.replanet.rest.common.ResponseMessageDTO;
 import org.modelmapper.ModelMapper;
@@ -16,12 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.time.LocalTime.now;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -86,7 +85,7 @@ public class CampaignController {
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> responseMap = new HashMap<>();
 
-        if (status.equals("ing")) {
+        if (status.equals("ing") || status.equals("no") ) {
             List<CampaignDesOrgDTO> campaign = campaignService.findCampaignByOrg(orgCode);
             responseMap.put("campaignList", campaign);
 
@@ -104,6 +103,25 @@ public class CampaignController {
         return null;
     }
 
+    // 기부처별 캠페인 개수 조회
+    @ApiOperation(value = "캠페인 개수 조회", notes = "캠페인 개수 조회 조회 합니다", tags = {"캠페인 개수 조회 조회"})
+    @GetMapping("orgsCount/{orgCode}")
+    public ResponseEntity<ResponseMessageDTO> getCampaignCount(@PathVariable int orgCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+            int ingCount = campaignService.getCampaignCount(orgCode);
+            responseMap.put("ingCount", ingCount);
+
+            int doneCount = campaignService.getCampaignCountDone(orgCode);
+            responseMap.put("doneCount", doneCount);
+
+            // 성공 메시지
+            ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "개수 조회성공!", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
     // 참여내역 조회
     @ApiOperation(value = "캠페인 참여내역 조회", notes = "참여내역 조회~", tags = {"참여내역 조회"})
     @GetMapping("donations/{campaignCode}")
@@ -113,27 +131,12 @@ public class CampaignController {
         Map<String, Object> responseMap = new HashMap<>();
 
         List<ParticipationDTO> participation = campaignService.findparticipationList(campaignCode);
-        System.out.println(participation + "ㅎㅇ1212");
         responseMap.put("campaign", participation);
 
         ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
 
     }
-
-//    // 카테고리별 & 기간별 캠페인 조회
-//    @GetMapping("/category")
-//    public List<Campaign> findCategoryByCampaignList (@RequestParam String selectedValue){
-//        LocalDateTime currentDate = LocalDateTime.now();
-//
-//        if(selectedValue.equals("latest")){// 최신순 조회
-//
-//        } else if (selectedValue.equals("earliest")) { // 마감순 조회
-//            return campaignService.findCampaignSort(currentDate);
-//        }
-//        return null;
-//    }
-
 
     // 캠페인 등록
     @ApiOperation(value = "캠페인 등록", notes = "캠펜 등록~", tags = {"캠페인 등록"})
@@ -142,16 +145,15 @@ public class CampaignController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> responseMap = new HashMap<>();
-
+        try{
         if (campaign != null && imageFile != null) {
             int campaignCode = campaignService.registCampaign(campaign);
-
             if (campaignCode == -1) {
                 ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "과거로 회기 불가능", responseMap);
                 return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);
             }
             if (campaignCode == -2) {
-                ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "10억 이상은 좀.. ", responseMap);
+                ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "10억 이상 모금은 불가능 합니다.", responseMap);
                 return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);
             }
             campaignService.registImage(imageFile, campaignCode);
@@ -161,6 +163,13 @@ public class CampaignController {
                 ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "사진이 없습니다.", responseMap);
                 return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);
             }
+        }
+        }catch (NumberFormatException e){
+            ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "목표금액이 비었습니다.", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);
+        }catch (DateTimeException e){
+            ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "마감일이 비었습니다.", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);
         }
         ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "등록 완료!", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
@@ -212,13 +221,11 @@ public class CampaignController {
 
         System.out.println(currentBudget);
         if ((currentBudget > 0) || (endDate.isBefore(currentDate))) {
-            System.out.println("모금액 있어서 수정 안됨");
             ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "모금액 있거나 마감일이 지나서 수정 안됩니다.", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);
         } else {
             int result = campaignService.modifyCampaign(campaignDTO, campaignCode, imageFile);
             if (result == -1) {
-                System.out.println("마감일은 현재날짜보다 커야함");
                 ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "과거로 회기 불가능", responseMap);
                 return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);
             }
@@ -229,18 +236,24 @@ public class CampaignController {
             if (imageFile != null) {
                 campaignService.registImage(imageFile, campaignCode);
             }
-            System.out.println("수정됨");
         }
-        ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);
+        ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "성공!", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
 
     // 하루 총 기부금액,횟수 조회
+    @ApiOperation(value = "일일 기부 현황 조회", notes = "일일 기부현황 조회~", tags = {"기부현황"})
     @GetMapping("campaigns/donations/today")
-    public List<TodayDonationsDTO> getTodayDonations() {
-        return campaignService.getTodayDonations();
+    public ResponseEntity<ResponseMessageDTO>  getTodayDonations() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        List<TodayDonationsDTO> todayDonation = campaignService.getTodayDonations();
+        responseMap.put("todayDonation", todayDonation);
+
+        ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "성공!", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
-
-
 }
 

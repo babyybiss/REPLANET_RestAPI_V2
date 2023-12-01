@@ -58,6 +58,17 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
             ,nativeQuery = true)
     List<Campaign> findByOrgCodeDone(int orgCode);
 
+    @Query(value = "SELECT  COUNT(*) AS campaign_count " +
+            "FROM tbl_campaign_description " +
+            "WHERE end_date > NOW() AND org_code = :orgCode " +
+            "GROUP BY org_code ", nativeQuery = true)
+    int getCampaignCount(int orgCode);
+    @Query(value = "SELECT  COUNT(*) AS campaign_count " +
+            "FROM tbl_campaign_description " +
+            "WHERE end_date < NOW() AND org_code = :orgCode " +
+            "GROUP BY org_code ", nativeQuery = true)
+    Integer  getCampaignCountDone(int orgCode);
+
 //    @Query(value = "SELECT *  FROM  tbl_campaign_description d  RIGHT JOIN  tbl_campaign_desc_file cf on d.campaign_code = cf.campaign_code WHERE d.end_date > now() "
 //           ,nativeQuery = true)
 //    List<CampaignAndFile> findByEndDateAfter1(LocalDateTime currentDate);

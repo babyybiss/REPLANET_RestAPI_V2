@@ -34,13 +34,6 @@ public class Campaign {
     private int currentBudget; // 현재 모금액
     @Column(name = "goal_budget")
     private int goalBudget; // 목표 모금액
-//    @Column(name = "org_name")
-//    private String orgName; // 단체명
-//    @Column(name = "org_description")
-//    private String orgDescription; //단체 소개
-//    @Column(name = "org_tel")
-//    private String orgTel; // 단체 연락처
-    //@OneToMany(mappedBy = "campaignCode", cascade = CascadeType.ALL)
     @OneToMany(mappedBy = "campaignCode",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     //private CampaignDescFile campaignDescfile; // 파일 정보
     private List<CampaignDescFile> campaignDescfileList; // 파일 정보

@@ -1,15 +1,18 @@
 package metaint.replanet.rest.auth.service;
 
 import lombok.extern.slf4j.Slf4j;
+import metaint.replanet.rest.auth.dto.MemberDto;
+import metaint.replanet.rest.auth.dto.MemberPwRequestDto;
 import metaint.replanet.rest.auth.dto.MemberResponseDto;
 import metaint.replanet.rest.auth.entity.Member;
+import metaint.replanet.rest.auth.exception.BadRequestException;
 import metaint.replanet.rest.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import metaint.replanet.rest.auth.util.SecurityUtil;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @Slf4j
@@ -49,5 +52,33 @@ public class MemberService {
         return memberRepository.existsByPhone(phone);
 
     }
+
+    public Member findEmailByPhone(String phone) {
+        log.info(phone);
+        return memberRepository.findEmailByPhone(phone);
+    }
+
+    public Member findPhoneByEmail(String email) {
+        log.info(email);
+        return memberRepository.findPhoneByEmail(email);
+    }
+
+
+    public void memberCheck(MemberPwRequestDto requestDto) {
+        Member member = memberRepository.findByEmail(requestDto.getEmail()).get();
+        if (member == null && !member.getPhone().equals(requestDto.getPhone())) {
+            throw new BadRequestException();
+        } else {
+
+        }
+    }
+
+//    @Transactional
+//    public void modifyPassword(MemberDto memberDto) {
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+//        memberRepository.modifyPassword(memberDto);
+//    }
+
 
 }

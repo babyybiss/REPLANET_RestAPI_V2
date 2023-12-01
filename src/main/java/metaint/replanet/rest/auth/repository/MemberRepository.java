@@ -1,5 +1,6 @@
 package metaint.replanet.rest.auth.repository;
 
+import metaint.replanet.rest.auth.dto.MemberDto;
 import metaint.replanet.rest.auth.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,4 +17,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     metaint.replanet.rest.pay.entity.Member findByProviderId(String kakaoTokenId);
 
 
+    Member findEmailByPhone(String phone);
+
+    Member findPhoneByEmail(String email);
+
+//    Member modifyPassword(MemberDto memberDto);
 }

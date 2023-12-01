@@ -73,9 +73,9 @@ public class ReviewService {
 
     public List<CombineReviewDTO> findAllReviews() {
         List<Review> reviewList = reviewRepository.findAllOrderedByReviewCodeDesc();
-       // CampaignDTO campaignDTO = modelMapper.map(reviewList.get(0).getCampaign(), CampaignDTO.class);
+        // CampaignDTO campaignDTO = modelMapper.map(reviewList.get(0).getCampaign(), CampaignDTO.class);
         //log.info("campaign? :" + campaignDTO);
-       // log.info("findAllReviews: " + reviewList.get(0).getCampaign().getOrganization());
+        // log.info("findAllReviews: " + reviewList.get(0).getCampaign().getOrganization());
 
         return reviewList.stream()
                 .map(review -> modelMapper.map(review, CombineReviewDTO.class))
@@ -404,15 +404,13 @@ public class ReviewService {
                 filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React_V2/public/reviewImgs/" + randomFileName + fileExtension;
             } else {
                 // Windows
-                filePath = "C:\\dev\\metaint\\REPLANET_React_V2\\public\\reviewImgs";
+                filePath = "C:\\dev\\metaint\\REPLANET_React_V2\\public\\reviewImgs\\" + randomFileName + fileExtension;
             }
-
-            // Save the file
-            file.transferTo(new File(filePath));
-
             // Respond with the file path or any other relevant information
+            file.transferTo(new File(filePath));
             log.info("File uploaded successfully. Path: " + filePath);
             return fileName;
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Internal Server Error", e);
@@ -432,13 +430,13 @@ public class ReviewService {
     }
 
     public List<CombineReviewDTO> findAllOrgCampaignWithoutReview(Long orgCode) {
-       List<Campaign> campaigns = campaignReviewRepository.findUnassociatedCampaignsByOrgCode(orgCode);
+        List<Campaign> campaigns = campaignReviewRepository.findUnassociatedCampaignsByOrgCode(orgCode);
 
-       log.info("unassociated campaign: orgCode = " + orgCode + "result? : " + campaigns);
+        log.info("unassociated campaign: orgCode = " + orgCode + "result? : " + campaigns);
 
-       return campaigns.stream()
-               .map(campaign -> modelMapper.map(campaign, CombineReviewDTO.class))
-               .collect(Collectors.toList());
+        return campaigns.stream()
+                .map(campaign -> modelMapper.map(campaign, CombineReviewDTO.class))
+                .collect(Collectors.toList());
     }
 
     public List<ReviewCommentDTO> getComments(Long reviewCode) {

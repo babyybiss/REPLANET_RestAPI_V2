@@ -37,7 +37,7 @@ public interface ParticipationRepository extends JpaRepository<Pay, Integer> {
             "p.pay_code, " +
             "p.pay_amount, " +
             "DATE_FORMAT(d.donation_date_time, '%Y-%m-%d') as donation_date, " +
-            "count(*) , " +
+            "COUNT(DISTINCT m.member_name) as member_count, " +
             "sum(p.pay_amount + d.donation_point) " +
             "from " +
             "tbl_pay p " +
@@ -51,7 +51,7 @@ public interface ParticipationRepository extends JpaRepository<Pay, Integer> {
             "tbl_member m " +
             "on d.member_code = m.member_code " +
             "where DATE_FORMAT(d.donation_date_time, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d') " +
-            "GROUP BY p.pay_code"
+            "GROUP BY donation_date "
             ,
             nativeQuery = true)
     List<Object[]>findByTodayDonation();

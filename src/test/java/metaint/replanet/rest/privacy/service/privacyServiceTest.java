@@ -119,4 +119,17 @@ public class privacyServiceTest {
         Assertions.assertDoesNotThrow(() -> orgService.updateOrgWithdraw(orgRequest));
     }
 
+    @Test
+    @DisplayName("user 탈퇴 요청 service 테스트")
+    void deleteUserTest(){
+        //given
+        int memberCode = 1;
+
+        //when
+        int result = privacyService.deleteUser(memberCode);
+
+        //then
+        Assertions.assertEquals(2, result);
+    }
+
 }

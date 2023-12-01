@@ -1,9 +1,7 @@
 package metaint.replanet.rest.auth.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import metaint.replanet.rest.auth.dto.ChangePasswordRequestDto;
-import metaint.replanet.rest.auth.dto.MemberRequestDto;
-import metaint.replanet.rest.auth.dto.MemberResponseDto;
+import metaint.replanet.rest.auth.dto.*;
 import metaint.replanet.rest.auth.entity.Member;
 import metaint.replanet.rest.auth.exception.BadRequestException;
 import metaint.replanet.rest.auth.service.MemberService;
@@ -13,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -82,6 +83,26 @@ public class MemberController {
         return member.getEmail();
 
     }
+
+    @GetMapping("/phonefind/{email}")
+    public String findPhoneByEmail(@PathVariable String email, Model model) {
+        Member member = memberService.findPhoneByEmail(email);
+
+        model.addAttribute("phone", member.getPhone());
+
+        log.info(email);
+        log.info(member.getPhone());
+
+        return member.getPhone();
+
+    }
+
+
+//    @PostMapping("findPw")
+//    public String modifyPassword(MemberDto memberDto) {
+//        memberService.modifyPassword(memberDto);
+//        return "redirect:/auth/login";
+//    }
 
 
 }

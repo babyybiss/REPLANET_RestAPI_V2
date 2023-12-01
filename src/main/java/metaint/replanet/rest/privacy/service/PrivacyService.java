@@ -1,23 +1,32 @@
 package metaint.replanet.rest.privacy.service;
 
 import metaint.replanet.rest.privacy.dto.MemberDTO;
+import metaint.replanet.rest.privacy.entity.Donation;
 import metaint.replanet.rest.privacy.entity.Member;
 import metaint.replanet.rest.privacy.repository.PrivacyRepository;
+import metaint.replanet.rest.privacy.repository.UserDonationRepository;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class PrivacyService {
 
     private StringEncryptor stringEncryptor;
-
     private final PrivacyRepository privacyRepository;
+    private final UserDonationRepository donationRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public PrivacyService(PrivacyRepository privacyRepository, StringEncryptor stringEncryptor){
+    public PrivacyService(PrivacyRepository privacyRepository, StringEncryptor stringEncryptor, UserDonationRepository donationRepository, PasswordEncoder passwordEncoder){
         this.privacyRepository = privacyRepository;
         this.stringEncryptor = stringEncryptor;
+        this.donationRepository = donationRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public String encryptResidentNum(String residentNumber){
@@ -34,9 +43,10 @@ public class PrivacyService {
         System.out.println("updatePrivacy 확인 : " + updatePrivacy);
 
         if(updatePrivacy != null){
-            updatePrivacy = updatePrivacy.privacyStatus(memberDTO.getPrivacyStatus())
+            updatePrivacy = updatePrivacy.toBuilder()
+                    .privacyStatus(memberDTO.getPrivacyStatus())
                     .residentNum(encryptResidentNum(memberDTO.getResidentNum()))
-                    .builder();
+                    .build();
             privacyRepository.save(updatePrivacy);
 
             System.out.println("동의 여부 확인 : " + updatePrivacy.getPrivacyStatus());
@@ -54,9 +64,10 @@ public class PrivacyService {
         System.out.println("updatePrivacy 확인 : " + withdrawPrivacy);
 
         if(withdrawPrivacy != null){
-            withdrawPrivacy = withdrawPrivacy.privacyStatus(memberDTO.getPrivacyStatus())
+            withdrawPrivacy = withdrawPrivacy.toBuilder()
+                    .privacyStatus(memberDTO.getPrivacyStatus())
                     .residentNum(null)
-                    .builder();
+                    .build();
             privacyRepository.save(withdrawPrivacy);
 
             System.out.println("동의 여부 확인 : " + withdrawPrivacy.getPrivacyStatus());
@@ -72,5 +83,61 @@ public class PrivacyService {
         Member memberStatus = privacyRepository.findById(memberCode).get();
         System.out.println("memberStatus 확인 : " + memberStatus);
         return memberStatus.getPrivacyStatus();
+    }
+
+    public int deleteUser(int memberCode) {
+        System.out.println("PrivacyService deleteUser start================");
+        Member memberW = privacyRepository.findById(memberCode).get();
+        if(memberW != null){
+            List<Donation> donations = donationRepository.findByMemberCode(memberCode);
+            System.out.println("회원 탈퇴 시 기부 내역 있는지 확인: " + donations);
+            if(donations.size() > 0){
+                memberW = memberW.toBuilder()
+//                        .password("withdrawal")
+                        .currentPoint(0)
+                        .withdraw('Y')
+                        .withdrawDate(new Date())
+                        .build();
+                try{
+                    privacyRepository.save(memberW);
+                    return 2;
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return 1;
+                }
+            } else {
+                memberW = memberW.toBuilder()
+                        .memberEmail("withdrawal")
+                        .password("withdrawal")
+                        .phone("withdrawal")
+                        .joinDate(null)
+                        .currentPoint(0)
+                        .privacyStatus('N')
+                        .residentNum(null)
+                        .provider("withdrawal")
+                        .providerId("withdrawal")
+                        .withdraw('Y')
+                        .withdrawDate(new Date())
+                        .build();
+                try{
+                    privacyRepository.save(memberW);
+                    return 2;
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int verifyPassword(int memberCode, String password) {
+        System.out.println("PrivacyService verifyPassword start================");
+        Member member = privacyRepository.findById(memberCode).get();
+        if(passwordEncoder.matches(password, member.getPassword())){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

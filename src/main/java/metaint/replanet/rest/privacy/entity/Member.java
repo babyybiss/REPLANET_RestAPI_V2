@@ -1,10 +1,9 @@
 package metaint.replanet.rest.privacy.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.sun.istack.NotNull;
+import lombok.*;
 import metaint.replanet.rest.auth.entity.MemberRole;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,6 +14,7 @@ import java.util.Date;
 @ToString
 @Entity(name = "privacyMember")
 @Table(name = "tbl_member")
+@Builder(toBuilder = true)
 public class Member {
 
     @Id
@@ -42,7 +42,7 @@ public class Member {
     private MemberRole memberRole;
 
     @Column(name = "withdraw")
-    private boolean withdraw;
+    private char withdraw;
 
     @Column(name = "withdraw_date")
     private Date withdrawDate;
@@ -56,17 +56,9 @@ public class Member {
     @Column(name = "resident_num")
     private String residentNum;
 
-    public Member privacyStatus(char val){
-        this.privacyStatus = val;
-        return this;
-    }
+    @Column(name = "provider")
+    private String provider;
 
-    public Member residentNum(String val){
-        this.residentNum = val;
-        return this;
-    }
-
-    public Member builder(){
-        return new Member(memberCode, memberEmail, memberName, password, phone, joinDate, memberRole, withdraw, withdrawDate, currentPoint, privacyStatus, residentNum);
-    }
+    @Column(name = "provider_id")
+    private String providerId;
 }

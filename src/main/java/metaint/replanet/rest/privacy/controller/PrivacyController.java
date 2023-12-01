@@ -52,4 +52,43 @@ public class PrivacyController {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("처리 중 서버 오류 발생");
     }
+
+    @DeleteMapping("users/{memberCode}")
+    public ResponseEntity<?> deleteUser(@PathVariable int memberCode,
+                                        @RequestParam String password){
+
+        log.info("멤버코드 확인 : " + memberCode);
+        log.info("비밀번호 확인 : " + password);
+
+        int verify = privacyService.verifyPassword(memberCode, password);
+
+        if(verify == 1){
+            int result = privacyService.deleteUser(memberCode);
+            if(result == 2){
+                return ResponseEntity.status(HttpStatus.OK).body("탈퇴 처리 완료");
+            } else if(result == 1){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("repository 단계에서 오류 발생");
+            } else if(result == 0){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("service 단계에서 오류 발생");
+            }
+        } else if(verify == 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("WrongPwd");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호를 검증하지 못했습니다.");
+    }
+
+    @GetMapping("users/verifying/{memberCode}")
+    public ResponseEntity<?> verifyUserPwd(@PathVariable int memberCode, @RequestParam(value = "userPwd") String password){
+
+        log.info("기부처코드 확인 : " + memberCode);
+        log.info("비밀번호 확인 : " + password);
+
+        int verify = privacyService.verifyPassword(memberCode, password);
+        if(verify == 1){
+                return ResponseEntity.status(HttpStatus.OK).body("탈퇴 처리 완료");
+        } else if(verify == 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("WrongPwd");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호를 검증하지 못했습니다.");
+    }
 }

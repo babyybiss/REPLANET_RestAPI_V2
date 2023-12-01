@@ -5,6 +5,7 @@ import metaint.replanet.rest.org.entity.Organization;
 import metaint.replanet.rest.org.repository.OrgMemberRepository;
 import metaint.replanet.rest.org.repository.OrgRepository;
 import metaint.replanet.rest.privacy.dto.MemberDTO;
+import metaint.replanet.rest.privacy.entity.Donation;
 import metaint.replanet.rest.privacy.entity.Member;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,9 @@ public class privacyRepositoryService {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private UserDonationRepository donationRepository;
+
     @Test
     @DisplayName("개인정보 제공 동의 repository 테스트")
     void updateMemberPrivacyTest(){
@@ -46,9 +50,10 @@ public class privacyRepositoryService {
 
         //when
         Member memberPrivacy = privacyRepository.findById(member.getMemberCode()).get();
-        memberPrivacy = memberPrivacy.privacyStatus(member.getPrivacyStatus())
+        memberPrivacy = memberPrivacy.toBuilder()
+                .privacyStatus(member.getPrivacyStatus())
                 .residentNum(member.getResidentNum())
-                .builder();
+                .build();
         privacyRepository.save(memberPrivacy);
 
         //then
@@ -166,5 +171,43 @@ public class privacyRepositoryService {
         //then
         Assertions.assertEquals("withdrawReason", organization.getWithdrawReason());
         });
+    }
+
+    @Test
+    @DisplayName("user 탈퇴 요청 repository 테스트")
+    void deleteUserTest(){
+        //given
+        int memberCode = 1;
+
+        //when
+        Member memberW = privacyRepository.findById(memberCode).get();
+
+        if(memberW != null){
+            List<Donation> donations = donationRepository.findByMemberCode(memberCode);
+            if(donations.size() > 0){
+                memberW = memberW.toBuilder()
+                        .memberEmail("withdrawal")
+                        .password("withdrawal")
+                        .phone("withdrawal")
+                        .currentPoint(0)
+                        .privacyStatus('N')
+                        .residentNum("withdrawal")
+                        .provider("withdrawal")
+                        .providerId("withdrawal")
+                        .withdraw('Y')
+                        .withdrawDate(new Date())
+                        .build();
+                privacyRepository.save(memberW);
+            } else {
+                memberW = memberW.toBuilder()
+                        .withdraw('Y')
+                        .withdrawDate(new Date())
+                        .build();
+                privacyRepository.save(memberW);
+            }
+        }
+
+        //then
+        Assertions.assertEquals('Y', memberW.getWithdraw());
     }
 }

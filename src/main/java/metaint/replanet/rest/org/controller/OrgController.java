@@ -191,23 +191,30 @@ public class OrgController {
     }
 
     @PutMapping("orgWithdraw/{memberCode}")
-    public ResponseEntity<?> updateOrgWithdraw(@PathVariable int memberCode, @RequestBody String withdrawReason){
+    public ResponseEntity<?> updateOrgWithdraw(@PathVariable int memberCode, @RequestParam(value = "enterReason") String withdrawReason, @RequestParam(value = "password") String password){
 
         log.info("기부처코드 확인 : " + memberCode);
         log.info("사유 확인1 : " + withdrawReason);
-        System.out.println("사유 확인2 : " + withdrawReason);
+        log.info("비밀번호 확인 : " + password);
 
         OrgRequestDTO newRequest = new OrgRequestDTO();
         newRequest.setOrgCode(memberCode);
         newRequest.setWithdrawReqDate(new Date());
         newRequest.setWithdrawReason(withdrawReason);
 
-        try{
-            orgService.updateOrgWithdraw(newRequest);
-            return ResponseEntity.status(HttpStatus.OK).body("탈퇴 신청 완료");
-        } catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업데이트 처리 중 오류");
+        int verify = orgService.verifyPassword(memberCode, password);
+        log.info("verify는 " + verify);
+        if(verify == 1){
+            try{
+                orgService.updateOrgWithdraw(newRequest);
+                return ResponseEntity.status(HttpStatus.OK).body("탈퇴 신청 완료");
+            } catch (Exception e){
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업데이트 처리 중 오류");
+            }
+        } else if(verify == 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("WrongPwd");
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호를 검증하지 못했습니다.");
     }
 }

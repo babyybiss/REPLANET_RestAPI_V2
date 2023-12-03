@@ -30,33 +30,40 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
-    public MemberResponseDto signup(MemberRequestDto requestDto, String memberRole) {
+    public MemberResponseDto signup(MemberRequestDto requestDto, String memberRole, String kakaoTokenId) {
         log.info("[signup() memberRole] : ", memberRole);
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 
-        if (memberRole == null) {
+        if (memberRole == null && kakaoTokenId == null) {
             log.info("[signup()] 비회원 가입 진행 ======================");
 
             Member member = requestDto.toMember(passwordEncoder);
             return MemberResponseDto.of(memberRepository.save(member));
 
+        } else if (memberRole == null && kakaoTokenId != null){
+            log.info("[signup()] 소셜로그인 비회원 가입 진행 ======================");
+
+            Member member = requestDto.toSocialMember(passwordEncoder, kakaoTokenId);
+
+            return MemberResponseDto.of(memberRepository.save(member));
+
         } else if ("ROLE_ADMIN".equals(memberRole)) {
-            log.info("[signup()] 기부처 가입 진행 ======================");
+                log.info("[signup()] 기부처 가입 진행 ======================");
 
-            Member member = requestDto.toOrgMember(passwordEncoder);
-            Member savedmember = memberRepository.save(member);
+                Member member = requestDto.toOrgMember(passwordEncoder);
+                Member savedmember = memberRepository.save(member);
 
-            int memberCode = Math.toIntExact(savedmember.getMemberCode());
-            log.info("[signup()] memberCode : " + memberCode);
+                int memberCode = Math.toIntExact(savedmember.getMemberCode());
+                log.info("[signup()] memberCode : " + memberCode);
 
-            Organization organization = Organization.builder()
-                                                    .orgCode(memberCode)
-                                                    .build();
-            authOrgRepository.save(organization);
+                Organization organization = Organization.builder()
+                        .orgCode(memberCode)
+                        .build();
+                authOrgRepository.save(organization);
 
-            return MemberResponseDto.of(savedmember);
+                return MemberResponseDto.of(savedmember);
 
         }
 

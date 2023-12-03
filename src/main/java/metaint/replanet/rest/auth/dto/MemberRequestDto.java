@@ -31,6 +31,7 @@ public class MemberRequestDto {
     private String phone;
 
     private String memberRole;
+    private String kakaoTokenId;
 
 
     public Member toMember(PasswordEncoder passwordEncoder) {
@@ -50,6 +51,18 @@ public class MemberRequestDto {
                 .memberName(memberName)
                 .phone(phone)
                 .memberRole(MemberRole.ROLE_ORG)
+                .build();
+    }
+
+    public Member toSocialMember(PasswordEncoder passwordEncoder, String kakaoTokenId) {
+        return Member.builder()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .memberName(memberName)
+                .phone(phone)
+                .memberRole(MemberRole.ROLE_USER)
+                .provider("KAKAO")
+                .providerId(kakaoTokenId)
                 .build();
     }
 

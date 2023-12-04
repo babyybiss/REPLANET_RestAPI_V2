@@ -1,0 +1,6 @@
+POST http://localhost:8001/auth/resetpw/mortalsandothers@gmail.com
+Content-Type: application/json
+
+{
+  "newPassword": "rjwlakdrn12@"
+}

@@ -1,18 +1,26 @@
 package metaint.replanet.rest.auth.service;
 
+import com.twilio.rest.api.v2010.Account;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.dto.MemberDto;
 import metaint.replanet.rest.auth.dto.MemberPwRequestDto;
+import metaint.replanet.rest.auth.dto.MemberPwResponseDto;
 import metaint.replanet.rest.auth.dto.MemberResponseDto;
 import metaint.replanet.rest.auth.entity.Member;
 import metaint.replanet.rest.auth.exception.BadRequestException;
 import metaint.replanet.rest.auth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import metaint.replanet.rest.auth.util.SecurityUtil;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -53,6 +61,11 @@ public class MemberService {
 
     }
 
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+
     public Member findEmailByPhone(String phone) {
         log.info(phone);
         return memberRepository.findEmailByPhone(phone);
@@ -74,11 +87,23 @@ public class MemberService {
     }
 
 //    @Transactional
-//    public void modifyPassword(MemberDto memberDto) {
+//    public void modifyPassword(String email, String password, MemberDto memberDto) {
 //        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 //        memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
-//        memberRepository.modifyPassword(memberDto);
 //    }
 
+    @Transactional
+    public MemberPwResponseDto updatePassword(String email, String newPassword) {
+//      Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+//      member.setPassword(passwordEncoder.encode(newPassword));
+//      memberRepository.save(member);
+
+        System.out.println("aaa" + newPassword);
+        Member member = memberRepository.findByEmail(email).orElseThrow(IllegalArgumentException::new);
+        member.setPassword(passwordEncoder.encode((newPassword)));
+        return MemberPwResponseDto.of(memberRepository.save(member));
+
+
+    }
 
 }

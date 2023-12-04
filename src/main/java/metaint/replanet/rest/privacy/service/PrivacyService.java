@@ -93,6 +93,9 @@ public class PrivacyService {
             System.out.println("회원 탈퇴 시 기부 내역 있는지 확인: " + donations);
             if(donations.size() > 0){
                 memberW = memberW.toBuilder()
+                        .memberEmail("withdrawal")
+                        .provider("withdrawal")
+                        .providerId("withdrawal")
                         .currentPoint(0)
                         .withdraw('Y')
                         .withdrawDate(new Date())

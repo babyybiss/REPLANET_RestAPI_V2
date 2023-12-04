@@ -68,6 +68,7 @@ public class KakaoController {
         log.info("[findMemberByKakaoTokenId] email : " + email);
 
         Member foundMember = memberRepository.findByProviderId(String.valueOf(providerId));
+        Optional<Member> sameEmailMember = memberRepository.findByEmail(email);
 
         if (foundMember != null) {
             log.info("[findMemberByKakaoTokenId] 기존 회원 발견");
@@ -75,13 +76,20 @@ public class KakaoController {
             log.info("[findMemberByKakaoTokenId] 기존 회원 조회: " + foundMember);
             // 여기에 로그인 처리 로직을 추가하면 됩니다.
             return ResponseEntity.ok(Map.of("status", "success", "message", "로그인 성공", "email", email, "providerId", providerId));
+        } else if (sameEmailMember.isPresent()) {
+            log.info("[findMemberByKakaoTokenId] 이미 같은 이메일을 사용하는 사용자가 존재");
+            // 존재하는 이메일을 사용하는 사용자가 있다고 프론트에 응답
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "이미 같은 이메일을 사용하는 사용자가 존재합니다.");
+            response.put("redirectTo", "/login");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } else {
             log.info("[findMemberByKakaoTokenId] 신규 카카오 소셜 로그인 회원");
             // 존재하지 않는 회원이라면 프론트엔드에 응답
             Map<String, Object> response = new HashMap<>();
-            response.put("status", "error");
             response.put("message", "필수 사항을 입력해주세요.");
-            response.put("redirectTo", "/SocialSignUp"); // 프론트에서 필요한 페이지로 리다이렉트
+            response.put("redirectTo", "/SocialSignUp");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }

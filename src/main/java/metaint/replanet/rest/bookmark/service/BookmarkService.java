@@ -1,8 +1,10 @@
 package metaint.replanet.rest.bookmark.service;
 
 import metaint.replanet.rest.bookmark.dto.BookmarkDTO;
+import metaint.replanet.rest.bookmark.dto.BookmarkRegistDTO;
 import metaint.replanet.rest.bookmark.entity.Bookmark;
 import metaint.replanet.rest.bookmark.repository.BookmarkRepository;
+import metaint.replanet.rest.campaign.dto.CampaignDesOrgDTO;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import metaint.replanet.rest.point.entity.Member;
 import org.modelmapper.ModelMapper;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class BookmarkService {
@@ -28,7 +31,7 @@ public class BookmarkService {
 
     // 북마크 등록
     @Transactional
-    public Boolean addBookmark(BookmarkDTO bookmarkDTO) {
+    public Boolean addBookmark(BookmarkRegistDTO bookmarkDTO) {
         int result = 0;
         try {
             Bookmark bookmark = modelMapper.map(bookmarkDTO, Bookmark.class);
@@ -42,12 +45,13 @@ public class BookmarkService {
     }
 
     // 북마크 멤버코드로 조회
-    public List<Bookmark> getBookmarkListByMember(String memberCode) {
+    public List<BookmarkDTO> getBookmarkListByMember(String memberCode) {
         int changeCode = Integer.parseInt(memberCode);
+        List<Bookmark> bookmarkEntity = bookmarkRepository.findByMemberCodeMemberCode(changeCode);
 
-        List<Bookmark> bookmark = bookmarkRepository.findByMemberCodeMemberCode(changeCode);
-
-        return bookmark;
+        return bookmarkEntity.stream()
+                .map(bookmarkList -> modelMapper.map(bookmarkList, BookmarkDTO.class))
+                .collect(Collectors.toList());
     }
 
     // 북마크 삭제
@@ -59,12 +63,10 @@ public class BookmarkService {
         Member member = new Member(mCode);
         CampaignDescription campaignDescription = new CampaignDescription(cCode);
 
-        System.out.println(member + " 멤버" + campaignDescription + "캠펜");
         //int changeCode = Integer.parseInt(memberCode);
         int result = 0;
         try {
             result = bookmarkRepository.deleteByMemberCodeAndCampaignCode(member,campaignDescription);
-            System.out.println(result+ "이게 안되나?");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +79,6 @@ public class BookmarkService {
         int result = 0;
         try {
             result = bookmarkRepository.deleteAllByIds(campaignCode);
-            System.out.println(result+ "이게 안되나?");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import metaint.replanet.rest.campaign.entity.Campaign;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import metaint.replanet.rest.point.entity.Member;
 
@@ -25,13 +26,13 @@ public class Bookmark {
     private Member memberCode;
     @ManyToOne
     @JoinColumn(name = "campaign_code")
-    private CampaignDescription campaignCode;
+    private Campaign campaignCode;
 
     public Bookmark memberCode(Member val){
         this.memberCode = val;
         return this;
     }
-    public Bookmark campaignCode(CampaignDescription val){
+    public Bookmark campaignCode(Campaign val){
         this.campaignCode = val;
         return this;
     }

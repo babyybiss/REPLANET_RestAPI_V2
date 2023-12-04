@@ -16,9 +16,9 @@ public class CampaignDesOrgDTO {
     private int campaignCode; // 모금 코드
     private String campaignTitle; // 모금 제목
     private String campaignContent; // 모금 내용
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate; // 모금 시작 일자
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate; // 모금 마감 일자
     private String campaignCategory; // 모금 카테고리
     private String currentBudget; // 현재 모금액

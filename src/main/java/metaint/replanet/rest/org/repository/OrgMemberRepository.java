@@ -26,6 +26,14 @@ public interface OrgMemberRepository extends JpaRepository<Member, Long> {
     List<Object[]> findAllByMemberRole(MemberRole memberRole);
 
     @Modifying
+    @Query("UPDATE pay_member c " +
+            "SET c.withdraw = 'Y', c.withdrawDate = current_timestamp, " +
+            "c.memberEmail = 'withdrawal', c.password = 'withdrawal', " +
+            "c.phone = 'withdrawal', c.joinDate = null " +
+            "WHERE c.memberCode = :memberCode")
+    int deleteOrgMemberByMemberCode1(Long memberCode);
+
+    @Modifying
     @Query("UPDATE pay_member c SET c.withdraw = 'Y', c.withdrawDate = current_timestamp WHERE c.memberCode = :memberCode")
-    int deleteOrgMemberByMemberCode(Long memberCode);
+    int deleteOrgMemberByMemberCode2(Long memberCode);
 }

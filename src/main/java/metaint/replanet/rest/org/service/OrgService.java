@@ -16,6 +16,7 @@ import metaint.replanet.rest.pay.entity.Member;
 
 import metaint.replanet.rest.privacy.dto.MemberDTO;
 
+import metaint.replanet.rest.privacy.entity.Donation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,8 +44,8 @@ public class OrgService {
 
     private final OrgMemberRepository orgMemberRepository;
 
-
-
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
@@ -173,7 +176,18 @@ public class OrgService {
         log.info("[deleteOrgByMemberCode()] ==================================== " + memberCode);
         log.info("[deleteOrgByMemberCode() memberCode] : " + memberCode);
 
-        int result = orgMemberRepository.deleteOrgMemberByMemberCode(memberCode);
+        //모금내역 존재하는지 확인
+        String sql = "SELECT campaign_code FROM tbl_campaign_description " +
+                "WHERE org_code = ?1 AND current_budget > 0";
+        List donations = entityManager.createNativeQuery(sql).setParameter(1, memberCode).getResultList();
+        log.info("[deleteOrgByMemberCode() donations] : " + donations);
+        int result = 0;
+        if(donations.size() > 0){
+            result = orgMemberRepository.deleteOrgMemberByMemberCode2(memberCode);
+        } else {
+            result = orgMemberRepository.deleteOrgMemberByMemberCode1(memberCode);
+        }
+
         log.info("[deleteOrgByMemberCode() result] : " + result);
 
         return result;

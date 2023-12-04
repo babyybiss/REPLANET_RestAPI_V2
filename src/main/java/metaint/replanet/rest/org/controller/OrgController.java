@@ -107,13 +107,13 @@ public class OrgController {
                 Path rootPath;
                 if (FileSystems.getDefault().getSeparator().equals("/")) {
                     // Unix-like system (MacOS, Linux)
-                    Path filePath1 = Paths.get("/REPLANET_React_V2/public/orgImgs").toAbsolutePath();
+                    Path filePath1 = Paths.get("/REPLANET_React_V2/public/orgImgs/" + memberCode).toAbsolutePath();
                     rootPath = Paths.get("/User").toAbsolutePath();
                     Path relativePath = rootPath.relativize(filePath1);
                     FILE_DIR = String.valueOf(relativePath);
                 } else {
                     // Windows
-                    Path filePath2 = Paths.get("/dev/metaint/REPLANET_React_V2/public/orgImgs").toAbsolutePath();
+                    Path filePath2 = Paths.get("/dev/metaint/REPLANET_React_V2/public/orgImgs/" + memberCode).toAbsolutePath();
                     rootPath = Paths.get("C:\\").toAbsolutePath();
                     Path relativePath = rootPath.resolve(filePath2);
                     FILE_DIR = String.valueOf(relativePath);

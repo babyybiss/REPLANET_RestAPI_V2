@@ -69,7 +69,6 @@ public class CampaignController {
         Map<String, Object> responseMap = new HashMap<>();
 
         CampaignDesOrgDTO campaign = campaignService.findCampaign(campaignCode);
-        System.out.println(campaign + "ㅎㅇ");
         responseMap.put("campaign", campaign);
 
         // 성공 메시지
@@ -219,7 +218,6 @@ public class CampaignController {
         LocalDateTime endDate = campaign.getEndDate();
         LocalDateTime currentDate = LocalDateTime.now();
 
-        System.out.println(currentBudget);
         if ((currentBudget > 0) || (endDate.isBefore(currentDate))) {
             ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.BAD_GATEWAY, "모금액 있거나 마감일이 지나서 수정 안됩니다.", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_GATEWAY);

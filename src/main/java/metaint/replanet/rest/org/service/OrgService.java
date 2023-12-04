@@ -180,7 +180,7 @@ public class OrgService {
         String sql = "SELECT campaign_code FROM tbl_campaign_description " +
                 "WHERE org_code = ?1 AND current_budget > 0";
         List donations = entityManager.createNativeQuery(sql).setParameter(1, memberCode).getResultList();
-        log.info("[deleteOrgByMemberCode() donations] : " + donations);
+
         int result = 0;
         if(donations.size() > 0){
             result = orgMemberRepository.deleteOrgMemberByMemberCode2(memberCode);
@@ -206,5 +206,15 @@ public class OrgService {
         orgRepository.save(organizationW);
 
         System.out.println("org 탈퇴 신청 확인 : " + organizationW);
+    }
+
+    public int checkCampaign(int memberCode) {
+        System.out.println("service 왔습니다~ 진행 중인 캠페인 있는지 확인합시다~");
+
+        String sql = "SELECT campaign_code FROM tbl_campaign_description " +
+                "WHERE org_code = ?1 AND end_date >= current_date";
+        List campaigns = entityManager.createNativeQuery(sql).setParameter(1, memberCode).getResultList();
+
+        return campaigns.size();
     }
 }

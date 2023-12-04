@@ -1,8 +1,7 @@
 package metaint.replanet.rest.campaign.repository;
 
 import metaint.replanet.rest.campaign.entity.Campaign;
-import metaint.replanet.rest.campaign.entity.CampaignDescription;
-import org.hibernate.sql.Select;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,9 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
-
-
-    List<Campaign> findByEndDateAfter(LocalDateTime currentDate);
+    List<Campaign> findByEndDateAfterOrderByEndDate(LocalDateTime currentDate);
 
     List<Campaign> findByEndDateBefore(LocalDateTime currentDate);
 
@@ -68,9 +65,4 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
             "WHERE end_date < NOW() AND org_code = :orgCode " +
             "GROUP BY org_code ", nativeQuery = true)
     Integer  getCampaignCountDone(int orgCode);
-
-//    @Query(value = "SELECT *  FROM  tbl_campaign_description d  RIGHT JOIN  tbl_campaign_desc_file cf on d.campaign_code = cf.campaign_code WHERE d.end_date > now() "
-//           ,nativeQuery = true)
-//    List<CampaignAndFile> findByEndDateAfter1(LocalDateTime currentDate);
-
 }

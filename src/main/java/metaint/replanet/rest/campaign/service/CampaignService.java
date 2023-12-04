@@ -10,6 +10,7 @@ import metaint.replanet.rest.util.FileUploadUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,9 +54,7 @@ public class CampaignService {
     // 전체 진행중 조회
     public List<CampaignDesOrgDTO> findCampaignList() {
         LocalDateTime currentDate = LocalDateTime.now();
-        List<Campaign> campaignEntityList = campaignRepository.findByEndDateAfter(currentDate);
-
-        System.out.println(campaignEntityList + " 이거 화긴");
+        List<Campaign> campaignEntityList = campaignRepository.findByEndDateAfterOrderByEndDate(currentDate);
 
         return campaignEntityList.stream()
                 .map(campaignList -> modelMapper.map(campaignList, CampaignDesOrgDTO.class))
@@ -99,7 +98,6 @@ public class CampaignService {
     // 기부처별 진행중 캠페인 갯수 조회
     public int getCampaignCount(int orgCode) {
         int campaignCount = campaignRepository.getCampaignCount(orgCode);
-        System.out.println(campaignCount+ "갯수");
         return campaignCount;
     }
     // 기부처별 종료된 캠페인 갯수 조회
@@ -211,7 +209,6 @@ public class CampaignService {
 
 //    // 카테고리별 리스트 조회
 //    public List<CampaignAndFile>  findCategoryByCampaignList(String category) {
-//        System.out.println(category + "카테고리 확인 1111");
 //        List<CampaignDescription> findCategoryByCampaignList = campaignRepository.findByCampaignCategory(category);
 //        return findCategoryByCampaignList;
 //    }
@@ -242,6 +239,7 @@ public class CampaignService {
     public int modifyCampaign(RequestCampaignDTO campaignDTO, int campaignCode, MultipartFile imageFile) {
         // 이미지 파일 있음 삭제
         if (imageFile != null) {
+            System.out.println("이게 안되는겨?");
             campaignFileRepository.deleteByCampaignCodeCampaignCode(campaignCode);
         } else {
             int result;
@@ -263,7 +261,6 @@ public class CampaignService {
                 LocalDateTime startDate = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
                 campaignDTO.setStartDate(startDate);
-                System.out.println(startDate + "스타트 데이트");
                 // 마감일 형변환 String =>  LocalDateTime
 //                LocalDateTime endDate = campaignDTO.getEndDate();
 
@@ -291,8 +288,6 @@ public class CampaignService {
                 // 변환된 LocalDateTime을 Entity에 매핑
                 CampaignDescription campaignEntity = modelMapper.map(campaign, CampaignDescription.class);
                 campaignEntity.endDate(endDate).builder();
-                System.out.println(campaign + "아거 확인22좀 ");
-
                 // update를 위한 엔티티 값 수정
                 campaign = campaign.campaignTitle(campaignDTO.getCampaignTitle())
                         .campaignContent(campaignDTO.getCampaignContent())

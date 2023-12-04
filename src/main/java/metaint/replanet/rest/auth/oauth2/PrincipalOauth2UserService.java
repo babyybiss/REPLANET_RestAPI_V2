@@ -45,6 +45,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         log.info("[loadUser() email : ] : " + email);
 
         Member optionalMember = memberRepository.findByProviderId(providerId);
+        log.info("[loadUser() optionalMember.getEmail() : ] : " + optionalMember.getEmail());
 
         return new PrincipalDetails(optionalMember, oAuth2User.getAttributes());
     }

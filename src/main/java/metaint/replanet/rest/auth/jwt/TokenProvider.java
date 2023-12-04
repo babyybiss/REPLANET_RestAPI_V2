@@ -49,11 +49,13 @@ public class TokenProvider {
         String memberCode = userDetails.getMemberCode();
         String memberName = userDetails.getMemberName();
         String email = userDetails.getEmail();
+        String provider = userDetails.getProvider();
         String memberRole = String.valueOf(userDetails.getMemberRole());
 
         log.info("[generateTokenDto() memberCode] : " + memberCode);
         log.info("[generateTokenDto() memberName] : " + memberName);
         log.info("[generateTokenDto() email] : " + email);
+        log.info("[generateTokenDto() provider] : " + provider);
         log.info("[generateTokenDto() memberRole] : " + memberRole);
 
 
@@ -71,6 +73,7 @@ public class TokenProvider {
                 .claim("memberName", memberName)
                 .claim("memberRole", memberRole)
                 .claim("email", email)
+                .claim("provider", provider)
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(tokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)

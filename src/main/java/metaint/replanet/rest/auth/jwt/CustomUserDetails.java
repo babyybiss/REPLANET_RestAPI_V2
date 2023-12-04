@@ -12,17 +12,19 @@ public class CustomUserDetails implements UserDetails {
     private String memberName;
     private String email;
     private String password;
+    private String provider;
     private MemberRole memberRole;  // 추가된 부분
     private Collection<? extends GrantedAuthority> authorities;
 
     // Constructor, getters, and other methods
 
-    public CustomUserDetails(String memberCode, String memberName, String email, String password,
+    public CustomUserDetails(String memberCode, String memberName, String email, String password, String provider,
                              MemberRole memberRole, Collection<? extends GrantedAuthority> authorities) {
         this.memberCode = memberCode;
         this.memberName = memberName;
         this.email = email;
         this.password = password;
+        this.provider = provider;
         this.memberRole = memberRole;
         this.authorities = authorities;
     }
@@ -80,5 +82,8 @@ public class CustomUserDetails implements UserDetails {
 
     public MemberRole getMemberRole() {
         return memberRole;
+    }
+    public String getProvider() {
+        return provider;
     }
 }

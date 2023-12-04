@@ -3,6 +3,7 @@ package metaint.replanet.rest.auth.controller;
 import lombok.extern.slf4j.Slf4j;
 import metaint.replanet.rest.auth.config.OAuth2Config;
 import metaint.replanet.rest.auth.dto.KakaoTokenRequest;
+import metaint.replanet.rest.auth.oauth2.PrincipalDetails;
 import metaint.replanet.rest.auth.oauth2.PrincipalOauth2UserService;
 import metaint.replanet.rest.auth.repository.MemberRepository;
 import metaint.replanet.rest.auth.entity.Member;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -39,32 +42,48 @@ public class KakaoController {
     }
 
     @PostMapping("/findMember")
-    public ResponseEntity<String> findMemberByKakaoTokenId(@RequestBody KakaoTokenRequest request) {
-
-        log.info("[exchangeCodeForToken request] =================================================== ");
-        log.info("[exchangeCodeForToken request] : " + request);
+    public ResponseEntity<Map<String, Object>> findMemberByKakaoTokenId(@RequestBody KakaoTokenRequest request) {
+        log.info("[findMemberByKakaoTokenId request] =================================================== ");
+        log.info("[findMemberByKakaoTokenId request] : " + request);
         String accessToken = request.getAccess_token();
 
         ClientRegistration clientRegistration = oAuth2Config.getKakaoClientRegistration();
 
         OAuth2UserRequest userRequest = new OAuth2UserRequest(
-                clientRegistration, // 여기에 클라이언트 등록 정보가 들어가야 합니다.
+                clientRegistration,
                 new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, accessToken, Instant.now(),
                         Instant.now().plusSeconds(request.getExpires_in()), Collections.emptySet()),
                 Collections.emptyMap()
         );
 
         OAuth2User oAuth2User = principalOauth2UserService.loadUser(userRequest);
-        log.info("[exchangeCodeForToken oAuth2User] : " + oAuth2User.toString());
+        PrincipalDetails principalDetails = (PrincipalDetails) oAuth2User;
 
-        if (false) {
+        Map<String, Object> attributes = principalDetails.getAttributes();
+        log.info("[findMemberByKakaoTokenId] attributes : " + attributes);
+        Long providerId = (Long) attributes.get("id");
+        log.info("[findMemberByKakaoTokenId] providerId : " + providerId);
+        Map<String, Object> kakao_account = (Map<String, Object>) attributes.get("kakao_account");
+        String email = (String) kakao_account.get("email");
+        log.info("[findMemberByKakaoTokenId] email : " + email);
+
+        Member foundMember = memberRepository.findByProviderId(String.valueOf(providerId));
+
+        if (foundMember != null) {
+            log.info("[findMemberByKakaoTokenId] 기존 회원 발견");
             // 이미 존재하는 회원이라면 로그인 처리
-//            Member existingMember = optionalMember.get();
-//            log.info("[exchangeCodeForToken] 기존 회원 조회: " + existingMember.getEmail());
-            return null;
+            log.info("[findMemberByKakaoTokenId] 기존 회원 조회: " + foundMember);
+            // 여기에 로그인 처리 로직을 추가하면 됩니다.
+            return ResponseEntity.ok(Map.of("status", "success", "message", "로그인 성공", "email", email, "providerId", providerId));
         } else {
+            log.info("[findMemberByKakaoTokenId] 신규 카카오 소셜 로그인 회원");
             // 존재하지 않는 회원이라면 프론트엔드에 응답
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("필수 사항을 입력해주세요.");
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", "필수 사항을 입력해주세요.");
+            response.put("redirectTo", "/SocialSignUp"); // 프론트에서 필요한 페이지로 리다이렉트
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
+
 }

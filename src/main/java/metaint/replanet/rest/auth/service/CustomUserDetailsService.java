@@ -33,6 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 member.getMemberName(),
                 member.getEmail(),
                 member.getPassword(),
+                member.getProvider(),
                 member.getMemberRole(),
                 Collections.singleton(grantedAuthority)
         );

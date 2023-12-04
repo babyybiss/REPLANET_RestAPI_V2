@@ -9,14 +9,9 @@ import metaint.replanet.rest.campaign.dto.MemberDTO;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class BookmarkDTO {
+public class BookmarkRegistDTO {
 
     private int bookmarkCode;
-    private MemberDTO memberCode;
-    private CampaignDesOrgDTO campaignCode;
-
-    public BookmarkDTO(MemberDTO memberCode, CampaignDesOrgDTO campaignCode) {
-        this.memberCode = memberCode;
-        this.campaignCode = campaignCode;
-    }
+    private int memberCode;
+    private int campaignCode;
 }

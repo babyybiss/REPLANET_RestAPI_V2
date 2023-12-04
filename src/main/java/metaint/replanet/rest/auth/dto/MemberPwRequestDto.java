@@ -13,14 +13,12 @@ public class MemberPwRequestDto {
 
     private String email;
     private String phone;
-    private String password;
     private String newPassword;
 
     @Builder
-    public MemberPwRequestDto(String email, String phone, String password, String newPassword) {
+    public MemberPwRequestDto(String email, String phone, String newPassword) {
         this.email = email;
         this.phone = phone;
-        this.password = password;
         this.newPassword = newPassword;
     }
 

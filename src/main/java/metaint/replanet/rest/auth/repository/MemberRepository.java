@@ -13,7 +13,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
-
     Member findByProviderId(String kakaoTokenId);
 
 
@@ -21,5 +20,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findPhoneByEmail(String email);
 
-//    Member modifyPassword(MemberDto memberDto);
 }

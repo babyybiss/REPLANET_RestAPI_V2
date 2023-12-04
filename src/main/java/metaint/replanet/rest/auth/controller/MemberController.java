@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -98,11 +99,13 @@ public class MemberController {
     }
 
 
-//    @PostMapping("findPw")
-//    public String modifyPassword(MemberDto memberDto) {
-//        memberService.modifyPassword(memberDto);
-//        return "redirect:/auth/login";
-//    }
+    @PostMapping("/resetpw/{email}")
+    public String modifyPassword(@PathVariable String email, @RequestBody MemberPwResponseDto memberPwResponseDto) {
+        System.out.println("bbb" + email);
+        System.out.println("ccc" + memberPwResponseDto.getNewPassword());
+        memberService.updatePassword(email, memberPwResponseDto.getNewPassword());
+        return "newPassword";
+    }
 
 
 }

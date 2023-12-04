@@ -202,18 +202,25 @@ public class OrgController {
         newRequest.setWithdrawReason(withdrawReason);
 
         int verify = orgService.verifyPassword(memberCode, password);
-        log.info("verify는 " + verify);
-        if(verify == 1){
-            try{
-                orgService.updateOrgWithdraw(newRequest);
-                return ResponseEntity.status(HttpStatus.OK).body("탈퇴 신청 완료");
-            } catch (Exception e){
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업데이트 처리 중 오류");
+
+        int check = orgService.checkCampaign(memberCode);
+        log.info("check는 " + check);
+
+        if(check > 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("campaigns");
+        } else {
+            if(verify == 1){
+                try{
+                    orgService.updateOrgWithdraw(newRequest);
+                    return ResponseEntity.status(HttpStatus.OK).body("탈퇴 신청 완료");
+                } catch (Exception e){
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업데이트 처리 중 오류");
+                }
+            } else if(verify == 0){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("WrongPwd");
             }
-        } else if(verify == 0){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("WrongPwd");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호를 검증하지 못했습니다.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 검증 혹은 진행중인 캠페이 조회 오류.");
     }
 }

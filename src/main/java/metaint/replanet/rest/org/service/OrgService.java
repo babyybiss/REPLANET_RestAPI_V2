@@ -139,8 +139,7 @@ public class OrgService {
         System.out.println("service 왔습니다~ 재단 회원 정보 수정합시다~");
 
         Member memberM = orgMemberRepository.findById((long) memberDTO.getMemberCode()).get();
-        memberM = memberM.toBuilder().memberEmail(memberDTO.getMemberId())
-                                    .password(passwordEncoder.encode(memberDTO.getPassword()))
+        memberM = memberM.toBuilder().password(passwordEncoder.encode(memberDTO.getPassword()))
                                     .memberName(memberDTO.getMemberName())
                                     .phone(memberDTO.getPhone())
                                     .build();

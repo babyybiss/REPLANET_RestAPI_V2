@@ -132,4 +132,20 @@ public class privacyServiceTest {
         Assertions.assertEquals(2, result);
     }
 
+    @Test
+    @DisplayName("user 정보 수정 service 테스트")
+    void modifyUserTest(){
+        //given
+
+        //when
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMemberCode(1);
+        memberDTO.setPassword("password");
+        memberDTO.setPhone("phone");
+        memberDTO.setMemberName("memberName");
+
+        //then
+        Assertions.assertDoesNotThrow(() -> privacyService.modifyUser(memberDTO));
+    }
+
 }

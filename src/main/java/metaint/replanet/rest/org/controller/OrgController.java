@@ -83,14 +83,13 @@ public class OrgController {
     }
 
     @PostMapping("orgModify/{memberCode}")
-    public ResponseEntity<?> updateOrgInformation(@PathVariable int memberCode, @RequestPart(value = "file", required = false)MultipartFile orgImg, @RequestPart(value = "orgDescription") String orgDescription,
-                                                  @RequestPart(value = "memberEmail") String memberEmail, @RequestPart(value = "password") String password,
+    public ResponseEntity<?> updateOrgInformation(@PathVariable int memberCode, @RequestPart(value = "file", required = false)MultipartFile orgImg,
+                                                  @RequestPart(value = "orgDescription") String orgDescription, @RequestPart(value = "password") String password,
                                                   @RequestPart(value = "memberName") String memberName, @RequestPart(value = "phone") String phone){
 
         log.info("기부처 코드 확인 : " + memberCode);
         log.info("기부처 소개 넘어왔는지 확인 : " + orgDescription);
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setMemberId(memberEmail);
         memberDTO.setPassword(password);
         memberDTO.setMemberName(memberName.substring(1, memberName.length()-1));
         memberDTO.setPhone(phone);

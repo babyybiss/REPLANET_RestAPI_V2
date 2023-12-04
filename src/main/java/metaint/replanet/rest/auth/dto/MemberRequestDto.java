@@ -32,6 +32,8 @@ public class MemberRequestDto {
 
     private String memberRole;
     private String kakaoTokenId;
+    private String providerId;
+    private String accessToken;
 
 
     public Member toMember(PasswordEncoder passwordEncoder) {
@@ -68,5 +70,9 @@ public class MemberRequestDto {
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(email, password);
+    }
+
+    public UsernamePasswordAuthenticationToken toSocialAuthentication() {
+        return new UsernamePasswordAuthenticationToken(email, "");
     }
 }

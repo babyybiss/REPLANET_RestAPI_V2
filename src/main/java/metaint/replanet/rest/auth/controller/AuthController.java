@@ -61,8 +61,14 @@ public class AuthController {
 
     @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto requestDto,
-                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto requestDto) {
         return ResponseEntity.ok(authService.login(requestDto));
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
+    @PostMapping("/socialLogin")
+    public ResponseEntity<TokenDto> socailLogin(@RequestBody MemberRequestDto requestDto) {
+        log.info("[/socailLogin socailLogin] ========================================== ");
+        return ResponseEntity.ok(authService.socialLogin(requestDto));
     }
 }

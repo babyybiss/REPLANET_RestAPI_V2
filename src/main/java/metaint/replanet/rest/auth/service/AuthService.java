@@ -15,6 +15,8 @@ import metaint.replanet.rest.org.entity.Organization;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class AuthService {
     private final AuthOrgRepository authOrgRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
 
     public MemberResponseDto signup(MemberRequestDto requestDto, String memberRole, String kakaoTokenId) {
         log.info("[signup() memberRole] : ", memberRole);
@@ -79,4 +82,21 @@ public class AuthService {
         return tokenProvider.generateTokenDto(authentication);
     }
 
+    public TokenDto socialLogin(MemberRequestDto requestDto) {
+        log.info("[socialLogin()] 소셜로그인 진행 ======================");
+        String accessToken = requestDto.getAccessToken();
+        String email = requestDto.getEmail();
+        log.info("[socialLogin() accessToken] : " + accessToken);
+        log.info("[socialLogin() email] : " + email);
+
+        Authentication authentication = authenticateUserWithSocialToken(accessToken, email);
+
+        return tokenProvider.generateTokenDto(authentication);
+    }
+
+    private Authentication authenticateUserWithSocialToken(String accessToken, String email) {
+        log.info("[authenticateUserWithSocialToken()] ===========================");
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
 }

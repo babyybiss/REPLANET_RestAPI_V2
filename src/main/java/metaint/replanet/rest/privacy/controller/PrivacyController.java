@@ -80,7 +80,7 @@ public class PrivacyController {
     @GetMapping("users/verifying/{memberCode}")
     public ResponseEntity<?> verifyUserPwd(@PathVariable int memberCode, @RequestParam(value = "userPwd") String password){
 
-        log.info("기부처코드 확인 : " + memberCode);
+        log.info("멤버코드 확인 : " + memberCode);
         log.info("비밀번호 확인 : " + password);
 
         int verify = privacyService.verifyPassword(memberCode, password);
@@ -90,5 +90,28 @@ public class PrivacyController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("WrongPwd");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호를 검증하지 못했습니다.");
+    }
+
+    @PutMapping("users/{memberCode}")
+    public ResponseEntity<?> modifyUser(@PathVariable int memberCode, @RequestParam(value = "memberName") String memberName,
+                                        @RequestParam(value = "password") String password, @RequestParam(value = "phone") String phone){
+
+        log.info("멤버코드 확인 : " + memberCode);
+        log.info("비밀번호 확인 : " + password);
+        log.info("이름 확인 : " + memberName);
+        log.info("전화번호 확인 : " + phone);
+
+        MemberDTO modified = new MemberDTO();
+        modified.setMemberCode(memberCode);
+        modified.setPassword(password);
+        modified.setPhone(phone);
+        modified.setMemberName(memberName);
+
+        try {
+            privacyService.modifyUser(modified);
+            return ResponseEntity.status(HttpStatus.OK).body("정보 수정 완료");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("service 단계에서 오류 발생");
+        }
     }
 }

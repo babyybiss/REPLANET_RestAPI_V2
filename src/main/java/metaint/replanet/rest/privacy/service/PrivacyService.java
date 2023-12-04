@@ -93,7 +93,7 @@ public class PrivacyService {
             System.out.println("회원 탈퇴 시 기부 내역 있는지 확인: " + donations);
             if(donations.size() > 0){
                 memberW = memberW.toBuilder()
-//                        .password("withdrawal")
+                        .password(passwordEncoder.encode("withdrawal"))
                         .currentPoint(0)
                         .withdraw('Y')
                         .withdrawDate(new Date())
@@ -139,5 +139,16 @@ public class PrivacyService {
         } else {
             return 0;
         }
+    }
+
+    public void modifyUser(MemberDTO memberDTO) {
+        System.out.println("PrivacyService modifyUser start================");
+        Member member = privacyRepository.findById(memberDTO.getMemberCode()).get();
+        member= member.toBuilder()
+                .password(passwordEncoder.encode(memberDTO.getPassword()))
+                .memberName(memberDTO.getMemberName())
+                .phone(memberDTO.getPhone())
+                .build();
+        privacyRepository.save(member);
     }
 }

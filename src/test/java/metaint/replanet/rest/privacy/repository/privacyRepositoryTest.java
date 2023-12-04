@@ -1,6 +1,5 @@
 package metaint.replanet.rest.privacy.repository;
 
-import metaint.replanet.rest.org.dto.OrgRequestDTO;
 import metaint.replanet.rest.org.entity.Organization;
 import metaint.replanet.rest.org.repository.OrgMemberRepository;
 import metaint.replanet.rest.org.repository.OrgRepository;
@@ -11,18 +10,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
 
-import static org.mockito.Mockito.times;
-
 @SpringBootTest
-public class privacyRepositoryService {
+public class privacyRepositoryTest {
 
     @Mock
     private PrivacyRepository privacyRepository;
@@ -209,5 +203,30 @@ public class privacyRepositoryService {
 
         //then
         Assertions.assertEquals('Y', memberW.getWithdraw());
+    }
+
+    @Test
+    @DisplayName("user 정보 수정 service 테스트")
+    void modifyUserTest(){
+        //given
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setMemberCode(1);
+        memberDTO.setPassword("password");
+        memberDTO.setPhone("phone");
+        memberDTO.setMemberName("memberName");
+
+        //when
+        Optional<Member> memberOptional = privacyRepository.findById(memberDTO.getMemberCode());
+        memberOptional.ifPresent(member -> {
+            member = member.toBuilder()
+                    .password(memberDTO.getPassword())
+                    .memberName(memberDTO.getMemberName())
+                    .phone(memberDTO.getPhone())
+                    .build();
+            privacyRepository.save(member);
+
+        //then
+        Assertions.assertEquals(memberDTO.getPassword(), member.getPassword());
+        });
     }
 }

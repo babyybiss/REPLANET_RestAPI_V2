@@ -110,6 +110,7 @@ public class ReviewController {
                                           MultipartFile imageFile) throws IOException {
 
         log.info("(Review Controller) RegistReview : " + reviewDTO);
+        log.info("(Review Controller) reviewDTO.getDescription() : " + reviewDTO.getDescription());
         log.info("(Review Controller) RegistReview Image : " + imageFile);
 
         reviewService.modifyReview(reviewDTO, imageFile);

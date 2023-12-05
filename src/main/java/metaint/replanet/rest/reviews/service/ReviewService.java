@@ -188,6 +188,7 @@ public class ReviewService {
 
         log.info("[ProductService] updateReview Start ===================================");
         log.info("[ProductService] productDTO : " + reviewDTO);
+        log.info("[ProductService] reviewDTO.getDescription() : " + reviewDTO.getDescription());
 
         String replaceFileName = null;
         int result = 0;

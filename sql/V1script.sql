@@ -43,7 +43,6 @@ CREATE TABLE `tbl_campaign_desc_file`
     `file_origin_name`    VARCHAR(255) NOT NULL COMMENT '원본파일명',
     `file_save_name`    VARCHAR(255) NOT NULL COMMENT '저장파일명',
     `file_extension`    VARCHAR(255) NOT NULL COMMENT '파일확장자',
-    `file_origin_path`    VARCHAR(255) NOT NULL COMMENT '원본경로',
     `file_save_path`    VARCHAR(255) NOT NULL COMMENT '저장경로',
     `campaign_code`    INTEGER NOT NULL COMMENT '캠페인코드',
     PRIMARY KEY (`campaign_file_code`),

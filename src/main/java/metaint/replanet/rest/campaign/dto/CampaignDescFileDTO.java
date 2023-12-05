@@ -12,7 +12,6 @@ public class CampaignDescFileDTO {
 
     private int fileCode; // 파일 코드
     private String fileOriginName; // 원본 파일명
-    private String fileOriginPath; // 원본 파일 경로
     private String fileSaveName; // 저장 파일명
     private String fileSavePath; // 저장 경로
     private String fileExtension; // 확장자

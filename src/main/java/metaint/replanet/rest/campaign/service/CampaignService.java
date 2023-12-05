@@ -190,7 +190,7 @@ public class CampaignService {
 
             // 파일 정보 세팅
             campaignFileDTO.setFileOriginName(fileOriginName);
-            campaignFileDTO.setFileOriginPath("얜 필요 없을거가틈");
+            //campaignFileDTO.setFileOriginPath("얜 필요 없을거가틈");
             campaignFileDTO.setFileSaveName(fileSaveName);
             campaignFileDTO.setFileSavePath(IMAGE_URL);
             campaignFileDTO.setFileExtension(fileExtension);

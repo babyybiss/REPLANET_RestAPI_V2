@@ -5,6 +5,7 @@ import metaint.replanet.rest.bookmark.dto.BookmarkRegistDTO;
 import metaint.replanet.rest.bookmark.entity.Bookmark;
 import metaint.replanet.rest.bookmark.repository.BookmarkRepository;
 import metaint.replanet.rest.campaign.dto.CampaignDesOrgDTO;
+import metaint.replanet.rest.campaign.entity.Campaign;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import metaint.replanet.rest.point.entity.Member;
 import org.modelmapper.ModelMapper;
@@ -61,12 +62,12 @@ public class BookmarkService {
         int cCode = Integer.parseInt(campaignCode);
 
         Member member = new Member(mCode);
-        CampaignDescription campaignDescription = new CampaignDescription(cCode);
+        Campaign campaign = new Campaign(cCode);
 
         //int changeCode = Integer.parseInt(memberCode);
         int result = 0;
         try {
-            result = bookmarkRepository.deleteByMemberCodeAndCampaignCode(member,campaignDescription);
+            result = bookmarkRepository.deleteByMemberCodeAndCampaignCode(member,campaign);
         } catch (Exception e) {
             e.printStackTrace();
         }

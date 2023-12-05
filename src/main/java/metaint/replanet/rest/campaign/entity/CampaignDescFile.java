@@ -19,8 +19,8 @@ public class CampaignDescFile {
     private int fileCode; // 파일 코드
     @Column(name = "file_origin_name")
     private String fileOriginName; // 원본 파일명
-    @Column(name = "file_origin_path")
-    private String fileOriginPath; // 원본 파일 경로
+//    @Column(name = "file_origin_path")
+//    private String fileOriginPath; // 원본 파일 경로
     @Column(name = "file_save_name")
     private String fileSaveName; // 저장 파일명
     @Column(name = "file_save_path")
@@ -53,7 +53,7 @@ public class CampaignDescFile {
     }
     public CampaignDescFile builder(){
         return new CampaignDescFile(
-                fileCode,fileOriginName,fileOriginPath,fileSaveName,
+                fileCode,fileOriginName,fileSaveName,
                 fileSavePath,fileExtension,campaignCode);
     }
 

@@ -36,7 +36,8 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
             "left outer join " +
             "tbl_member m " +
             "on o.org_code = m.member_code " +
-            "WHERE d.end_date > now() AND o.org_code = :orgCode "
+            "WHERE d.end_date > now() AND o.org_code = :orgCode " +
+            "ORDER BY d.end_date "
     ,nativeQuery = true)
     List<Campaign> findByOrgCode(int orgCode);
 
@@ -65,4 +66,5 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
             "WHERE end_date < NOW() AND org_code = :orgCode " +
             "GROUP BY org_code ", nativeQuery = true)
     Integer  getCampaignCountDone(int orgCode);
+
 }

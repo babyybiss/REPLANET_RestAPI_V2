@@ -1,6 +1,7 @@
 package metaint.replanet.rest.bookmark.repository;
 
 import metaint.replanet.rest.bookmark.entity.Bookmark;
+import metaint.replanet.rest.campaign.entity.Campaign;
 import metaint.replanet.rest.campaign.entity.CampaignDescription;
 import metaint.replanet.rest.point.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface BookmarkRepository extends JpaRepository<Bookmark, Integer> {
     List<Bookmark> findByMemberCodeMemberCode(int changeCode);
 
-    int deleteByMemberCodeAndCampaignCode(Member memberCode, CampaignDescription campaignCode);
+    int deleteByMemberCodeAndCampaignCode(Member memberCode, Campaign campaignCode);
     @Modifying
     @Query(value = "DELETE FROM tbl_bookmark b WHERE b.bookmark_code in :campaignCode", nativeQuery = true)
     int deleteAllByIds(@Param("campaignCode") List<Integer> campaignCode);

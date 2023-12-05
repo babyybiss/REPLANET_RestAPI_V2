@@ -34,16 +34,19 @@ public class Campaign {
     private int currentBudget; // 현재 모금액
     @Column(name = "goal_budget")
     private int goalBudget; // 목표 모금액
-    @OneToMany(mappedBy = "campaignCode",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    //private CampaignDescFile campaignDescfile; // 파일 정보
+    @OneToMany(mappedBy = "campaignCode",fetch = FetchType.LAZY,/*fetch = FetchType.EAGER, */cascade = CascadeType.ALL)
     private List<CampaignDescFile> campaignDescfileList; // 파일 정보
     @ManyToOne
     @JoinColumn(name = "org_code")
     private Organization organization; // 기부처 코드
 
-
-
     protected Campaign() {}
+
+    public Campaign(int campaignCode) {
+
+        this.campaignCode = campaignCode;
+    }
+
     public Campaign campaignTitle(String val){
         this.campaignTitle = val;
         return this;
@@ -64,18 +67,6 @@ public class Campaign {
         this.goalBudget = val;
         return this;
     }
-//    public CampaignAndFile orgName(String val){
-//        this.orgName = val;
-//        return this;
-//    }
-//    public CampaignAndFile orgDescription(String val){
-//        this.orgDescription = val;
-//        return this;
-//    }
-//    public CampaignAndFile orgTel(String val){
-//        this.orgTel = val;
-//        return this;
-//    }
         public Campaign campaignDescfileList(List<CampaignDescFile> val){
         this.campaignDescfileList = val;
         return this;

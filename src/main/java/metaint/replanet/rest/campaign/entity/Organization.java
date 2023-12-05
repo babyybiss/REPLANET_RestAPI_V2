@@ -26,10 +26,9 @@ public class Organization {
     private String fileExtension;       // 확장자
     @Column(name = "org_description")
     private String orgDescription;      // 기부처 한줄소개
-
     @OneToOne
     @JoinColumn(name = "org_code")
-    private Member member;
+    private Member member;              // 멤버 코드
 
     @Override
     public String toString() {

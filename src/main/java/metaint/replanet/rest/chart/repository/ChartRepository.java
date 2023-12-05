@@ -74,7 +74,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
             "SUM(d.current_budget) AS sum_current_budget, " +
             "SUM(d.goal_budget) AS sum_goal_budget " +
             "FROM tbl_campaign_description d " +
-            "GROUP BY monthly HAVING full_year = 2023 " +
+            "GROUP BY full_year, monthly HAVING full_year = 2023 " +
             ") AS sub1 " +
             ") AS sub2 " +
             "ORDER BY monthly"
@@ -119,7 +119,7 @@ public interface ChartRepository extends JpaRepository<CampaignDescription, Inte
             "SUM(d.current_budget) AS sum_current_budget, " +
             "SUM(d.goal_budget) AS sum_goal_budget " +
             "FROM tbl_campaign_description d " +
-            "GROUP BY monthly HAVING full_year = 2022 " +
+            "GROUP BY full_year, monthly HAVING full_year = 2022 " +
             ") AS sub1 " +
             ") AS sub2 " +
             "ORDER BY monthly"

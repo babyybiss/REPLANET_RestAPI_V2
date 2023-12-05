@@ -43,7 +43,7 @@ public class TokenProvider {
 
 
     // 토큰 생성
-    public TokenDto generateTokenDto(Authentication authentication) {
+    public TokenDto generateTokenDto(Authentication authentication, boolean firstLogin) {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String memberCode = userDetails.getMemberCode();
@@ -83,6 +83,7 @@ public class TokenProvider {
                 .grantType(BEARER_TYPE)
                 .accessToken(accessToken)
                 .tokenExpiresIn(tokenExpiresIn.getTime())
+                .firstLogin(firstLogin? "firstLogin" : null)
                 .build();
     }
 

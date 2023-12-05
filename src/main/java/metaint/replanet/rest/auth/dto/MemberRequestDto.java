@@ -50,6 +50,7 @@ public class MemberRequestDto {
         return Member.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
+                .tempPwd(passwordEncoder.encode(password))
                 .memberName(memberName)
                 .phone(phone)
                 .memberRole(MemberRole.ROLE_ORG)

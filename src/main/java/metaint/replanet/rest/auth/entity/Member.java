@@ -72,9 +72,13 @@ public class Member {
     @Column(name = "provider_id")
     private String providerId;
 
+    @ColumnDefault("null")
+    @Column(name = "temp_pwd")
+    private String tempPwd;
+
     @Builder
     public Member(Long memberCode, String email, String memberName, String password, String phone, Date joinDate, MemberRole memberRole, String withdraw, Date withdrawDate, int currentPoint,
-                  String provider, String providerId) {
+                  String provider, String providerId, String tempPwd) {
         this.memberCode = memberCode;
         this.email = email;
         this.memberName = memberName;
@@ -87,6 +91,7 @@ public class Member {
         this.currentPoint = currentPoint;
         this.provider = provider;
         this.providerId = providerId;
+        this.tempPwd = tempPwd;
     }
 
     public Member(String email, String memberName, MemberRole memberRole) {
@@ -99,5 +104,7 @@ public class Member {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void setTempPwd(String tempPwd){ this.tempPwd = tempPwd; }
 
 }

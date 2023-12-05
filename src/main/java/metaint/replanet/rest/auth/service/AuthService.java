@@ -7,6 +7,7 @@ import metaint.replanet.rest.auth.dto.TokenDto;
 
 import metaint.replanet.rest.auth.entity.Member;
 
+import metaint.replanet.rest.auth.entity.MemberRole;
 import metaint.replanet.rest.auth.jwt.TokenProvider;
 import metaint.replanet.rest.auth.repository.AuthOrgRepository;
 import metaint.replanet.rest.auth.repository.MemberRepository;
@@ -75,11 +76,26 @@ public class AuthService {
     }
 
     public TokenDto login(MemberRequestDto requestDto) {
-        UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+        Member member = memberRepository.findByEmail(requestDto.getEmail()).get();
 
-        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+        if(passwordEncoder.matches(requestDto.getPassword(), member.getTempPwd())){
+            UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
 
-        return tokenProvider.generateTokenDto(authentication);
+            Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+
+            member.setTempPwd(null);
+
+            memberRepository.save(member);
+
+            return tokenProvider.generateTokenDto(authentication, true);
+        } else {
+
+            UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+
+            Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+
+            return tokenProvider.generateTokenDto(authentication, false);
+        }
     }
 
     public TokenDto socialLogin(MemberRequestDto requestDto) {
@@ -91,7 +107,7 @@ public class AuthService {
 
         Authentication authentication = authenticateUserWithSocialToken(accessToken, email);
 
-        return tokenProvider.generateTokenDto(authentication);
+        return tokenProvider.generateTokenDto(authentication, false);
     }
 
     private Authentication authenticateUserWithSocialToken(String accessToken, String email) {

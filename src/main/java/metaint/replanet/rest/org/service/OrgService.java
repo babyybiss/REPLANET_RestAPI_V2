@@ -182,13 +182,17 @@ public class OrgService {
         List donations = entityManager.createNativeQuery(sql).setParameter(1, memberCode).getResultList();
 
         int result = 0;
+        int OrgResult = 0;
         if(donations.size() > 0){
             result = orgMemberRepository.deleteOrgMemberByMemberCode2(memberCode);
+            OrgResult = orgRepository.updateFileDataByOrgCode(Math.toIntExact(memberCode));
         } else {
             result = orgMemberRepository.deleteOrgMemberByMemberCode1(memberCode);
+            OrgResult = orgRepository.updateFileDataByOrgCode(Math.toIntExact(memberCode));
         }
 
         log.info("[deleteOrgByMemberCode() result] : " + result);
+        log.info("[deleteOrgByMemberCode() OrgResult] : " + OrgResult);
 
         return result;
   }

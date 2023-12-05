@@ -23,10 +23,10 @@ public class Campaign {
     @Column(name = "campaign_content")
     private String campaignContent; // 모금 내용
     @Column(name = "start_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startDate; // 모금 시작 일자
     @Column(name = "end_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate; // 모금 마감 일자
     @Column(name = "campaign_category")
     private String campaignCategory; // 모금 카테고리
@@ -34,7 +34,7 @@ public class Campaign {
     private int currentBudget; // 현재 모금액
     @Column(name = "goal_budget")
     private int goalBudget; // 목표 모금액
-    @OneToMany(mappedBy = "campaignCode",fetch = FetchType.LAZY,/*fetch = FetchType.EAGER, */cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "campaignCode",fetch = FetchType.LAZY,cascade = CascadeType.ALL /*fetch = FetchType.EAGER, */)
     private List<CampaignDescFile> campaignDescfileList; // 파일 정보
     @ManyToOne
     @JoinColumn(name = "org_code")

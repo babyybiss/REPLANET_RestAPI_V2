@@ -150,6 +150,7 @@ public class CampaignService {
         CampaignDescription campaignEntity = modelMapper.map(campaign, CampaignDescription.class);
 
         campaignEntity.endDate(endDate).builder();
+
         campaignDescRepository.save(campaignEntity);
 
         return campaignEntity.getCampaignCode();

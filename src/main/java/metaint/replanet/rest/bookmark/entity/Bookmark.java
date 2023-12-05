@@ -24,7 +24,7 @@ public class Bookmark {
     @ManyToOne
     @JoinColumn(name = "member_code")
     private Member memberCode;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "campaign_code")
     private Campaign campaignCode;
 

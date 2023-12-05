@@ -2,6 +2,7 @@ package metaint.replanet.rest.org.repository;
 
 import metaint.replanet.rest.org.entity.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +21,13 @@ public interface OrgRepository extends JpaRepository<Organization,Integer> {
             "WHERE m.member_code = :memberCode"
     , nativeQuery = true)
     List<Object[]> selectOrgInformation(int memberCode);
+
+    @Query(value = "UPDATE Organization " +
+                    "SET fileOriginName = 'withdrawal', " +
+                        "fileSaveName = 'withdrawal', " +
+                        "fileSavePath = 'withdrawal', " +
+                        "fileExtension = 'withdrawal' " +
+                        "WHERE orgCode = :orgCode")
+    @Modifying
+    int updateFileDataByOrgCode(int orgCode);
 }

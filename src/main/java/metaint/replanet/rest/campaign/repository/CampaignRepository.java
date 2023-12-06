@@ -4,15 +4,18 @@ import metaint.replanet.rest.campaign.entity.Campaign;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.QueryHint;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     List<Campaign> findByEndDateAfterOrderByEndDate(LocalDateTime currentDate);
-
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     List<Campaign> findByEndDateBefore(LocalDateTime currentDate);
 
     @Query(value = "SELECT * " +
@@ -24,7 +27,7 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
     List<Campaign> findCampaignSort(LocalDateTime currentDate);
     List<Campaign> findByCampaignCode(int campaignCode);
     void deleteByCampaignCode(int campaignCode);
-
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     @Query(value = "SELECT *  FROM " +
             "tbl_campaign_description d " +
             "left outer join " +
@@ -40,7 +43,7 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
             "ORDER BY d.end_date "
     ,nativeQuery = true)
     List<Campaign> findByOrgCode(int orgCode);
-
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     @Query(value = "SELECT *  FROM " +
             "tbl_campaign_description d " +
             "left outer join " +

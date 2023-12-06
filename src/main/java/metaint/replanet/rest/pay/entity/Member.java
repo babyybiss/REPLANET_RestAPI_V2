@@ -32,7 +32,7 @@ public class Member {
     @Column(name = "member_role")
     private MemberRole memberRole;
     @Column(name = "withdraw")
-    private boolean withdraw;
+    private String withdraw;
     @Column(name = "withdraw_date")
     private Date withdrawDate;
     @Column(name = "current_point")

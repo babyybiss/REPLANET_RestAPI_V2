@@ -18,4 +18,5 @@ public class TokenDto {
     private String accessToken;
     private Long tokenExpiresIn;
     private String firstLogin;
+    private String message;
 }

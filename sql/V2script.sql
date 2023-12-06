@@ -110,7 +110,7 @@ CREATE TABLE `tbl_member`
     `phone`    VARCHAR(255) NOT NULL COMMENT '휴대폰번호',
     `join_date`    DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '가입일자',
     `member_role`    VARCHAR(255) DEFAULT 'ROLE_USER' NOT NULL COMMENT '유저권한',
-    `withdraw`    CHAR DEFAULT 'N' NOT NULL COMMENT '탈퇴여부',
+    `withdraw`    VARCHAR(1) DEFAULT 'N' NOT NULL COMMENT '탈퇴여부',
     `withdraw_date`    DATETIME DEFAULT NULL COMMENT '탈퇴일자',
     `current_point`    INTEGER DEFAULT 0 NOT NULL COMMENT '보유포인트',
     `privacy_status`    CHAR DEFAULT 'N' NOT NULL COMMENT '개인정보동의여부',

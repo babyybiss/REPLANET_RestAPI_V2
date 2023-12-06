@@ -34,6 +34,7 @@ public class MemberRequestDto {
     private String kakaoTokenId;
     private String providerId;
     private String accessToken;
+    private String withdraw;
 
 
     public Member toMember(PasswordEncoder passwordEncoder) {

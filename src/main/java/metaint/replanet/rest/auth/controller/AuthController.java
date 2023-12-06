@@ -9,6 +9,7 @@ import metaint.replanet.rest.auth.dto.TokenDto;
 import metaint.replanet.rest.auth.jwt.CustomUserDetails;
 import metaint.replanet.rest.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,19 @@ public class AuthController {
     @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto requestDto) {
-        return ResponseEntity.ok(authService.login(requestDto));
+        log.info("[/login] 로그인 요청 =========================");
+        TokenDto tokenDto = authService.login(requestDto);
+        log.info("[/login tokenDto] : " + tokenDto.getMessage());
+
+        if (tokenDto != null) {
+            if (tokenDto.getMessage() != null && !tokenDto.getMessage().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(tokenDto);
+            } else {
+                return ResponseEntity.ok(tokenDto);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 
     @CrossOrigin(origins = "http://localhost:3000", exposedHeaders = "Authorization")

@@ -18,7 +18,7 @@ public class MemberDTO {
     private String phone;
     private Date joinDate;
     private String memberRole;
-    private char withdraw;
+    private String withdraw;
     private Date withdrawDate;
     private int currentPoint;
     private char privacyStatus;

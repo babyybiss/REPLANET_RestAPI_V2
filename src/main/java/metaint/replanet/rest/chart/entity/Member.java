@@ -24,7 +24,7 @@ public class Member {
     @Column(name = "member_role")
     private String memberRole;
     @Column(name = "withdraw")
-    private boolean withdraw;
+    private String withdraw;
     @Column(name = "withdraw_date")
     private LocalDateTime withdrawDate;
     @Column(name = "current_point")
@@ -32,7 +32,7 @@ public class Member {
 
     protected Member() {}
 
-    public Member(int memberCode, String memberEmail, String memberName, String password, String phone, LocalDateTime joinDate, String memberRole, boolean withdraw, LocalDateTime withdrawDate, int currentPoint) {
+    public Member(int memberCode, String memberEmail, String memberName, String password, String phone, LocalDateTime joinDate, String memberRole, String withdraw, LocalDateTime withdrawDate, int currentPoint) {
         this.memberCode = memberCode;
         this.memberEmail = memberEmail;
         this.memberName = memberName;
@@ -73,7 +73,7 @@ public class Member {
         return memberRole;
     }
 
-    public boolean isWithdraw() {
+    public String isWithdraw() {
         return withdraw;
     }
 

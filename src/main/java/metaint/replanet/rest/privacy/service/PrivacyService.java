@@ -97,7 +97,7 @@ public class PrivacyService {
                         .provider("withdrawal")
                         .providerId("withdrawal")
                         .currentPoint(0)
-                        .withdraw('Y')
+                        .withdraw("Y")
                         .withdrawDate(new Date())
                         .build();
                 try{
@@ -118,7 +118,7 @@ public class PrivacyService {
                         .residentNum(null)
                         .provider("withdrawal")
                         .providerId("withdrawal")
-                        .withdraw('Y')
+                        .withdraw("Y")
                         .withdrawDate(new Date())
                         .build();
                 try{

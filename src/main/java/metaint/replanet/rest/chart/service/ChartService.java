@@ -9,6 +9,10 @@ import metaint.replanet.rest.chart.repository.DonationChartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -141,24 +145,39 @@ public class ChartService {
     public List<DonationByTimeDTO> selectDonationByTime() {
         List<Object[]> resultList = donationChartRepository.donateByTime();
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         return resultList.stream()
                 .map(row -> {
-                    int campaignCode = ((Number) row[0]).intValue();
-                    Date donationDate = (Date) row[1];
-                    long donationPoint = ((Number) row[2]).longValue();
-                    long payAmount = ((Number) row[3]).longValue();
-                    long donationAmount = ((Number) row[4]).longValue();
-                    String campaignCategory = (String) row[5];
+                    String donationDateString = (String) row[0];
+                    long donationPoint = ((Number) row[1]).longValue();
+                    long payAmount = ((Number) row[2]).longValue();
+                    long donationAmount = ((Number) row[3]).longValue();
+
+                    /*
+                    LocalDateTime donationDate = LocalDateTime.parse(donationDateString, formatter);
+                    */
+                    Date donationDate = stringToDate(donationDateString);
 
                     DonationByTimeDTO dto = new DonationByTimeDTO();
-                    dto.setCampaignCode(campaignCode);
                     dto.setDonationDate(donationDate);
                     dto.setDonationPoint(donationPoint);
                     dto.setPayAmount(payAmount);
                     dto.setDonationAmount(donationAmount);
-                    dto.setCampaignCategory(campaignCategory);
                     return dto;
                 })
                 .collect(Collectors.toList());
     }
+
+
+    private Date stringToDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

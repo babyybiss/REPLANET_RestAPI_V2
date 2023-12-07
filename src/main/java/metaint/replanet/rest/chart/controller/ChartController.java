@@ -28,17 +28,43 @@ public class ChartController {
         this.chartService = chartService;
     }
 
-    @ApiOperation(value = "통계 조회 요청", notes = "현재 등록된 캠페인을 기준으로 통계를 조회합니다.", tags = {"통계 리스트 조회"})
-    @GetMapping("/series")
-    public ResponseEntity<ResponseMessageDTO> selectChartResult() {
+    @ApiOperation(value = "통계 조회 요청", notes = "현재 등록된 캠페인의 카테고리를 기준으로한 데이터 통계를 조회합니다.", tags = {"통계 리스트 조회"})
+    @GetMapping("/series/byCategory")
+    public ResponseEntity<ResponseMessageDTO> selectCategoryDataResult() {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("categoryData", chartService.countAndSumByCampaignCategory());
+        ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);
+
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "통계 조회 요청", notes = "현재 등록된 캠페인의 당해를 기준으로한 데이터 통계를 조회합니다.", tags = {"통계 리스트 조회"})
+    @GetMapping("/series/byCurrentYear")
+    public ResponseEntity<ResponseMessageDTO> selectCurrentYearDataResult() {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("currentYearData" , chartService.countAndSumByCurrentYear());
-        responseMap.put("previousYearData", chartService.countAndSumByPreviousYear());
+
+        ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);
+
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "통계 조회 요청", notes = "현재 등록된 캠페인의 월 및 시간을 기준으로한 데이터 통계를 조회합니다.", tags = {"통계 리스트 조회"})
+    @GetMapping("/series/byDonationTime")
+    public ResponseEntity<ResponseMessageDTO> selectDonationDataResult() {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+
+        Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("donationByTimeData", chartService.selectDonationByTime());
 
         ResponseMessageDTO responseMessage = new ResponseMessageDTO(HttpStatus.OK, "조회성공!", responseMap);

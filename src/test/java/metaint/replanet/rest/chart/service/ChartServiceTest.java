@@ -52,6 +52,6 @@ public class ChartServiceTest {
         List<DonationByTimeDTO> resultList = chartService.selectDonationByTime();
         //then
         Assertions.assertNotNull(resultList);
-        // resultList.forEach(System.out::println);
+        resultList.forEach(System.out::println);
     }
 }

@@ -1,34 +1,24 @@
 package metaint.replanet.rest.chart.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class DonationByTimeDTO {
 
-    private int campaignCode;
     private Date donationDate;
     private long donationPoint;
     private long payAmount;
     private long donationAmount; // 사용포인트 + 결제금액
-    private String campaignCategory;
 
     public DonationByTimeDTO() {
+
     }
 
-    public DonationByTimeDTO(int campaignCode, Date donationDate, long donationPoint, long payAmount, long donationAmount, String campaignCategory) {
-        this.campaignCode = campaignCode;
+    public DonationByTimeDTO(Date donationDate, long donationPoint, long payAmount, long donationAmount) {
         this.donationDate = donationDate;
         this.donationPoint = donationPoint;
         this.payAmount = payAmount;
         this.donationAmount = donationAmount;
-        this.campaignCategory = campaignCategory;
-    }
-
-    public int getCampaignCode() {
-        return campaignCode;
-    }
-
-    public void setCampaignCode(int campaignCode) {
-        this.campaignCode = campaignCode;
     }
 
     public Date getDonationDate() {
@@ -63,23 +53,13 @@ public class DonationByTimeDTO {
         this.donationAmount = donationAmount;
     }
 
-    public String getCampaignCategory() {
-        return campaignCategory;
-    }
-
-    public void setCampaignCategory(String campaignCategory) {
-        this.campaignCategory = campaignCategory;
-    }
-
     @Override
     public String toString() {
         return "DonationByTimeDTO{" +
-                "campaignCode=" + campaignCode +
-                ", donationDate=" + donationDate +
+                "donationDate=" + donationDate +
                 ", donationPoint=" + donationPoint +
                 ", payAmount=" + payAmount +
                 ", donationAmount=" + donationAmount +
-                ", campaignCategory='" + campaignCategory + '\'' +
                 '}';
     }
 }

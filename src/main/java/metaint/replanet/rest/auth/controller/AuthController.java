@@ -69,11 +69,13 @@ public class AuthController {
 
         if (tokenDto != null) {
             if (tokenDto.getMessage() != null && !tokenDto.getMessage().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(tokenDto);
+                log.info("[/login 탈퇴 회원 진입 시도]");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(tokenDto);
             } else {
                 return ResponseEntity.ok(tokenDto);
             }
         } else {
+            log.info("[/login 알수 없는 에러]");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }

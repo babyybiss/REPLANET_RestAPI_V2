@@ -6,7 +6,7 @@ spring:
     host: smtp.gmail.com
     port: 465
     username: replanetorg@gmail.com
-    password: lsrb grgb qvqz rnuf
+    password: zlvm wtcl qyej pbxe
     properties:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true

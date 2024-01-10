@@ -213,7 +213,7 @@ public class ReviewService {
 
                 if (imageFile != null) {
 
-                    Path filePath = Paths.get("/REPLANET_React/public/reviewImgs").toAbsolutePath();
+                    Path filePath = Paths.get("/REPLANET_React_V2/public/reviewImgs").toAbsolutePath();
                     Path rootPath;
                     String IMAGE_DIR = null;
 
@@ -269,7 +269,7 @@ public class ReviewService {
         ReviewFile replaceableReview = reviewFileRepository.findByReviewCode(reviewCode);
         String deleteImgPath = replaceableReview.getFileSaveName();
 
-        Path filePath = Paths.get("/REPLANET_ReactAPI/public/reviewImgs").toAbsolutePath();
+        Path filePath = Paths.get("/REPLANET_React_V2/public/reviewImgs").toAbsolutePath();
         Path rootPath;
         String IMAGE_DIR = null;
         if (FileSystems.getDefault().getSeparator().equals("/")) {
@@ -402,7 +402,7 @@ public class ReviewService {
             String filePath;
 
             if (FileSystems.getDefault().getSeparator().equals("/")) {
-                filePath = "/Users/babyybiss/Documents/FullStackJava/REPLANET_React_V2/public/reviewImgs/" + randomFileName + fileExtension;
+                filePath = "/Users/babyybiss/Documents/workspace/TEAMP_FORKED/REPLANET_React_V2/public/reviewImgs/" + randomFileName + fileExtension;
             } else {
                 // Windows
                 filePath = "C:\\dev\\metaint\\REPLANET_React_V2\\public\\reviewImgs\\" + randomFileName + fileExtension;

@@ -309,7 +309,7 @@ public class ReviewService {
         // 현재 날짜
         LocalDateTime date = LocalDateTime.now();
         // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        reviewCommentDTO.setRevCommentDate(date);
+        reviewCommentDTO.setRevCommentDate(date.toString());
 
         ReviewComment comment = modelMapper.map(reviewCommentDTO, ReviewComment.class);
         reviewCommentRepository.save(comment);

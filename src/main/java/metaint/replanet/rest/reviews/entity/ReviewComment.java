@@ -29,7 +29,7 @@ public class ReviewComment {
     private String memberCode;
 
     @Column(name = "rev_comment_date")
-    private LocalDateTime revCommentDate;
+    private String revCommentDate;
 
     @Column(name = "review_code")
     private Long reviewCode;
@@ -52,7 +52,7 @@ public class ReviewComment {
         return this;
     }
 
-    public ReviewComment revCommentDate(LocalDateTime revCommentDate) {
+    public ReviewComment revCommentDate(String revCommentDate) {
         this.revCommentDate = revCommentDate;
         return this;
     }

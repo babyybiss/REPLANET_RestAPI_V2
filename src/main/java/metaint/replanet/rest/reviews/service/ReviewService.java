@@ -86,7 +86,6 @@ public class ReviewService {
     public CombineReviewDTO findReviewByReviewCode(Long reviewCode) {
 
         Review review = reviewRepository.findById(reviewCode).orElseThrow(IllegalArgumentException::new);
-        log.info("review ? : " + review);
         return modelMapper.map(review, CombineReviewDTO.class);
 
     }
@@ -356,7 +355,7 @@ public class ReviewService {
         reviewComment = reviewComment.reviewCommentCode(reviewCommentDTO.getRevCommentCode())
                 .revCommentContent(reviewCommentDTO.getRevCommentContent())
                 .memberCode(reviewCommentDTO.getMemberCode())
-                .revCommentDate(date)
+                .revCommentDate(date.toString())
                 .reviewCode(reviewCommentDTO.getReviewCode())
                 .build();
 

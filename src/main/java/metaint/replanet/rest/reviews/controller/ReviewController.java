@@ -50,10 +50,7 @@ public class ReviewController {
 
     @GetMapping("/{reviewCode}")
     public ResponseEntity<CombineReviewDTO> getSpecificReview(@PathVariable Long reviewCode) {
-        log.info("(ReviewController) getSpecificReview code : " + reviewCode);
-
         CombineReviewDTO details = reviewService.findReviewByReviewCode(reviewCode);
-
         details = reviewService.findAllCommentsByReviewCode(reviewCode, details);
 
         log.info("(review controller): 가져온 총 결과 : " +details);

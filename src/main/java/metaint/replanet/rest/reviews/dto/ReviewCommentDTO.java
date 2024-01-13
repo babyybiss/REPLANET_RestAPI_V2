@@ -17,7 +17,7 @@ public class ReviewCommentDTO {
 
     private String memberCode;
 
-    private LocalDateTime revCommentDate;
+    private String revCommentDate;
 
     private Long reviewCode;
 

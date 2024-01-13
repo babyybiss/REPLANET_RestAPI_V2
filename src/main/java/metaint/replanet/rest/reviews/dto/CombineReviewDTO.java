@@ -24,6 +24,6 @@ public class CombineReviewDTO {
     private CampaignDTO campaign;
 
     private List<ReviewFileDTO> reviewFileList;
-    private List<ReviewComment> reviewCommentList;
+    private List<ReviewCommentDTO> reviewCommentList;
 
 }
